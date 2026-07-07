@@ -1,0 +1,177 @@
+    /* =========================================================
+    🎨 SISTEMA DE TEMAS UNIFICADO
+    formato: data-theme="template-modo"
+    ejemplo: pizzeria-dark
+    ========================================================= */
+
+
+    /* ================================
+    RESTAURANT LIGHT
+    ================================ */
+    :root,
+    [data-theme="restaurant-light"] {
+    --background: #f6f6f6;
+    --text: #222;
+    --card: #ffffff;
+    --border: #ddd;
+    --accent: #b22222;
+    --nav-bg: #ffffff;
+    --nav-text: #222;
+    --switch-bg: #ddd;
+    --switch-knob: var(--accent);
+    }
+
+
+    /* ================================
+    RESTAURANT DARK
+    ================================ */
+    [data-theme="restaurant-dark"] {
+    --background: #1d1d1d;
+    --text: #eaeaea;
+    --card: #2a2a2a;
+    --border: #444;
+    --accent: #e45735;
+    --nav-bg: #111;
+    --nav-text: #fff;
+    --switch-bg: #333;
+    --switch-knob: var(--accent);
+    }
+
+
+    /* ================================
+    PIZZERIA LIGHT
+    ================================ */
+    [data-theme="pizzeria-light"] {
+    --background: #fff5f3;
+    --text: #2a2a2a;
+    --card: #ffffff;
+    --border: #f0c4bd;
+    --accent: #e63946;
+    --nav-bg: #ffffff;
+    --nav-text: #2a2a2a;
+    --switch-bg: #f0c4bd;
+    --switch-knob: var(--accent);
+    }
+
+
+    /* ================================
+    PIZZERIA DARK
+    ================================ */
+    [data-theme="pizzeria-dark"] {
+    --background: #1a1a1a;
+    --text: #f1f1f1;
+    --card: #242424;
+    --border: #333;
+    --accent: #e63946;
+    --nav-bg: #111;
+    --nav-text: #fff;
+    --switch-bg: #333;
+    --switch-knob: var(--accent);
+    }
+
+
+    /* ================================
+    BURGUER LIGHT
+    ================================ */
+    [data-theme="burguer-light"] {
+    --background: #fff9f2;
+    --text: #2b2b2b;
+    --card: #ffffff;
+    --border: #f5d3a1;
+    --accent: #ff7f11;
+    --nav-bg: #ffffff;
+    --nav-text: #2b2b2b;
+    --switch-bg: #f5d3a1;
+    --switch-knob: var(--accent);
+    }
+
+
+    /* ================================
+    BURGUER DARK
+    ================================ */
+    [data-theme="burguer-dark"] {
+    --background: #141414;
+    --text: #f5f5f5;
+    --card: #1f1f1f;
+    --border: #333;
+    --accent: #ff7f11;
+    --nav-bg: #111;
+    --nav-text: #fff;
+    --switch-bg: #333;
+    --switch-knob: var(--accent);
+    }
+
+
+    /* ================================
+    CAFE LIGHT
+    ================================ */
+    [data-theme="cafe-light"] {
+    --background: #fffaf0;
+    --text: #4b3832;
+    --card: #fef6e4;
+    --border: #e0c097;
+    --accent: #6f4e37;
+    --nav-bg: #fef6e4;
+    --nav-text: #4b3832;
+    --switch-bg: #e0c097;
+    --switch-knob: var(--accent);
+    }
+
+
+    /* ================================
+    CAFE DARK
+    ================================ */
+    [data-theme="cafe-dark"] {
+    --background: #2e2a27;
+    --text: #f3e9dc;
+    --card: #3b3530;
+    --border: #5c5148;
+    --accent: #c8a27c;
+    --nav-bg: #2e2a27;
+    --nav-text: #f3e9dc;
+    --switch-bg: #5c5148;
+    --switch-knob: var(--accent);
+    }
+
+
+    /* =========================================================
+    ESTILOS BASE
+    ========================================================= */
+
+    body {
+    background: var(--background);
+    color: var(--text);
+    margin: 0;
+    padding: 0;
+    font-family: sans-serif;
+    transition: background 0.2s ease, color 0.2s ease;
+    }
+
+    .product-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    transition: background 0.2s ease, border 0.2s ease;
+    }
+
+    p, h1, h2, h3, h4, h5 {
+    color: var(--text);
+    }
+
+    button {
+    background-color: var(--accent);
+    color: #fff;
+    border: none;
+    padding: 10px;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s ease, transform 0.05s ease;
+    }
+
+    button:hover {
+    opacity: 0.9;
+    }
+
+    button:active {
+    transform: scale(0.97);
+    }

@@ -1,0 +1,39 @@
+/* CONTENEDOR SCROLLEABLE DE FILTROS */
+.filters-scroll {
+  position: sticky;          /* Fijo mientras se hace scroll vertical */
+  top: 50px;                 /* Ajustá este valor según tu navbar mobile */
+  z-index: 50;
+
+  display: flex;
+  overflow-x: auto;          /* Scroll horizontal habilitado */
+  overflow-y: hidden;        /* Evita bloqueo del scroll vertical */
+  gap: 10px;
+
+  background: var(--nav-bg);
+  padding: 14px 20px 20px 12px;
+
+  scrollbar-width: none;     /* Firefox */
+}
+
+/* Oculta scrollbar en Chrome */
+.filters-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+/* BOTONES DE FILTRO */
+.filter-btn {
+  padding: 8px 16px;
+  border-radius: 20px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  color: var(--text);
+  white-space: nowrap;       /* Obligatorio para scroll lateral */
+  font-size: 14px;
+  transition: .2s ease;
+}
+
+.filter-btn.active {
+  background: var(--accent);
+  color: white;
+  border-color: var(--accent);
+}

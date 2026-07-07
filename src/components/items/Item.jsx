@@ -61,6 +61,8 @@ const Item = ({ producto, colorSeleccionado, handleQuickView }) => {
         <h6 className="item-title">
           {producto.marca} {producto.titulo}
         </h6>
+        <p> {producto.descripcion} </p>
+        
         <p className="item-precio"> ${producto.precio}</p>
       </div>
     </div>

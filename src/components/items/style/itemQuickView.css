@@ -5,6 +5,8 @@
   flex-wrap: wrap;
 }
 
+
+
 .iqv-imagenes {
   flex: 1;
   min-width: 260px;
@@ -71,7 +73,9 @@
   .iqv-container {
     flex-direction: column;
     align-items: center;
+    
   }
+
 
   .iqv-botones {
     flex-direction: row;

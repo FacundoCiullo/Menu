@@ -7,8 +7,8 @@
   bottom: 0;
   left: 0;
   width: 100%;
-  background: #ffffff;
-  border-top: 1px solid #e5e5e5;
+  background: var(--background);
+  border-top: 0.1px solid var(--border);
   border-radius: 20px 20px 0 0 ;
   display: flex;
   justify-content: space-around;
@@ -20,7 +20,7 @@
 .mobile-nav a,
 .mobile-avatar-btn {
   text-decoration: none;
-  color: #888;
+  color: var(--text);
   font-size: 12px;
   display: flex;
   flex-direction: column;
@@ -32,7 +32,7 @@
 }
 
 .mobile-nav a.active {
-  color: #000;
+  color: var(--accent);
   font-weight: 600;
 }
 
@@ -114,8 +114,8 @@
   width: 100%;
   height: 55px;
 
-  background: #ffffff;
-  border-bottom: 1px solid #e5e5e5;
+  background: var(--background);
+  border-bottom: 1px solid var(--border);
 
   display: flex;
   align-items: center;
@@ -134,7 +134,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #444;
+  color: var(--text);
 }
 
 .back-btn:active {
@@ -146,7 +146,7 @@
   font-size: 18px;
   font-weight: 600;
   margin: 0;
-  color: #222;
+  color: var(--text);
 }
 
 /* Cart en el header */
@@ -158,7 +158,7 @@
 }
 
 .header-cart a {
-  color: #444;
+  color: var(--text);
 }
 
 /* Reutilizamos el badge */

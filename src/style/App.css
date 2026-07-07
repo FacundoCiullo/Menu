@@ -35,6 +35,17 @@
   --transition-base: 0.3s ease;
 
   --font-base: 'Urbanist', sans-serif;
+
+    --background: #141414;
+    --text: #f5f5f5;
+    --card: #1f1f1f;
+    --border: #333;
+    --accent: #ff7f11;
+    --nav-bg: #111;
+    --nav-text: #fff;
+    --switch-bg: #333;
+    --switch-knob: var(--accent);
+
 }
 
 /* =========================================================
@@ -54,6 +65,7 @@ body, .App {
 }
 
 main {
+  background: var(--background);
   padding-top: 2rem;
   padding-bottom: 2rem;
   margin: 0 0rem;
@@ -126,7 +138,7 @@ main {
 
 .inicio-landing {
   padding-top: 0rem;
-  background: linear-gradient(180deg, #ffffff, #efefef);
+  background: var(--background);
 }
 
 /* ============================
@@ -144,7 +156,7 @@ main {
 }
 
 .carousel-overlay {
-  height: 100%;
+  height: 20%;
   border-radius: 20px;
   background: rgba(0, 0, 0, 0.45);
 }

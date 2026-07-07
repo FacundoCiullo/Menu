@@ -3,33 +3,40 @@
 ============================================ */
 
 /* src/components/items/style/Item.css */
+
 .item-card {
+  color: var(--text);
   position: relative;
   min-height: 14rem;
   padding: 0rem;
   border-radius: 14px;
-  background: #fff;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  background: var(--card);
+  border: 1px solid var(--border);
+  box-shadow: 0 2px 8px rgba(43, 43, 43, 0.08);
   cursor: pointer;
   transition: transform .2s ease, box-shadow .2s ease;
 }
 
-.item-card.hover {
+
+.item-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+  box-shadow: 0 6px 15px rgba(255, 127, 17, 0.15);
 }
+
 
 /* Badge */
 .item-badge {
   position: absolute;
   top: 8px;
   left: 8px;
-  background: #000;
-  color: #fff;
+  background: var(--accent);
+  color: var(--card);
   font-size: 12px;
   padding: 3px 8px;
   border-radius: 12px;
+  font-weight: 600;
 }
+
 
 /* Icono favorito */
 .item-fav {
@@ -37,7 +44,9 @@
   top: 8px;
   right: 8px;
   cursor: pointer;
+  color: var(--accent);
 }
+
 
 /* Imagen centrada */
 .item-img-wrapper {
@@ -48,102 +57,132 @@
   align-items: end;
 }
 
+
 .item-img {
   width: 100%;
   height: 100%;
   object-fit: contain;
 }
 
+
 /* Info */
 .item-info {
+      display: flex;
+    flex: 1 1;
+    flex-direction: column;
+    justify-content: center;
+    padding-left: 12px;
   margin-top: 5px;
   text-align: left;
   margin-left: 0.2rem;
 }
 
+
 .item-title {
   font-size: 15px;
-  font-weight: 500;
+  font-weight: 600;
+  color: var(--text);
 }
+
 
 .item-precio {
   font-size: 15px;
-  color: #292929;
+  color: var(--accent);
+  font-weight: 700;
 }
 
-@media (min-width: 575.98px) {
-  .item-card {
-    height: 180px;
-    min-height: 15rem;
-    max-width: 170px;   /* ✔ se ajusta más en mobile */
-    padding: 6px !important;
-    border-radius: 10px;
-  }
-}
-
-@media (max-width: 575.98px) {
-  .item-card {
-    height: 200px;
-    max-width: 170px;   /* ✔ se ajusta más en mobile */
-    padding: 6px !important;
-    border-radius: 10px;
-  }
-
-  .item-img {
-    height: 150px !important;
-  }
-
-  .item-card.hover {
-    transform: translateY(0px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
-  }
-
-  .item-img-wrapper {
-    height: 150px !important;
-  }
-
-}
 
 /* Contenedor general de items */
-.container{
+.container {
   margin-top: 3rem;
+  background: var(--background);
 }
+
 
 .items-container {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
   gap: 16px;
   justify-items: center;
-  
+  padding-bottom: 20px;
 }
 
-/* Wrapper individual de cada item (motion.div) */
+
+/* Wrapper individual de cada item */
 .item-wrapper {
   width: 100%;
 }
+
+
 .item-img {
-  max-width: 100%;
-  height: auto; /* evita forzar más ancho del contenedor */
+  max-width: 90%;
+  border-radius: 10px;
+  height: auto;
   object-fit: contain;
 }
 
-/* Media query para mobile: siempre 2 columnas */
+
+/* Banner categoría */
+.category-banner {
+  width: 100%;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 20px;
+  margin-bottom: 40px;
+  display: block;
+}
+
+
+
+/* ============================================
+  📱 MOBILE
+============================================ */
+
 @media (max-width: 575.98px) {
-  .container{
-  margin-top: 1rem;
-}
-  .items-container {
-    margin-top: 1rem;
-    margin-bottom: 2rem;
-    gap: 6px;
-    grid-template-columns: repeat(2, 1fr);
+
+  .item-card {
+    padding: 0.5rem;
+    min-height: auto;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
   }
+
+
+  .item-img {
+    height: 100px !important;
+    border-radius: 15px;
+  }
+
+
+  .item-card:hover {
+    transform: translateY(0px);
+    box-shadow: 0 4px 12px rgba(255,127,17,0.15);
+  }
+
+
+  .item-img-wrapper {
+    height: auto !important;
+    width: auto;
+    display: flex;
+  }
+
+
+  .items-container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    justify-items: center;
+  }
+
+
+  .category-banner {
+    height: 80px;
+    padding: 5px;
+    margin-bottom: 10px;
+    margin-top: 10px;
+    border-radius: 15px;
+  }
+
 }
-
-
-
-
-
-
-
-
