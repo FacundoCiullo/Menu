@@ -1,0 +1,93 @@
+/* =========================================================
+  🏝 7) SECCIÓN INICIO / LANDING
+========================================================= */
+
+.destacados{
+  color: var(--text);
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline
+}
+
+.inicio-landing {
+  padding-top: 0rem;
+  background: var(--background);
+}
+
+/* ==========================================
+    SLIDER HORIZONTAL DE CATEGORÍAS
+========================================== */
+
+.inicio-slider{
+  width:100%;
+  margin-top:1rem;
+}
+
+.horizontal-scroll{
+  display:flex;
+  gap:20px;
+  overflow-x:auto;
+  overflow-y:hidden;
+  scroll-behavior:smooth;
+  padding:10px 0 20px;
+  scrollbar-width:none;
+}
+
+.horizontal-scroll::-webkit-scrollbar{
+  display:none;
+}
+
+.slider-card{
+  flex:0 0 320px;
+  text-decoration:none;
+}
+
+.slider-image{
+  height:260px;
+  border-radius:18px;
+  background-size:cover;
+  background-position:center;
+  overflow:hidden;
+  transition:.3s;
+  box-shadow:0 10px 25px rgba(0,0,0,.18);
+}
+
+.slider-image:hover{
+  transform:translateY(-6px);
+}
+
+.slider-overlay{
+  width:100%;
+  height:100%;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:rgba(0,0,0,.35);
+  border-radius:18px;
+}
+
+.slider-overlay h2{
+  color:#fff;
+  font-size:2rem;
+  font-weight:700;
+  text-shadow:0 4px 12px rgba(0,0,0,.8);
+}
+
+/* ==========================
+    RESPONSIVE
+========================== */
+
+@media(max-width:768px){
+  .slider-card{
+    flex:0 0 200px;
+  }
+
+  .slider-image{
+    height:220px;
+  }
+
+  .slider-overlay h2{
+    font-size:1.6rem;
+  }
+
+}

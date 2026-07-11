@@ -1,48 +1,74 @@
+import "./style/Sections.css";
 import { useEffect, useState } from "react";
-import ItemList from "../items/ItemList";
-import { getFirestore, collection, getDocs } from "firebase/firestore";
+import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
+
+import HorizontalItemList from "../items/HorizontalItemList";
 import Loading from "../ui/Loading";
+
+import {
+  getFirestore,
+  collection,
+  getDocs,
+  query,
+  where,
+} from "firebase/firestore";
 
 const Destacados = ({ limit = 8 }) => {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const db = getFirestore();
-    const itemsCollection = collection(db, "items");
+    const obtenerDestacados = async () => {
+      try {
+        const db = getFirestore();
 
-    getDocs(itemsCollection).then(resultado => {
-      if (resultado.size > 0) {
-        const productos = resultado.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        const itemsCollection = collection(db, "items");
 
-        // Agrupar productos por categoría
-        const porCategoria = {};
-        productos.forEach(p => {
-          if (!porCategoria[p.categoria]) porCategoria[p.categoria] = [];
-          porCategoria[p.categoria].push(p);
-        });
+        const consulta = query(
+          itemsCollection,
+          where("oferta", "==", true)
+        );
 
-        // Orden personalizado: 1 abrigo, 1 remera, 2 zapatillas, 1 pantalon, 1 abrigo, 1 remera
-        const orden = [];
-        const categoriasOrden = ["Abrigos", "Remeras", "Zapatillas", "Pantalon", "Zapatillas", "Pantalon", "Abrigos","Remeras"];
-        categoriasOrden.forEach(cat => {
-          if (porCategoria[cat] && porCategoria[cat].length > 0) {
-            orden.push(porCategoria[cat].shift()); // tomar el primer producto de esa categoría
-          }
-        });
+        const resultado = await getDocs(consulta);
 
-        setItems(orden.slice(0, limit));
+        const productos = resultado.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+
+        setItems(productos.slice(0, limit));
+      } catch (error) {
+        console.error("Error al obtener productos destacados:", error);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
-    });
+    };
+
+    obtenerDestacados();
   }, [limit]);
 
+  if (loading) {
+    return <Loading />;
+  }
+
   return (
-    <div className="container my-5">
-      <div className="row">
-        {loading ? <Loading /> : <ItemList productos={items} />}
+    <motion.section
+      className="mt-3 container"
+      initial={{ opacity: 0, y: 40 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6 }}
+    >
+      <div className="d-flex destacados">
+        <h2 className="fw-bold m-0">Destacados</h2>
+
+      <Link className="link-underline-dark" to="/Productos">
+            <p className="text-white">Ver más</p>
+        </Link>
       </div>
-    </div>
+
+      <HorizontalItemList productos={items} />
+    </motion.section>
   );
 };
 

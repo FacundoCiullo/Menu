@@ -30,23 +30,28 @@ const ItemList = ({ productos }) => {
 
   // RELACIÓN CATEGORIA - IMAGEN
   const banners = {
-    abrigos: "/img/banners/banner-hamburguesas.png",
-    pantalon: "/img/banners/banner-pizzas.png",
-    remeras: "/img/banners/banner-bebidas.png",
-    zapatillas: "/img/banners/banner-postres.png",
+    pizzas: "/img/banners/banner-pizzas.png",
+    hamburguesas: "/img/banners/banner-hamburguesas.png",
+    entradas: "/img/banners/banner-entradas.png",
+    pastas: "/img/banners/banner-pastas.png",
+    ensaladas: "/img/banners/banner-ensaladas.png",
+
+    veganos: "/img/banners/banner-ensaladas.png",
+    postres: "/img/banners/banner-postres.png",
+    bebidas: "/img/banners/banner-bebidas.png",
   };
 
 
   // Agrupar productos
   const productosAgrupados = productos.reduce((acc, producto) => {
 
-    const categoria = producto.categoria?.toLowerCase() || "otros";
+    const subcategoria = producto.subcategoria?.toLowerCase() || "otros";
 
-    if (!acc[categoria]) {
-      acc[categoria] = [];
+    if (!acc[subcategoria]) {
+      acc[subcategoria] = [];
     }
 
-    acc[categoria].push(producto);
+    acc[subcategoria].push(producto);
     return acc;
 
   }, {});
@@ -85,17 +90,17 @@ const ItemList = ({ productos }) => {
     <>
 
 
-      {Object.entries(productosAgrupados).map(([categoria, lista]) => (
+      {Object.entries(productosAgrupados).map(([subcategoria, lista]) => (
 
-        <div key={categoria} className="category-section">
+        <div key={subcategoria} className="category-section">
 
           <img
             className="category-banner"
             src={
-              banners[categoria] 
+              banners[subcategoria] 
               || "/img/banners/default.jpg"
             }
-            alt={categoria}
+            alt={subcategoria}
           />
 
           <motion.div

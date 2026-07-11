@@ -1,0 +1,104 @@
+/* ==========================================
+    PRODUCTOS HORIZONTALES
+========================================== */
+
+.horizontal-scroll {
+
+  display: flex;
+
+  gap: 18px;
+
+  overflow-x: auto;
+  overflow-y: hidden;
+
+  scroll-behavior: smooth;
+
+  scroll-snap-type: x mandatory;
+
+  padding: 10px 15px 20px;
+
+  scrollbar-width: none;
+
+}
+
+.horizontal-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+/* Card */
+
+.slider-card-product {
+
+  flex: 0 0 clamp(220px, 26vw, 290px);
+
+  scroll-snap-align: start;
+
+}
+
+/* Desktop grande */
+
+@media (min-width: 1400px) {
+
+  .slider-card-product {
+
+    flex: 0 0 290px;
+
+  }
+
+}
+
+/* Notebook */
+
+@media (max-width: 1200px) {
+
+  .slider-card-product {
+
+    flex: 0 0 260px;
+
+  }
+
+}
+
+/* Tablet */
+
+@media (max-width: 992px) {
+
+  .slider-card-product {
+
+    flex: 0 0 240px;
+
+  }
+
+}
+
+/* Celular */
+
+@media (max-width: 768px) {
+
+  .horizontal-scroll {
+
+    gap: 14px;
+
+    padding-inline: 12px;
+
+  }
+
+  .slider-card-product {
+
+    flex: 0 0 72%;
+
+  }
+
+}
+
+/* Celulares chicos */
+
+@media (max-width: 480px) {
+
+  .slider-card-product {
+
+    flex: 0 0 82%;
+
+  }
+
+}
