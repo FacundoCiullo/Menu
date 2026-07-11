@@ -28,8 +28,8 @@ const NavBar = () => {
           {/* Links Desktop */}
           <Nav className="d-none d-lg-flex align-items-center gap-3">
             <Nav.Link as={Link} to="/" className="nav-underline text-white">Inicio</Nav.Link>
-            <Nav.Link as={Link} to="/Productos" className="nav-underline text-white">Productos</Nav.Link>
-            <Nav.Link as={Link} to="/Contactos" className="nav-underline text-white">Contacto</Nav.Link>
+            <Nav.Link as={Link} to="/Productos" className="nav-underline text-white">Menú</Nav.Link>
+            <Nav.Link as={Link} to="/Contactos" className="nav-underline text-white"></Nav.Link>
           </Nav>
 
           {/* Carrito */}
