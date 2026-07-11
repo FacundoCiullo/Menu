@@ -26,9 +26,9 @@ const MobileNavbar = () => {
 
   // Títulos automáticos según la ruta
   const titles = {
-    "/Home": "Inicio",
+    "/Home": "App Menu Demo",
     "/favoritos": "Favoritos",
-    "/Productos": "Productos",
+    "/Productos": "Menú",
     "/cart": "Carrito",
     "/admin": "Administrador",
     "/historial": "Historial",

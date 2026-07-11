@@ -1,139 +1,122 @@
-// src/components/items/ItemListContainer.jsx
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import ItemList from "./ItemList";
-import SidebarFilters from "./SidebarFilters";
-import MobileFiltersBar from "./MobileFiltersBar";
-import MobileFiltersPanel from "./MobileFiltersPanel";
+import CategoryFilterBar from "./CategoryFilterBar";
+
 import {
   getFirestore,
   collection,
   getDocs,
   where,
-  query
+  query,
 } from "firebase/firestore";
+
 import Loading from "../ui/Loading";
 
 const ItemListContainer = ({ limit }) => {
   const [items, setItems] = useState([]);
   const [filtered, setFiltered] = useState([]);
   const [loading, setLoading] = useState(true);
+
   const { id } = useParams();
 
+  const [searchParams] = useSearchParams();
+  const subcategoriaURL = searchParams.get("subcategoria");
+
   const [filtros, setFiltros] = useState({
-    categorias: [],
-    marcas: [],
-    talles: [],
-    colores: [],
-    precioMax: 999999,
+    subcategorias: subcategoriaURL ? [subcategoriaURL] : [],
   });
 
-  // --- ESTADO PARA MOBILE ---
-  const [showMobileFilters, setShowMobileFilters] = useState(false);
 
-  // --- CARGA DESDE FIRESTORE ---
+  // ===========================
+  // CARGAR PRODUCTOS FIREBASE
+  // ===========================
+
   useEffect(() => {
     const db = getFirestore();
     const itemsCollection = collection(db, "items");
-    const q = id ? query(itemsCollection, where("categoria", "==", id)) : itemsCollection;
+
+    const q = id
+      ? query(itemsCollection, where("categoria", "==", id))
+      : itemsCollection;
 
     getDocs(q).then((resultado) => {
+
       if (resultado.size > 0) {
-        const data = resultado.docs.map((producto) => ({
-          id: producto.id,
-          ...producto.data(),
+
+        const data = resultado.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
         }));
+
         setItems(data);
-        setFiltered(data);
+
       } else {
-        console.warn("No se encontraron productos en Firestore");
+
+        console.warn("No se encontraron productos.");
       }
       setLoading(false);
     });
+
   }, [id]);
 
-  // --- APLICAR FILTROS ---
+
+  // ===========================
+  // CARGAR FILTRO DESDE URL
+  // ===========================
+
   useEffect(() => {
-    let final = [...items];
 
-    if (filtros.categorias.length)
-      final = final.filter((item) => filtros.categorias.includes(item.categoria));
+    if (subcategoriaURL) {
 
-    if (filtros.marcas.length)
-      final = final.filter((item) => filtros.marcas.includes(item.marca));
+      setFiltros({
+        subcategorias: [subcategoriaURL],
+      });
 
-    if (filtros.talles.length)
-      final = final.filter((item) =>
-        (item.talles || []).some((t) => filtros.talles.includes(t))
+    } else {
+
+      setFiltros({
+        subcategorias: [],
+      });
+    }
+  }, [subcategoriaURL]);
+
+  // ===========================
+  // FILTRAR PRODUCTOS
+  // ===========================
+
+  useEffect(() => {
+    let productos = [...items];
+
+    if (filtros.subcategorias.length > 0) {
+      productos = productos.filter((item) =>
+        filtros.subcategorias.includes(item.subcategoria)
       );
+    }
 
-    if (filtros.colores.length)
-      final = final.filter((item) =>
-        (item.colores || []).some((c) => filtros.colores.includes(c))
-      );
-
-    final = final.filter((item) => item.precio <= filtros.precioMax);
-
-    // --- EXPANDIR POR COLOR ---
-    let productosExpandidos = [];
-
-    final.forEach((item) => {
-      if (!filtros.colores.length) {
-        productosExpandidos.push(item);
-      } else {
-        filtros.colores.forEach((color) => {
-          if (item.colores?.includes(color)) {
-            productosExpandidos.push({
-              ...item,
-              colorForzado: color,
-            });
-          }
-        });
-      }
-    });
-
-    setFiltered(limit ? productosExpandidos.slice(0, limit) : productosExpandidos);
-  }, [filtros, items, limit]);
+    setFiltered(
+      limit
+        ? productos.slice(0, limit)
+        : productos
+    );
+  }, [items, filtros, limit]);
 
   if (loading) return <Loading />;
 
   return (
     <div className="container">
-      <div className="row">
 
-        {/* SIDEBAR DESKTOP */}
-        <div className="col-12 col-md-3 mb-4 d-none d-md-block">
-          <SidebarFilters
-            productos={items}
-            filtros={filtros}
-            setFiltros={setFiltros}
-          />
-        </div>
+      <CategoryFilterBar
+        productos={items}
+        filtros={filtros}
+        setFiltros={setFiltros}
+      />
 
-        {/* MOBILE FILTER BAR */}
-        <div className="col-12 d-block d-md-none mb-3">
-          <MobileFiltersBar onOpenFilters={() => setShowMobileFilters(true)} />
-        </div>
-
-        {/* MOBILE FILTER PANEL */}
-        <MobileFiltersPanel
-          show={showMobileFilters}
-          onClose={() => setShowMobileFilters(false)}
-        >
-          <SidebarFilters
-            productos={items}
-            filtros={filtros}
-            setFiltros={setFiltros}
-          />
-        </MobileFiltersPanel>
-
-        {/* LISTA DE PRODUCTOS */}
-        <div className="col-12 col-md-9">
-          <ItemList productos={filtered} />
-        </div>
-      </div>
+      <ItemList productos={filtered} />
     </div>
+
   );
 };
+
 
 export default ItemListContainer;

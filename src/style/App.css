@@ -2,23 +2,6 @@
   🎨 1) DESIGN TOKENS – Colores, tipografías, sombras, etc.
 ========================================================= */
 
-/* Light / Dark themes */
-[data-theme="light"] {
-  --color-primary: #000000;
-  --color-accent: #ff4900;
-  --color-bg-primary: #c1c1c1;
-  --color-bg-secondary: #3a3a3a;
-  --color-text: #111;
-}
-
-[data-theme="dark"] {
-  --color-primary: #ff4900;
-  --color-accent: #c1c1c1;
-  --color-bg-primary: #2a2a2a;
-  --color-bg-secondary: #3a3a3a;
-  --color-text: #eaeaea;
-}
-
 /* Neutral palette + tokens globales */
 :root {
   --black: #0a0a0a;
@@ -85,6 +68,14 @@ main {
   🧩 3) HELPERS – clases utilitarias
 ========================================================= */
 
+/* Contenedor */
+
+.container {
+  margin-top: 1rem;
+  margin-bottom: 3rem;
+  background: var(--background);
+}
+
 .flex-center {
   display: flex;
   align-items: center;
@@ -99,9 +90,7 @@ main {
   padding: rem 2rem;
 }
 
-.text-muted {
-  color: var(--gray-600);
-}
+
 
 /* =========================================================
   🔔 4) TOASTIFY CUSTOM

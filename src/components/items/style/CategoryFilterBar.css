@@ -1,17 +1,16 @@
-/* CONTENEDOR SCROLLEABLE DE FILTROS */
+
+
+
 .filters-scroll {
   position: sticky;          /* Fijo mientras se hace scroll vertical */
   top: 50px;                 /* Ajustá este valor según tu navbar mobile */
   z-index: 50;
-
   display: flex;
   overflow-x: auto;          /* Scroll horizontal habilitado */
   overflow-y: hidden;        /* Evita bloqueo del scroll vertical */
   gap: 10px;
-
   background: var(--nav-bg);
-  padding: 14px 20px 20px 12px;
-
+  padding: 14px 20px 20px 0px;
   scrollbar-width: none;     /* Firefox */
 }
 

@@ -5,69 +5,98 @@ import { motion } from "framer-motion";
 
 const cardsData = [
   {
-    backgroundImage: 'url("img/banners/banner-hamburguesas.png")',
+    backgroundImage:
+      'url("/img/banners/banner-hamburguesas.png")',
     title: "Hamburguesas",
-    categoryId: "Comidas",
   },
   {
-    backgroundImage: 'url("img/banners/banner-pizzas.png")',
+    backgroundImage:
+      'url("/img/banners/banner-pizzas.png")',
     title: "Pizzas",
-    categoryId: "Comidas",
   },
   {
-    backgroundImage: 'url("img/banners/banner-entradas.png")',
+    backgroundImage:
+      'url("/img/banners/banner-entradas.png")',
     title: "Entradas",
-    categoryId: "Comidas",
   },
   {
-    backgroundImage: 'url("img/banners/banner-bebidas.png")',
+    backgroundImage:
+      'url("/img/banners/banner-bebidas.png")',
     title: "Bebidas",
-    categoryId: "Bebidas",
   },
 ];
 
 const CategoriesCarousel = () => {
   return (
     <section className="inicio-slider mt-3 container">
-      <section
-        className=""
-        initial={{ opacity: 0, y: 40 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
+      <motion.div
+        initial={{
+          opacity: 0,
+          y: 40
+        }}
+        whileInView={{
+          opacity: 1,
+          y: 0
+        }}
+        transition={{
+          duration: 0.6
+        }}
+        viewport={{
+          once: true
+        }}
       >
-      <div className="d-flex destacados">
-        <h2 className="fw-bold m-0">Categorias</h2>
 
-        <Link className="link-underline-dark" to="/Productos">
-            <p className="text-white">Ver más</p>
-        </Link>
-      </div>
+        <div className="d-flex destacados">
+          <h2 className="fw-bold m-0">
+            Subcategorías
+          </h2>
 
-    </section>
-      <div className="horizontal-scroll">
-        {cardsData.map((card, index) => (
           <Link
-            key={index}
-            to={`/category/${card.categoryId}`}
+            className="link-underline-dark"
+            to="/Productos"
+          >
+            <p className="text-white">
+              Ver más
+            </p>
+          </Link>
+        </div>
+      </motion.div>
+
+      <div className="horizontal-scroll">
+        {cardsData.map((card) => (
+          <Link
+            key={card.title}
+            to={`/Productos?subcategoria=${encodeURIComponent(card.title)}`}
             className="slider-card"
           >
-            <div
-              className="slider-image"
-              style={{
-                backgroundImage: card.backgroundImage,
-              }}
-            >
-              <div className="slider-overlay">
-                <motion.h2
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5 }}
-                >
-                  {card.title}
-                </motion.h2>
-              </div>
+          <div
+            className="slider-image"
+            style={{
+              backgroundImage: card.backgroundImage,
+            }}
+          >
+            <div className="slider-overlay">
+              <motion.h2
+                initial={{
+                  opacity: 0,
+                  y: 20
+                }}
+                whileInView={{
+                  opacity: 1,
+                  y: 0
+                }}
+                transition={{
+                  duration: 0.5
+                }}
+                viewport={{
+                  once: true
+                }}
+              >
+                {card.title}
+              </motion.h2>
             </div>
-          </Link>
+          </div>
+        </Link>
         ))}
       </div>
     </section>

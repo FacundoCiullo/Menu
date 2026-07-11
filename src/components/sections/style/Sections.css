@@ -10,8 +10,15 @@
 }
 
 .inicio-landing {
-  padding-top: 0rem;
+  padding-top: 1rem;
   background: var(--background);
+}
+
+.inicio-banner{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 15px;
 }
 
 /* ==========================================
@@ -67,7 +74,7 @@
 }
 
 .slider-overlay h2{
-  color:#fff;
+  color: var(--text);
   font-size:2rem;
   font-weight:700;
   text-shadow:0 4px 12px rgba(0,0,0,.8);
