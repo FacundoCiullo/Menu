@@ -1,37 +1,42 @@
 // src/context/AuthContext.jsx
 import { createContext, useContext, useState, useEffect } from "react";
-import {
-  onAuthStateChanged,
-  signOut,
-  getRedirectResult,
-} from "firebase/auth";
+import { onAuthStateChanged, signOut } from "firebase/auth";
 import { auth } from "../firebase";
 
+
+// Creamos el contexto
 const AuthContext = createContext();
 
+// Hook para usar el contexto en cualquier componente
 export const useAuth = () => useContext(AuthContext);
 
+// Proveedor de contexto
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
-  const [esAdmin, setEsAdmin] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState(null);       // Usuario logueado
+  const [esAdmin, setEsAdmin] = useState(false); // Bandera de administrador
+  const [loading, setLoading] = useState(true);  // Control de carga inicial
 
   useEffect(() => {
-    getRedirectResult(auth).catch((error) => {
-      console.error("Redirect Error:", error.code, error.message);
-    });
-
+    // Escucha cambios de estado en Firebase Auth (login, logout)
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
-      setEsAdmin(
-        currentUser?.email === "facundonahuel.ciullo@gmail.com"
-      );
-      setLoading(false);
+
+      // Si hay usuario, verificamos si es admin
+      if (currentUser) {
+        const adminEmail = "facundonahuel.ciullo@gmail.com"; // tu email de admin
+        setEsAdmin(currentUser.email === adminEmail);
+      } else {
+        setEsAdmin(false);
+      }
+
+      setLoading(false); // Dejamos de cargar
     });
 
+    // Limpiamos el listener al desmontar
     return unsubscribe;
   }, []);
 
+  // Función para cerrar sesión
   const logout = async () => {
     try {
       await signOut(auth);
@@ -40,15 +45,9 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  // Valor que se pasará a todos los componentes que consuman el contexto
   return (
-    <AuthContext.Provider
-      value={{
-        user,
-        esAdmin,
-        logout,
-        loading,
-      }}
-    >
+    <AuthContext.Provider value={{ user, esAdmin, logout, loading }}>
       {children}
     </AuthContext.Provider>
   );

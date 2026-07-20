@@ -1,7 +1,6 @@
 import { useRef, useState } from "react";
 import Item from "./Item";
 import ItemQuickView from "./ItemQuickView";
-
 import "./style/HorizontalItemList.css";
 
 const HorizontalItemList = ({ productos }) => {

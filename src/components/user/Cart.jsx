@@ -1,14 +1,22 @@
 import React, { useContext, useState } from "react";
 import { CartContext } from "../../context/CartContext";
 import { Link, useNavigate } from "react-router-dom";
-import "bootstrap-icons/font/bootstrap-icons.css";
+import { Modal, Button } from "react-bootstrap";
 import { auth } from "../../firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { Modal, Button } from "react-bootstrap";
 import "./cart.css";
 
 const Cart = () => {
-  const { cart, cartTotal, clear, removeItem, sumTotal } = useContext(CartContext);
+  const {
+    cart,
+    clear,
+    removeItem,
+    increaseQuantity,
+    decreaseQuantity,
+    sumTotal,
+    cartTotal,
+  } = useContext(CartContext);
+
   const [user] = useAuthState(auth);
   const navigate = useNavigate();
 
@@ -19,214 +27,302 @@ const Cart = () => {
       setShowModal(true);
       return;
     }
+
     navigate("/checkout");
   };
 
-  // Si el carrito está vacío
-  if (cartTotal() === 0) {
+
+  if (cart.length === 0) {
     return (
-      <div className="cart-empty container">
-        <div className="row my-5">
-          <div className="col text-center">
-            <div className="alert alert-danger">
-              No se encontraron productos en el carrito!
-            </div>
-            <Link to="/Home" className="btn btn-secondary">
-              Volver a la página principal
-            </Link>
-          </div>
+      <div className="cart-empty">
+
+        <div className="empty-box">
+
+          <h2>
+            Tu carrito está vacío 🛒
+          </h2>
+
+          <p>
+            Agregá productos para comenzar tu compra.
+          </p>
+
+          <Link
+            to="/Productos"
+            className="empty-button"
+          >
+            Ver productos
+          </Link>
+
         </div>
+
       </div>
     );
   }
 
+
   return (
-    <>
-      {/* ------------------ MOBILE VERSION ------------------ */}
-      <div className="mobile-cart-list">
 
-        <div className="row">
-          <div className="col text-center">
-            <h1>Productos Seleccionados</h1>
+    <main className="cart-page">
+
+
+      <section className="cart-wrapper">
+
+
+        <header className="cart-header">
+
+          <h1>
+            Productos seleccionados
+          </h1>
+
+
+          <div className="cart-actions">
+
+            <Link
+              to="/Productos"
+              className="continue-shopping"
+            >
+              Seguir comprando
+            </Link>
+
+
+            <button
+              className="clear-cart"
+              onClick={clear}
+            >
+              Vaciar carrito
+            </button>
+
+
           </div>
-        </div>
 
 
-        <div className="mobile-cart-header">
+        </header>
 
-          <Link className="Next-mobile" to="/Productos">
-            Seguir comprando
-          </Link>
 
-          <button className="clear-mobile" onClick={clear}>
-            Vaciar Carrito
+
+        <section className="cart-items">
+
+
+          {cart.map((item) => (
+
+            <article
+              className="cart-card"
+              key={item.id}
+            >
+
+
+              <div className="cart-image">
+
+                <img
+                  src={item.imagen}
+                  alt={item.titulo}
+                />
+
+              </div>
+
+
+
+              <div className="cart-info">
+
+
+                <div className="cart-title">
+
+
+                  <h2>
+                    {item.marca && `${item.marca} `}
+                    {item.titulo}
+                  </h2>
+
+
+                  <button
+                    className="delete-button"
+                    onClick={() => removeItem(item.id)}
+                  >
+                    <i className="bi bi-trash3-fill"></i>
+                  </button>
+
+
+                </div>
+
+
+
+                <p className="unit-price">
+
+                  Precio unitario:
+
+                  <strong>
+                    ${item.precio}
+                  </strong>
+
+                </p>
+
+
+
+                <div className="quantity-box">
+
+
+                  <button
+                    className="qty-button"
+                    onClick={() =>
+                      decreaseQuantity(item.id)
+                    }
+                  >
+                    -
+                  </button>
+
+
+                  <span className="quantity-number">
+                    {item.quantity}
+                  </span>
+
+
+                  <button
+                    className="qty-button"
+                    onClick={() =>
+                      increaseQuantity(item.id)
+                    }
+                  >
+                    +
+                  </button>
+
+
+                </div>
+
+
+
+                <div className="subtotal">
+
+
+                  <span>
+                    Subtotal
+                  </span>
+
+
+                  <strong>
+                    ${item.precio * item.quantity}
+                  </strong>
+
+
+                </div>
+
+
+
+              </div>
+
+
+
+            </article>
+
+          ))}
+
+
+        </section>
+
+
+
+
+        <section className="cart-summary">
+
+
+          <div className="summary-row">
+
+            <span>
+              Productos
+            </span>
+
+            <strong>
+              {cartTotal()}
+            </strong>
+
+          </div>
+
+
+
+          <div className="summary-row total">
+
+
+            <span>
+              Total a pagar
+            </span>
+
+
+            <strong>
+              ${sumTotal()}
+            </strong>
+
+
+          </div>
+
+
+
+          <button
+            className="checkout-button"
+            onClick={handleCheckout}
+          >
+            Finalizar compra
           </button>
 
-        </div>
+
+
+        </section>
 
 
 
-        {cart.map((item) => (
-          <div
-            key={`${item.id}-${item.color}-${item.talle}-${item.marca}`}
-            className="mobile-cart-card"
-          >
-            <div className="card-left">
-              <img src={item.imagen} alt={item.titulo} />
-            </div>
-
-            <div className="card-right ">
-              <div className="card-top">
-                <h2>{item.marca} {item.titulo}</h2>
-                <button
-                  className="remove-btn"
-                  onClick={() => removeItem(item.id, item.color, item.talle)}
-                >
-                  <span className="bi bi-trash3-fill"></span>
-                </button>
-              </div>
-
-              <p className="item-color">
-                Color: <span>{item.color}</span> Talle: <span>{item.talle}</span>
-              </p>
-              
-              <div className="item-cart-footer"> 
-
-                <p className="">Cantidad</p>
-                
-                <div className="qty-box">x{item.quantity}</div>
-                
-                <p className="item-price">${item.precio}</p>
-              </div>
-
-            </div>
-          </div>
-        ))}
-
-        {/* Price details */}
-        <div className="price-details">
-
-          <div className="price-row">
-            <span>Total Productos</span>
-            <span>${sumTotal()}</span>
-          </div>
-
-          <div className="price-row">
-            <span>Total Descuento</span>
-            <span>$0</span>
-          </div>
-
-          <div className="price-row total">
-            <span>Precio:</span>
-            <span>${sumTotal()}</span>
-          </div>
-        </div>
-
-
-        <button className="continue-btn" onClick={handleCheckout}>
-          Continuar
-        </button>
+      </section>
 
 
 
-      </div>
 
-      {/* ------------------ DESKTOP VERSION ORIGINAL ------------------ */}
-      <div className="cart-container container my-5 desktop-table">
-        <div className="row">
-          <div className="col text-center">
-            <h1>Productos Seleccionados</h1>
-          </div>
-        </div>
+      <Modal
+        show={showModal}
+        onHide={() => setShowModal(false)}
+        centered
+      >
 
-        <div className="row">
-          <div className="col">
-            <table className="table cart-table align-middle">
-              <tbody>
-                <tr className="cart-actions-row">
-                  <td colSpan={6}></td>
-                  <td className="text-end">
-                    <button className="btn btn-light cart-clear-btn" onClick={clear}>
-                      Vaciar Carrito
-                    </button>
-                  </td>
-                </tr>
 
-                {cart.map((item) => (
-                  <tr
-                    key={`${item.id}-${item.color}-${item.talle}`}
-                    className="cart-item-row"
-                  >
-                    <td>
-                      <img src={item.imagen} alt={item.titulo} className="cart-item-img" />
-                    </td>
-
-                    <td className="align-middle">
-                      <strong>{item.marca}</strong> — {item.titulo}
-                    </td>
-
-                    <td className="align-middle">
-                      <div className="d-flex gap-2 flex-wrap">
-                        <span><strong>Color:</strong> {item.color || "—"}</span>
-                        <span><strong>Talle:</strong> {item.talle || "—"}</span>
-                      </div>
-                    </td>
-
-                    <td className="align-middle">
-                      {item.quantity} x ${item.precio}
-                    </td>
-
-                    <td className="align-middle text-center">
-                      ${item.quantity * item.precio}
-                    </td>
-
-                    <td className="align-middle text-end">
-                      <button
-                        className="btn btn-light cart-remove-btn"
-                        onClick={() => removeItem(item.id, item.color, item.talle)}
-                      >
-                        <i className="bi bi-trash3-fill"></i>
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-
-                <tr className="cart-total-row">
-                  <td colSpan={4} className="text-end fw-bold">
-                    Total a pagar
-                  </td>
-                  <td className="text-center fw-bold">${sumTotal()}</td>
-                  <td className="text-end">
-                    <button className="btn btn-light cart-checkout-btn" onClick={handleCheckout}>
-                      Finalizar compra
-                    </button>
-                  </td>
-                  <td className="text-end">
-                    <Link to="/Productos" className="btn btn-light cart-continue-btn">
-                      Seguir comprando
-                    </Link>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-
-      {/* Modal login */}
-      <Modal show={showModal} onHide={() => setShowModal(false)} centered>
         <Modal.Header closeButton>
-          <Modal.Title>Iniciá sesión</Modal.Title>
+
+          <Modal.Title>
+            Iniciá sesión
+          </Modal.Title>
+
         </Modal.Header>
-        <Modal.Body>Para finalizar tu compra es necesario iniciar sesión.</Modal.Body>
+
+
+
+        <Modal.Body>
+
+          Para finalizar tu compra necesitás iniciar sesión.
+
+        </Modal.Body>
+
+
+
         <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowModal(false)}>
+
+
+          <Button
+            variant="secondary"
+            onClick={() => setShowModal(false)}
+          >
+
             Entendido
+
           </Button>
+
+
         </Modal.Footer>
+
+
+
       </Modal>
-    </>
+
+
+
+    </main>
+
   );
 };
+
 
 export default Cart;

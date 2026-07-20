@@ -1,0 +1,149 @@
+/* ==========================================
+   CARDS RECTANGULARES DE PROMOS / OFERTAS
+========================================== */
+
+.promos-scroll-container {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+  padding: 8px 4px 20px;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.promos-scroll-container::-webkit-scrollbar {
+  display: none;
+}
+
+/* Wrapper de la tarjeta rectangular */
+.promo-card-wrapper {
+  flex: 0 0 280px; /* Ancho rectangular tipo banner */
+  height: 180px;   /* Altura fija estilo card rectangular */
+  scroll-snap-align: start;
+  cursor: pointer;
+}
+
+/* Tarjeta Principal */
+.promo-card {
+  width: 100%;
+  height: 100%;
+  border-radius: 20px;
+  overflow: hidden;
+  position: relative;
+  transition: transform 0.25 ease, box-shadow 0.25s ease;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.promo-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+}
+
+.promo-card:active {
+  transform: scale(0.98);
+}
+
+/* Imagen de Fondo */
+.promo-card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Tag / Badge "OFERTA" arriba a la izquierda */
+.promo-badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  background-color: #e63946;
+  color: #ffffff;
+  font-size: 0.7rem;
+  font-weight: 800;
+  padding: 4px 10px;
+  border-radius: 20px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  box-shadow: 0 2px 8px rgba(230, 57, 70, 0.4);
+  z-index: 2;
+}
+
+/* Overlay inferior con información y precios */
+.promo-card-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 35px 14px 12px;
+  background: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0) 0%,
+    rgba(0, 0, 0, 0.75) 50%,
+    rgba(0, 0, 0, 0.95) 100%
+  );
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  z-index: 1;
+}
+
+/* Título del Producto */
+.promo-card-title {
+  color: #ffffff;
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin: 0 0 4px 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+/* Contenedor de Precios */
+.promo-card-prices {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+/* Precio Viejo (Tachado) */
+.price-old {
+  color: #a0a6b1;
+  font-size: 0.85rem;
+  font-weight: 500;
+  text-decoration: line-through;
+}
+
+/* Precio Nuevo (Destacado) */
+.price-new {
+  color: #2ecc71; /* Verde oferta o el color que prefieras */
+  font-size: 1.2rem;
+  font-weight: 800;
+}
+
+/* ==========================
+    RESPONSIVE
+========================== */
+
+@media (max-width: 768px) {
+  .promo-card-wrapper {
+    flex: 0 0 230px;
+    height: 155px;
+  }
+
+  .promo-card-title {
+    font-size: 0.98rem;
+  }
+
+  .price-new {
+    font-size: 1.05rem;
+  }
+
+  .price-old {
+    font-size: 0.78rem;
+  }
+}

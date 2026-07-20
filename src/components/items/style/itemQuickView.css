@@ -1,99 +1,288 @@
-
-.iqv-container {
-  display: flex;
-  gap: 20px;
-  flex-wrap: wrap;
+/* Quitar los bordes por defecto del Modal de Bootstrap */
+.iqv-modal-custom .modal-content {
+  border-radius: 16px;
+  overflow: hidden;
+  border: none;
+  max-width: 440px; /* Ancho de tarjeta compacta como la foto */
+  margin: 30px;
+  border: 5px solid var(--text);
 }
 
+/* Contenedor vertical de la tarjeta */
+.iqv-card-container {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
 
+/* Wrapper de Imagen y botones de acción flotantes */
+.iqv-image-wrapper {
+  position: relative;
+  width: 100%;
+  padding-top: 60%; /* Ratio de aspecto 4:3 para la imagen */
+  background-color: var(--text);
+}
 
-.iqv-imagenes {
-  flex: 1;
-  min-width: 260px;
+.iqv-main-img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Favorito Flotante Arriba Izquierda */
+.iqv-floating-fav {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  transition: background 0.2s ease;
+  z-index: 10;
+}
+.iqv-floating-fav:hover {
+  background: rgba(255, 255, 255, 0.4);
+}
+
+/* Botón de Cerrar Flotante Arriba Derecha */
+.iqv-floating-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: rgba(0, 0, 0, 0.6);
+  border: none;
+  color: #ffffff;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  transition: background 0.2s ease;
+  z-index: 10;
+}
+.iqv-floating-close:hover {
+  background: rgba(0, 0, 0, 0.8);
+}
+
+/* Cuerpo de la información */
+.iqv-body-content {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.iqv-product-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: #212529;
+  margin: 0;
+}
+
+.iqv-product-description {
+  font-size: 14px;
+  color: #6c757d;
+  margin: 10px 0;
+  line-height: 1.4;
+}
+
+/* Bloques de Secciones generales */
+
+.iqv-section-block {
+  border-top: 1px solid #ccc;
+  display: flex;
+  flex-direction: column;
+  padding-top: 12px;
+  gap: 8px;
+}
+
+.iqv-label-text {
+  font-size: 15px;
+  font-weight: 600;
+  color: #212529;
+}
+
+/* Chips Minimalistas para Variantes (Tamaño) */
+.iqv-chips-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.iqv-chip-btn {
+  background: #ffffff;
+  border: 1px solid #ced4da;
+  color: #212529;
+  padding: 6px 16px;
+  border-radius: 16px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.iqv-chip-btn:hover {
+  background-color: #f8f9fa;
+  border-color: #6c757d;
+}
+
+.iqv-chip-btn.active {
+  background-color: #212529;
+  border-color: #212529;
+  color: #ffffff;
+}
+
+/* Lista de Adicionales */
+.iqv-adicionales-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 120px;
+  overflow-y: auto;
+}
+
+.iqv-adicional-item {
+  padding: 8px;
+  border: 1px solid #dee2e6;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.iqv-adicional-item.active {
+  background-color: #f8f9fa;
+}
+
+/* Fila de Cantidad y Precio */
+.iqv-quantity-price-row {
+    border-top: 1px solid #ccc;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-top: 10px;
+    padding-top: 10px;
+    padding-right: 10px;
+}
+
+.iqv-qty-selector-wrapper {
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Contador de cantidad */
+
+.iqv-qty-counter {
+  display: flex;
+  align-items: center;
+  border: 1px solid #ced4da;
+  border-radius: 16px;
+  overflow: hidden;
+  background-color: #fff;
+}
+
+.iqv-qty-counter button {
+  border: none;
+  background: transparent;
+  padding: 6px 8px;
+  cursor: pointer;
+  color: #212529;
+  display: flex;
+  align-items: center;
+  transition: background 0.2s;
+}
+
+.iqv-qty-counter button:hover:not(:disabled) {
+  background-color: #f1f3f5;
+}
+
+.iqv-qty-counter button:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.iqv-qty-value {
+  font-size: 15px;
+  font-weight: 600;
+  min-width: 30px;
   text-align: center;
 }
 
-.iqv-img {
-  width: 100%;
-  max-height: 300px;
-  object-fit: cover;
-  border-radius: 14px;
-  box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
+/* Visualización del precio (Grande y verde negrita como la foto) */
+.iqv-price-display {
+  font-size: 28px;
+  font-weight: 800;
+  color: #198754; 
 }
 
-.iqv-detalles {
-  flex: 1;
-  min-width: 260px;
-}
-
-.iqv-precio-fav {
+/* Botones inferiores finales */
+.iqv-footer-actions {
+  
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.iqv-fav-icon {
-  cursor: pointer;
-}
-
-.iqv-descripcion {
+  gap: 10px;
   margin-top: 10px;
 }
 
-.iqv-group {
-  margin-bottom: 15px;
-}
-
-.iqv-options {
+.iqv-btn-icon-only {
+  width: 50px;
+  height: 48px;
+  background-color: #2a2d34;
+  border: none;
+  color: #ffffff;
+  border-radius: 8px;
   display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.iqv-cantidad {
-  display: flex;
-  width: fit-content;
   align-items: center;
-  gap: 10px;
-  padding: 10px 0;
+  justify-content: center;
+  cursor: pointer;
+  transition: opacity 0.2s;
 }
 
-.iqv-input-cantidad {
-  width: 80px;
-}
-
-.iqv-botones {
+.iqv-btn-primary-action {
+  flex: 1;
+  height: 48px;
+  background-color: var(--success);
+  border: none;
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 15px;
+  border-radius: 30px;
   display: flex;
-  gap: 10px;
-  margin-top: 15px;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s;
 }
 
-/* 📱 Responsive */
-@media (max-width: 575.98px) {
-  .iqv-container {
-    flex-direction: column;
-    align-items: center;
-    
-  }
+.iqv-btn-icon-only:hover,
+.iqv-btn-primary-action:hover {
+  opacity: 0.9;
+}
 
+.iqv-btn-icon-only:disabled,
+.iqv-btn-primary-action:disabled {
+  background-color: #6c757d;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
 
-  .iqv-botones {
-    flex-direction: row;
-    width: fit-content;
-  }
-
-  .btn2{
-    display: none;
-  }
-
-
-  .iqv-descripcion {
-    margin-top: 0px;
-  }
-  .iqv-group {
-    margin-bottom: 2px;
-  }
-  .Quick-view{
-    padding-bottom: 4rem;
-  }
+.iqv-chip-static-label {
+  background-color: #212529;
+  color: #ffffff;
+  padding: 6px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }

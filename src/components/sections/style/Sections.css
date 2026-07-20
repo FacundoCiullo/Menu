@@ -1,6 +1,18 @@
-/* =========================================================
-  🏝 7) SECCIÓN INICIO / LANDING
-========================================================= */
+/* ==========================================
+    SLIDER HORIZONTAL DE CATEGORÍAS (TIPO STORIES)
+========================================== */
+
+.inicio-banner{
+  width: 100%;
+  height: 15rem;
+  object-fit: fill;
+  border-radius: 15px;
+}
+
+.inicio-landing {
+  padding-top: 1rem;
+  background: var(--background);
+}
 
 .destacados{
   color: var(--text);
@@ -9,92 +21,89 @@
   align-items: baseline
 }
 
-.inicio-landing {
-  padding-top: 1rem;
-  background: var(--background);
-}
-
-.inicio-banner{
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: 15px;
-}
-
 /* ==========================================
-    SLIDER HORIZONTAL DE CATEGORÍAS
+    SLIDER HORIZONTAL DE CATEGORÍAS (HISTORIAS)
 ========================================== */
 
-.inicio-slider{
-  width:100%;
-  margin-top:1rem;
+.inicio-slider {
+  width: 100%;
+  margin-top: 1rem;
 }
 
-.horizontal-scroll{
-  display:flex;
-  gap:20px;
-  overflow-x:auto;
-  overflow-y:hidden;
-  scroll-behavior:smooth;
-  padding:10px 0 20px;
-  scrollbar-width:none;
+.horizontal-scroll {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-behavior: smooth;
+  padding: 12px 4px 20px;
+  scrollbar-width: none;
 }
 
-.horizontal-scroll::-webkit-scrollbar{
-  display:none;
+.horizontal-scroll::-webkit-scrollbar {
+  display: none;
 }
 
-.slider-card{
-  flex:0 0 320px;
-  text-decoration:none;
+/* La tarjeta agrupa el círculo y el texto verticalmente */
+.slider-card {
+  flex: 0 0 85px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-decoration: none;
+  cursor: pointer;
 }
 
-.slider-image{
-  height:260px;
-  border-radius:18px;
-  background-size:cover;
-  background-position:center;
-  overflow:hidden;
-  transition:.3s;
-  box-shadow:0 10px 25px rgba(0,0,0,.18);
+/* Círculo de la foto con borde estilo Instagram */
+.slider-image {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background-size: cover;
+  background-position: center;
+  border: 2px solid var(--text, #ffffff);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  transition: transform 0.2s ease;
 }
 
-.slider-image:hover{
-  transform:translateY(-6px);
+.slider-card:hover .slider-image {
+  transform: scale(1.06);
 }
 
-.slider-overlay{
-  width:100%;
-  height:100%;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  background:rgba(0,0,0,.35);
-  border-radius:18px;
-}
-
-.slider-overlay h2{
-  color: var(--text);
-  font-size:2rem;
-  font-weight:700;
-  text-shadow:0 4px 12px rgba(0,0,0,.8);
+/* Título que aparece por debajo del círculo */
+.category-title {
+  color: var(--text, #ffffff);
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-align: center;
+  margin-top: 8px;
+  margin-bottom: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
 }
 
 /* ==========================
     RESPONSIVE
 ========================== */
 
-@media(max-width:768px){
-  .slider-card{
-    flex:0 0 200px;
+@media (max-width: 768px) {
+  .horizontal-scroll {
+    gap: 12px;
   }
 
-  .slider-image{
-    height:220px;
+  .slider-card {
+    flex: 0 0 72px;
   }
 
-  .slider-overlay h2{
-    font-size:1.6rem;
+  .slider-image {
+    width: 86px;
+    height: 86px;
   }
 
+  .category-title {
+    font-size: 0.78rem;
+    margin-top: 6px;
+  }
 }

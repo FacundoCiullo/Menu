@@ -1,16 +1,12 @@
-// src/components/AdminDashboard.jsx
+// src/components/admin/AdminOrders.jsx
 import React, { useEffect, useState } from "react";
-import { useAuth } from "../context/AuthContext";
 import { db } from "../firebase";
 import { collection, getDocs, orderBy, query } from "firebase/firestore";
 import { Table, Spinner, Accordion } from "react-bootstrap";
 
-const AdminDashboard = () => {
-  // 🔹 Obtenemos el usuario, bandera de admin y loading desde AuthContext
-  const { user, esAdmin, loading: authLoading } = useAuth();
-
+const AdminOrders = () => {
   const [ordenes, setOrdenes] = useState([]);
-  const [cargando, setCargando] = useState(true); // carga de las órdenes
+  const [cargando, setCargando] = useState(true);
 
   useEffect(() => {
     const obtenerOrdenes = async () => {
@@ -29,48 +25,24 @@ const AdminDashboard = () => {
       }
     };
 
-    // Solo cargamos órdenes si hay usuario logueado y es admin
-    if (user && esAdmin) {
-      obtenerOrdenes();
-    } else {
-      setCargando(false);
-    }
-  }, [user, esAdmin]);
+    obtenerOrdenes();
+  }, []);
 
-  // 🔹 Spinner mientras AuthContext o las órdenes cargan
-  if (authLoading || cargando) {
+  if (cargando) {
     return (
-      <div className="text-center mt-5">
+      <div className="text-center my-5">
         <Spinner animation="border" variant="dark" />
         <p>Cargando órdenes...</p>
       </div>
     );
   }
 
-  // 🔹 Si no hay usuario logueado
-  if (!user) {
-    return <p className="text-center mt-5">⚠️ No estás logueado.</p>;
-  }
-
-  // 🔹 Si el usuario no es admin
-  if (!esAdmin) {
-    return (
-      <p className="text-center mt-5">
-        🚫 No tenés permisos para acceder a esta página.
-      </p>
-    );
-  }
-
-  // 🔹 Renderizado del dashboard
   return (
-    <div className="container mt-5">
-      <div className="d-flex justify-content-center align-items-center mb-4">
-        <h1>Panel de Administración</h1>
+    <div className="container-fluid">
+      <div className="mb-4">
+        <h2>Gestión de Pedidos</h2>
+        <p className="text-muted">Órdenes recibidas en la tienda</p>
       </div>
-
-      <p className="text-muted mb-4 d-flex justify-content-center align-items-center">
-        Bienvenido, {user.displayName}
-      </p>
 
       <Table striped bordered hover responsive>
         <thead className="table-dark">
@@ -134,4 +106,4 @@ const AdminDashboard = () => {
   );
 };
 
-export default AdminDashboard;
+export default AdminOrders;

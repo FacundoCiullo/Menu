@@ -5,86 +5,190 @@ export const CartContext = createContext();
 const CartContextProvider = ({ children }) => {
   const [cart, setCart] = useState([]);
 
-  // CARGAR CARRITO
+  /* ===========================
+      CARGAR CARRITO
+  =========================== */
+
   useEffect(() => {
     try {
       const saved = localStorage.getItem("cartItems");
+
       if (saved) {
         const parsed = JSON.parse(saved);
+
         if (Array.isArray(parsed)) {
           setCart(parsed);
         }
       }
-    } catch (error) {
-      console.error("Error cargando carrito:", error);
+    } catch (err) {
+      console.error("Error cargando carrito:", err);
     }
   }, []);
 
-  // GUARDAR CARRITO
+  /* ===========================
+      GUARDAR CARRITO
+  =========================== */
+
   useEffect(() => {
     try {
       localStorage.setItem("cartItems", JSON.stringify(cart));
-    } catch (error) {
-      console.error("Error guardando carrito:", error);
+    } catch (err) {
+      console.error("Error guardando carrito:", err);
     }
   }, [cart]);
 
-  // AGREGAR PRODUCTO (SOLO POR ID)
-  const addItem = (item, quantity) => {
+  /* ===========================
+      AGREGAR PRODUCTO
+  =========================== */
+
+  const addItem = (item, quantity = 1) => {
     const existe = cart.find(producto => producto.id === item.id);
 
     if (existe) {
-      const actualizado = cart.map(producto => {
-        if (producto.id === item.id) {
-          return { ...producto, quantity: producto.quantity + quantity };
-        }
-        return producto;
-      });
-      setCart(actualizado);
+      setCart(
+        cart.map(producto =>
+          producto.id === item.id
+            ? {
+                ...producto,
+                quantity: producto.quantity + quantity,
+              }
+            : producto
+        )
+      );
+
       return;
     }
 
-    const nuevoProducto = {
-      id: item.id,
-      titulo: item.titulo,
-      precio: item.precio,
-      quantity,
-      marca: item.marca || "",
-      imagen: item.imagen || "/img/no-image.png"
-    };
-
-    setCart([...cart, nuevoProducto]);
+    setCart([
+      ...cart,
+      {
+        id: item.id,
+        titulo: item.titulo,
+        precio: Number(item.precio),
+        quantity,
+        marca: item.marca || "",
+        imagen: item.imagen || "/img/no-image.png",
+      },
+    ]);
   };
 
-  // ACTUALIZAR CANTIDAD
-  const updateQuantity = (id, cantidad) => {
+  /* ===========================
+      ACTUALIZAR CANTIDAD
+  =========================== */
+
+  const updateQuantity = (id, quantity) => {
+    const cantidad = Number(quantity);
+
     if (cantidad <= 0) {
       removeItem(id);
       return;
     }
-    setCart(cart.map(item => item.id === id ? { ...item, quantity: cantidad } : item));
+
+    setCart(
+      cart.map(item =>
+        item.id === id
+          ? {
+              ...item,
+              quantity: cantidad,
+            }
+          : item
+      )
+    );
   };
 
-  // ELIMINAR
-  const removeItem = (id) => {
+  /* ===========================
+      AUMENTAR
+  =========================== */
+
+  const increaseQuantity = id => {
+    setCart(
+      cart.map(item =>
+        item.id === id
+          ? {
+              ...item,
+              quantity: item.quantity + 1,
+            }
+          : item
+      )
+    );
+  };
+
+  /* ===========================
+      DISMINUIR
+  =========================== */
+
+  const decreaseQuantity = id => {
+    const producto = cart.find(item => item.id === id);
+
+    if (!producto) return;
+
+    if (producto.quantity <= 1) {
+      removeItem(id);
+      return;
+    }
+
+    setCart(
+      cart.map(item =>
+        item.id === id
+          ? {
+              ...item,
+              quantity: item.quantity - 1,
+            }
+          : item
+      )
+    );
+  };
+
+  /* ===========================
+      ELIMINAR
+  =========================== */
+
+  const removeItem = id => {
     setCart(cart.filter(item => item.id !== id));
   };
 
-  // LIMPIAR
+  /* ===========================
+      LIMPIAR
+  =========================== */
+
   const clear = () => {
     setCart([]);
   };
 
+  /* ===========================
+      TOTAL PRODUCTOS
+  =========================== */
+
   const cartTotal = () => {
-    return cart.reduce((total, item) => total + (item.quantity || 0), 0);
+    return cart.reduce((acc, item) => acc + item.quantity, 0);
   };
 
+  /* ===========================
+      TOTAL $
+  =========================== */
+
   const sumTotal = () => {
-    return cart.reduce((total, item) => total + (item.precio * item.quantity), 0);
+    return cart.reduce(
+      (acc, item) => acc + item.quantity * Number(item.precio),
+      0
+    );
   };
 
   return (
-    <CartContext.Provider value={{ cart, addItem, updateQuantity, removeItem, clear, cartTotal, sumTotal, setCart }}>
+    <CartContext.Provider
+      value={{
+        cart,
+        addItem,
+        removeItem,
+        updateQuantity,
+        increaseQuantity,
+        decreaseQuantity,
+        clear,
+        cartTotal,
+        sumTotal,
+        setCart,
+      }}
+    >
       {children}
     </CartContext.Provider>
   );

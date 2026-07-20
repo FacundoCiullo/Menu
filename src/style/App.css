@@ -10,7 +10,7 @@
   --gray-600: #717171;
   --white: #ffffff;
 
-  --success: #18a362;
+  --success: #1a8151;
   --danger: #cd4444;
   --blue-soft: #3d71d1c1;
 
@@ -29,6 +29,7 @@
     --nav-text: #fff;
     --switch-bg: #333;
     --switch-knob: var(--accent);
+
 
 }
 
@@ -64,6 +65,12 @@ main {
   }
 }
 
+@media (min-width: 1400px) {
+    .container, .container-lg, .container-md, .container-sm, .container-xl, .container-xxl {
+        max-width: none;
+    }
+}
+
 /* =========================================================
   🧩 3) HELPERS – clases utilitarias
 ========================================================= */
@@ -71,7 +78,7 @@ main {
 /* Contenedor */
 
 .container {
-  margin-top: 1rem;
+
   margin-bottom: 3rem;
   background: var(--background);
 }
@@ -121,8 +128,6 @@ main {
   border-radius: 15px;
   object-fit: cover;
 }
-
-
 
 
 /* ============================

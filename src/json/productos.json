@@ -11,6 +11,23 @@
     "masVendido": true,
     "recomendado": true,
     "precio": 14500,
+    "variantes": [
+      {
+        "id": "porcion",
+        "nombre": "Porción",
+        "precio": 2500
+      },
+      {
+        "id": "chica",
+        "nombre": "Chica",
+        "precio": 14500
+      },
+      {
+        "id": "grande",
+        "nombre": "Grande",
+        "precio": 18500
+      }
+    ],
     "stock": 999,
     "talles": [],
     "colores": [],
@@ -33,6 +50,23 @@
     "masVendido": true,
     "recomendado": true,
     "precio": 15800,
+    "variantes": [
+      {
+        "id": "porcion",
+        "nombre": "Porción",
+        "precio": 2500
+      },
+      {
+        "id": "chica",
+        "nombre": "Chica",
+        "precio": 15800
+      },
+      {
+        "id": "grande",
+        "nombre": "Grande",
+        "precio": 18500
+      }
+    ],
     "stock": 999,
     "talles": [],
     "colores": [],
@@ -56,6 +90,23 @@
     "recomendado": true,
     "precio": 17800,
     "stock": 999,
+        "variantes": [
+      {
+        "id": "porcion",
+        "nombre": "Porción",
+        "precio": 2500
+      },
+      {
+        "id": "chica",
+        "nombre": "Chica",
+        "precio": 14500
+      },
+      {
+        "id": "grande",
+        "nombre": "Grande",
+        "precio": 18500
+      }
+    ],
     "talles": [],
     "colores": [],
     "imagenesPorColor": {},
@@ -77,6 +128,23 @@
     "masVendido": false,
     "recomendado": true,
     "precio": 16200,
+        "variantes": [
+      {
+        "id": "porcion",
+        "nombre": "Porción",
+        "precio": 2500
+      },
+      {
+        "id": "chica",
+        "nombre": "Chica",
+        "precio": 14500
+      },
+      {
+        "id": "grande",
+        "nombre": "Grande",
+        "precio": 18500
+      }
+    ],
     "stock": 999,
     "talles": [],
     "colores": [],
@@ -99,6 +167,23 @@
     "masVendido": true,
     "recomendado": false,
     "precio": 18400,
+        "variantes": [
+      {
+        "id": "porcion",
+        "nombre": "Porción",
+        "precio": 2500
+      },
+      {
+        "id": "chica",
+        "nombre": "Chica",
+        "precio": 14500
+      },
+      {
+        "id": "grande",
+        "nombre": "Grande",
+        "precio": 18500
+      }
+    ],
     "stock": 999,
     "talles": [],
     "colores": [],

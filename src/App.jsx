@@ -17,31 +17,54 @@ import HistorialCompras from './components/user/HistorialCompras';
 import ItemListContainer from './components/items/ItemListContainer';
 import ItemDetailContainer from './components/items/ItemDetailContainer';
 
-import AdminDashboard from "./Admin/AdminDashboard";
+// Importaciones del Panel de Administración
+import AdminInicio from './Admin/AdminInicio';
+import DashboardHome from './Admin/dashboard/DashboardHome';
 
 import CartContextProvider from './context/CartContext';
 import { FavoritesProvider } from "./context/FavoritesContext";
 import { AuthProvider } from "./context/AuthContext";
 
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom";
 
 import MobileNavbar from "./components/layout/MobileNavbar";
+import WidgetOrdenes from "./Admin/AdminOrders"
 
 
+
+// Layout para las vistas públicas/cliente (incluye Navbar y Footer)
+const LayoutPublico = () => (
+  <>
+    <NavBar />
+    <main>
+      <Outlet />
+    </main>
+    <Footer />
+    <MobileNavbar />
+  </>
+);
 
 function App() {
-
-
   return (
     <div className='App'>
       <AuthProvider>
         <FavoritesProvider>
           <CartContextProvider>
             <BrowserRouter>
-              <NavBar />
-              <main>
-                <Routes>
-                  <Route path="/admin" element={<AdminDashboard />} />
+              <Routes>
+                {/* RUTAS DEL PANEL DE ADMINISTRACIÓN (LAYOUT INDEPENDIENTE) */}
+                <Route path="/admin" element={<AdminInicio />}>
+                  <Route index element={<DashboardHome />} />
+                  <Route path="ordenes" element={<DashboardHome />} />
+                  <Route path="productos" element={<ItemListContainer />} />
+                  <Route path="usuarios" element={<WidgetOrdenes/>} />
+                  <Route path="mensajes" element={<div className="p-4">Sección Mensajes (Próximamente)</div>} />
+                  <Route path="analiticas" element={<div className="p-4">Sección Analíticas (Próximamente)</div>} />
+                  <Route path="configuracion" element={<div className="p-4">Sección Configuración (Próximamente)</div>} />
+                </Route>
+
+                {/* RUTAS PÚBLICAS Y DE CLIENTE (CON NAVBAR, FOOTER Y MOBILE NAVBAR) */}
+                <Route element={<LayoutPublico />}>
                   <Route path="/" element={<Inicio />} />
                   <Route path="/Home" element={<Inicio />} />
                   <Route path="/Productos" element={<Productos />} />
@@ -53,11 +76,8 @@ function App() {
                   <Route path="/checkout" element={<Checkout />} />
                   <Route path="/thankyou/:orderId" element={<ThankYou />} />
                   <Route path="/*" element={<Error404 />} />
-                </Routes>
-              </main>
-              <Footer />
-              {/* navbar mobile */}
-              <MobileNavbar />
+                </Route>
+              </Routes>
             </BrowserRouter>
           </CartContextProvider>
         </FavoritesProvider>

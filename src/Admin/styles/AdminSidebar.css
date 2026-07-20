@@ -1,0 +1,350 @@
+
+.admin-layout {
+  font-family: "Poppins", sans-serif;
+}
+
+.admin-sidebar {
+  position: fixed;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 78px;
+  background: #11101D;
+  padding: 6px 14px;
+  z-index: 9999;
+  transition: all 0.5s ease;
+}
+
+.admin-sidebar.open {
+  width: 250px;
+}
+
+.admin-sidebar .logo-details {
+  height: 60px;
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.admin-sidebar .logo-details .icon {
+  opacity: 0;
+  transition: all 0.5s ease;
+}
+
+.admin-sidebar .logo-details .logo_name {
+  color: #fff;
+  font-size: 20px;
+  font-weight: 600;
+  opacity: 0;
+  transition: all 0.5s ease;
+}
+
+.admin-sidebar.open .logo-details .icon,
+.admin-sidebar.open .logo-details .logo_name {
+  opacity: 1;
+}
+
+.admin-sidebar .logo-details #btn {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  font-size: 23px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.5s ease;
+  color: #fff;
+}
+
+.admin-sidebar.open .logo-details #btn {
+  text-align: right;
+}
+
+.admin-sidebar i {
+  color: #fff;
+  height: 60px;
+  min-width: 50px;
+  font-size: 28px;
+  text-align: center;
+  line-height: 60px;
+}
+
+.admin-sidebar .nav-list {
+  margin-top: 20px;
+  height: 100%;
+  padding: 0;
+}
+
+.admin-sidebar li {
+  position: relative;
+  margin: 8px 0;
+  list-style: none;
+}
+
+.admin-sidebar li .tooltip {
+  position: absolute;
+  top: -20px;
+  left: calc(100% + 15px);
+  z-index: 3;
+  background: #fff;
+  color: #11101D;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 15px;
+  font-weight: 400;
+  opacity: 0;
+  white-space: nowrap;
+  pointer-events: none;
+  transition: 0s;
+}
+
+.admin-sidebar li:hover .tooltip {
+  opacity: 1;
+  pointer-events: auto;
+  transition: all 0.4s ease;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.admin-sidebar.open li .tooltip {
+  display: none;
+}
+
+.admin-sidebar input {
+  font-size: 15px;
+  color: #FFF;
+  font-weight: 400;
+  outline: none;
+  height: 50px;
+  width: 50px;
+  border: none;
+  border-radius: 12px;
+  transition: all 0.5s ease;
+  background: #1d1b31;
+}
+
+.admin-sidebar.open input {
+  padding: 0 20px 0 50px;
+  width: 100%;
+}
+
+.admin-sidebar .bx-search {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+  font-size: 22px;
+  background: #1d1b31;
+  color: #FFF;
+  cursor: pointer;
+}
+
+.admin-sidebar.open .bx-search:hover {
+  background: #1d1b31;
+  color: #FFF;
+}
+
+.admin-sidebar .bx-search:hover {
+  background: #FFF;
+  color: #11101d;
+}
+
+.admin-sidebar li a {
+  display: flex;
+  height: 100%;
+  width: 100%;
+  border-radius: 12px;
+  align-items: center;
+  text-decoration: none;
+  transition: all 0.4s ease;
+  background: #11101D;
+}
+
+.admin-sidebar li a:hover {
+  background: #FFF;
+}
+
+.admin-sidebar li a .links_name {
+  color: #fff;
+  font-size: 15px;
+  font-weight: 400;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: 0.4s;
+}
+
+.admin-sidebar.open li a .links_name {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.admin-sidebar li a:hover .links_name,
+.admin-sidebar li a:hover i {
+  transition: all 0.5s ease;
+  color: #11101D;
+}
+
+.admin-sidebar li i {
+  height: 50px;
+  line-height: 50px;
+  font-size: 18px;
+  border-radius: 12px;
+}
+
+.admin-sidebar li.profile {
+  position: fixed;
+  height: 60px;
+  width: 78px;
+  left: 0;
+  bottom: -8px;
+  padding: 10px 14px;
+  background: #1d1b31;
+  transition: all 0.5s ease;
+  overflow: hidden;
+}
+
+.admin-sidebar.open li.profile {
+  width: 250px;
+}
+
+.admin-sidebar li .profile-details {
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+}
+
+.admin-sidebar li img {
+  height: 45px;
+  width: 45px;
+  object-fit: cover;
+  border-radius: 6px;
+  margin-right: 10px;
+}
+
+.admin-sidebar li.profile .name,
+.admin-sidebar li.profile .job {
+  font-size: 15px;
+  font-weight: 400;
+  color: #fff;
+  white-space: nowrap;
+}
+
+.admin-sidebar li.profile .job {
+  font-size: 12px;
+}
+
+.admin-sidebar .profile #log_out {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  background: #1d1b31;
+  width: 100%;
+  height: 60px;
+  line-height: 60px;
+  border-radius: 0px;
+  transition: all 0.5s ease;
+  cursor: pointer;
+}
+
+.admin-sidebar.open .profile #log_out {
+  width: 50px;
+  background: none;
+}
+
+.home-section {
+  position: relative;
+  background: #E4E9F7;
+  min-height: 100vh;
+  top: 0;
+  left: 78px;
+  width: calc(100% - 78px);
+  transition: all 0.5s ease;
+  z-index: 2;
+}
+
+.home-section.open {
+  left: 250px;
+  width: calc(100% - 250px);
+}
+
+.home-section .text {
+  display: inline-block;
+  color: #11101d;
+  font-size: 25px;
+  font-weight: 500;
+  margin: 18px;
+}
+
+/* Botón Flotante para habilitar edición (Admin) */
+.iqv-floating-edit-btn {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  background-color: #ff9f0a;
+  border: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  transition: all 0.2s ease;
+}
+
+.iqv-floating-edit-btn:hover {
+  transform: scale(1.1);
+  background-color: #f08c00;
+}
+
+.iqv-floating-edit-btn.active {
+  background-color: #6c757d;
+}
+
+/* Estilos de los inputs editables */
+.iqv-input-label {
+  font-size: 0.85rem;
+  color: #a1a1aa;
+  margin-bottom: 4px;
+  display: block;
+}
+
+.iqv-editable-input {
+  background-color: #18181b !important;
+  color: #ffffff !important;
+  border: 1px solid #3f3f46 !important;
+  border-radius: 8px !important;
+  padding: 8px 12px !important;
+  font-size: 0.95rem;
+  transition: border-color 0.2s ease;
+}
+
+.iqv-editable-input:focus {
+  background-color: #27272a !important;
+  border-color: #ffcc00 !important;
+  box-shadow: 0 0 0 0.2rem rgba(255, 204, 0, 0.2) !important;
+  color: #ffffff !important;
+}
+
+
+@media (max-width: 575.98px) {
+  .admin-sidebar li .tooltip {
+    display: none;
+  }
+  .admin-sidebar {
+  position: fixed;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 70px;
+  background: #11101D;
+  padding: 6px 10px;
+  z-index: 9999;
+  transition: all 0.5s ease;
+}
+}
