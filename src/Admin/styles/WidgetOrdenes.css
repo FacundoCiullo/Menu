@@ -1,0 +1,86 @@
+/* Scrollbar customizado */
+.custom-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+.custom-scroll::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 8px;
+}
+.custom-scroll::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 8px;
+}
+
+/* Tarjeta y borde suave */
+.orden-card {
+  border: 1px solid #e2e8f0 !important;
+  background-color: #ffffff;
+}
+
+/* Acordeón transparente */
+.orden-accordion .accordion-button {
+  background-color: transparent !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  width: auto !important;
+}
+
+.orden-accordion .accordion-body {
+  background-color: #f8f9fa;
+  border-radius: 12px;
+  margin-top: 10px;
+}
+
+/* Pills de Estado */
+.pill-status {
+  font-size: 0.75rem;
+  font-weight: 500;
+  border-radius: 12px !important;
+  border: 1px solid #e0e0e0 !important;
+  color: #666 !important;
+  background-color: #ffffff !important;
+  padding: 0.25rem 0.65rem !important;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.pill-status:hover {
+  background-color: #f1f1f1 !important;
+}
+
+.pill-status.active-pedido {
+  background-color: #ffc107 !important; /* Amarillo */
+  color: #000 !important;
+  border-color: #ffc107 !important;
+  font-weight: 700;
+}
+
+.pill-status.active-preparando {
+  background-color: #0dcaf0 !important; /* Celeste */
+  color: #000 !important;
+  border-color: #0dcaf0 !important;
+  font-weight: 700;
+}
+
+.pill-status.active-despachado {
+  background-color: #198754 !important; /* Verde */
+  color: #fff !important;
+  border-color: #198754 !important;
+  font-weight: 700;
+}
+
+/* Badges para cantidades de productos */
+.badge-qty {
+  background-color: #495057;
+  color: #fff;
+  border-radius: 6px;
+  padding: 0.2em 0.45em;
+  font-size: 0.75rem;
+}
+
+/* Botones del Filtro */
+.filtro-btn {
+  font-size: 0.8rem;
+  padding: 0.3rem 0.75rem;
+  border-radius: 20px;
+}

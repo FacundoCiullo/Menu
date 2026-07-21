@@ -17,9 +17,11 @@ import HistorialCompras from './components/user/HistorialCompras';
 import ItemListContainer from './components/items/ItemListContainer';
 import ItemDetailContainer from './components/items/ItemDetailContainer';
 
-// Importaciones del Panel de Administración
-import AdminInicio from './Admin/AdminInicio';
-import DashboardHome from './Admin/dashboard/DashboardHome';
+// Importaciones del Panel de Administración (Componentes y Páginas)
+import AdminLayout from "./Admin/components/AdminLayout";
+import DashboardHome from "./Admin/pages/DashboardHome";
+import AdminOrders from "./Admin/pages/AdminOrders";
+
 
 import CartContextProvider from './context/CartContext';
 import { FavoritesProvider } from "./context/FavoritesContext";
@@ -28,9 +30,6 @@ import { AuthProvider } from "./context/AuthContext";
 import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom";
 
 import MobileNavbar from "./components/layout/MobileNavbar";
-import WidgetOrdenes from "./Admin/AdminOrders"
-
-
 
 // Layout para las vistas públicas/cliente (incluye Navbar y Footer)
 const LayoutPublico = () => (
@@ -52,12 +51,12 @@ function App() {
           <CartContextProvider>
             <BrowserRouter>
               <Routes>
-                {/* RUTAS DEL PANEL DE ADMINISTRACIÓN (LAYOUT INDEPENDIENTE) */}
-                <Route path="/admin" element={<AdminInicio />}>
+                {/* RUTAS DEL PANEL DE ADMINISTRACIÓN (LAYOUT Y RUTAS ANIDADAS) */}
+                <Route path="/admin" element={<AdminLayout />}>
                   <Route index element={<DashboardHome />} />
-                  <Route path="ordenes" element={<DashboardHome />} />
-                  <Route path="productos" element={<ItemListContainer />} />
-                  <Route path="usuarios" element={<WidgetOrdenes/>} />
+                  <Route path="ordenes" element={<AdminOrders />} />
+                  <Route path="productos" element={<DashboardHome />} />
+                  <Route path="usuarios" element={<div className="p-4">Sección Usuarios (Próximamente)</div>} />
                   <Route path="mensajes" element={<div className="p-4">Sección Mensajes (Próximamente)</div>} />
                   <Route path="analiticas" element={<div className="p-4">Sección Analíticas (Próximamente)</div>} />
                   <Route path="configuracion" element={<div className="p-4">Sección Configuración (Próximamente)</div>} />

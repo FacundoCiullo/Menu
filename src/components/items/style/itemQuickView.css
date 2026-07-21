@@ -286,3 +286,56 @@
   align-items: center;
   justify-content: center;
 }
+
+/* Botón Flotante para habilitar edición (Admin) */
+.iqv-floating-edit-btn {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  background-color: #ff9f0a;
+  border: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  transition: all 0.2s ease;
+}
+
+.iqv-floating-edit-btn:hover {
+  transform: scale(1.1);
+  background-color: #f08c00;
+}
+
+.iqv-floating-edit-btn.active {
+  background-color: #6c757d;
+}
+
+/* Estilos de los inputs editables */
+.iqv-input-label {
+  font-size: 0.85rem;
+  color: #a1a1aa;
+  margin-bottom: 4px;
+  display: block;
+}
+
+.iqv-editable-input {
+  background-color: #18181b !important;
+  color: #ffffff !important;
+  border: 1px solid #3f3f46 !important;
+  border-radius: 8px !important;
+  padding: 8px 12px !important;
+  font-size: 0.95rem;
+  transition: border-color 0.2s ease;
+}
+
+.iqv-editable-input:focus {
+  background-color: #27272a !important;
+  border-color: #ffcc00 !important;
+  box-shadow: 0 0 0 0.2rem rgba(255, 204, 0, 0.2) !important;
+  color: #ffffff !important;
+}
