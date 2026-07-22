@@ -379,7 +379,7 @@ const ItemQuickView = ({ show, handleClose, producto }) => {
                   {/* VARIANTES / TAMAÑOS */}
                   {producto.variantes?.length > 0 && (
                     <div className="iqv-section-block">
-                      <span className="iqv-label-text">Tamaño:</span>
+                      <span className="iqv-label-text">variantes:</span>
                       <div className="iqv-chips-container">
                         {producto.variantes.map((v) => {
                           const isSelected = varianteSeleccionada?.id === v.id;

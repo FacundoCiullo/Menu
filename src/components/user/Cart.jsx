@@ -109,58 +109,32 @@ const Cart = () => {
               className="cart-card"
               key={item.id}
             >
-
-
               <div className="cart-image">
-
                 <img
                   src={item.imagen}
                   alt={item.titulo}
                 />
-
               </div>
-
-
-
               <div className="cart-info">
-
-
                 <div className="cart-title">
-
-
                   <h2>
                     {item.marca && `${item.marca} `}
                     {item.titulo}
                   </h2>
-
-
                   <button
                     className="delete-button"
                     onClick={() => removeItem(item.id)}
                   >
                     <i className="bi bi-trash3-fill"></i>
                   </button>
-
-
                 </div>
-
-
-
                 <p className="unit-price">
-
                   Precio unitario:
-
                   <strong>
                     ${item.precio}
                   </strong>
-
                 </p>
-
-
-
                 <div className="quantity-box">
-
-
                   <button
                     className="qty-button"
                     onClick={() =>
@@ -169,13 +143,9 @@ const Cart = () => {
                   >
                     -
                   </button>
-
-
                   <span className="quantity-number">
                     {item.quantity}
                   </span>
-
-
                   <button
                     className="qty-button"
                     onClick={() =>
@@ -184,32 +154,16 @@ const Cart = () => {
                   >
                     +
                   </button>
-
-
                 </div>
-
-
-
                 <div className="subtotal">
-
-
                   <span>
                     Subtotal
                   </span>
-
-
                   <strong>
                     ${item.precio * item.quantity}
                   </strong>
-
-
                 </div>
-
-
-
               </div>
-
-
 
             </article>
 
@@ -218,12 +172,7 @@ const Cart = () => {
 
         </section>
 
-
-
-
         <section className="cart-summary">
-
-
           <div className="summary-row">
 
             <span>

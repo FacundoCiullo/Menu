@@ -29,9 +29,6 @@
       }
     ],
     "stock": 999,
-    "talles": [],
-    "colores": [],
-    "imagenesPorColor": {},
     "vegetariano": true,
     "vegano": false,
     "sinTacc": false,
@@ -68,9 +65,6 @@
       }
     ],
     "stock": 999,
-    "talles": [],
-    "colores": [],
-    "imagenesPorColor": {},
     "vegetariano": true,
     "vegano": false,
     "sinTacc": false,
@@ -185,9 +179,6 @@
       }
     ],
     "stock": 999,
-    "talles": [],
-    "colores": [],
-    "imagenesPorColor": {},
     "vegetariano": false,
     "vegano": false,
     "sinTacc": false,
@@ -316,6 +307,23 @@
     "masVendido": true,
     "recomendado": true,
     "precio": 13200,
+      "variantes": [
+      {
+        "id": "Blanca",
+        "nombre": "Blanca",
+        "precio": 2500
+      },
+      {
+        "id": "Boloñesa",
+        "nombre": "Boloñesa",
+        "precio": 14500
+      },
+      {
+        "id": "Fileto",
+        "nombre": "Fileto",
+        "precio": 18500
+      }
+    ],
     "stock": 999,
     "talles": [],
     "colores": [],

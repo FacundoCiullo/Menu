@@ -43,19 +43,25 @@
 .dashboard-container {
   padding: 10px;
   width: 100%;
-  background: #2b2d42;
+  background-color: #181a20;
 }
 
+/* Para el botón de "Viendo día" y títulos del Header */
 .dashboard-header {
-  margin-bottom: 20px;
-  
+  display: flex;
+  flex-wrap: wrap; /* Para que el botón bajé si el título no entra */
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
 }
+
+
 
 /* Grilla base de 6 columnas */
 .dashboard-grid {
   display: grid;
   grid-template-columns: repeat(6, 1fr);
-  
   gap: 16px;
   align-items: stretch;
 }

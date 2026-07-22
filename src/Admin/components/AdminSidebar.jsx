@@ -128,7 +128,7 @@ const AdminSidebar = () => {
               type="button"
             >
               <FiLogOut className="logout-icon" size={18} />
-              {!collapsed && <span className="ms-3 fw-medium">Cerrar Sesión</span>}
+              {!collapsed && <span className="ms-3 fw-medium">Logout</span>}
             </button>
           </div>
         </div>
