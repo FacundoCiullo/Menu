@@ -1,3 +1,45 @@
+/* ==========================================
+    LAYOUT DEL CONTENIDO PRINCIPAL (Dashboard)
+   ========================================== */
+
+/* Aplica este margen a tu contenedor de Dashboard/páginas principales */
+.admin-main-content {
+  flex: 1;
+  width: 100%;
+  max-width: 100%;
+  padding: 20px;
+  margin-left: 70px; /* Deja espacio únicamente para el ancho colapsado */
+  padding: 20px;
+  min-height: 100vh;
+  background-color: #181a20; /* Color oscuro base de la pantalla */
+  transition: margin-left 0.3s ease;
+  box-sizing: border-box;
+}
+
+/* Contenedor padre de la aplicación */
+.admin-layout {
+  display: flex;
+  width: 100%;
+  min-height: 100vh;
+  overflow-x: hidden; /* Evita que aparezca el scroll horizontal feo */
+  background-color: #181a20;
+}
+
+
+/* Media Query para Pantallas Pequeñas (Mobile / Tablet) */
+@media (max-width: 768px) {
+  .admin-main-content {
+    margin-left: 0; /* En mobile el sidebar flota libremente, no ocupa margen */
+    padding: 12px;
+    padding-top: 10px; /* Deja espacio si usas el botón flotante arriba */
+  }
+}
+
+/* ==========================================
+    Dashboard
+   ========================================== */
+
+
 .dashboard-container {
   padding: 10px;
   width: 100%;
@@ -112,3 +154,5 @@
     grid-template-columns: 1fr;
   }
 }
+
+

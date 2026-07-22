@@ -1,177 +1,138 @@
 // src/Admin/components/AdminSidebar.jsx
 import React, { useState } from "react";
-import { Nav, Offcanvas, Form, InputGroup } from "react-bootstrap";
-import { Link, useLocation, useNavigate } from "react-router-dom"; // 1. Importamos useNavigate
+import { Nav } from "react-bootstrap";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
-  HouseDoorFill,
+  Speedometer,
   Envelope,
   PieChart,
   Calendar3,
   Person,
   Folder,
   Gear,
-  Search,
-  List,
+  ChevronLeft,
+  ChevronRight,
 } from "react-bootstrap-icons";
 import { FiLogOut } from "react-icons/fi";
 import { useAuth } from "../../context/AuthContext";
 import "../styles/AdminSidebar.css";
 
-const AdminSidebar = ({ showMobile, onHideMobile }) => {
-  const [collapsed, setCollapsed] = useState(false);
-  const location = useLocation();
-  const navigate = useNavigate(); // 2. Instanciamos el hook de navegación
 
-  // Consumimos el contexto de autenticación
+const AdminSidebar = () => {
+  const [collapsed, setCollapsed] = useState(true); // Inicializa colapsado como en tu captura
+  const location = useLocation();
+  const navigate = useNavigate();
+
   const { user, logout } = useAuth();
 
-  // 3. Función para cerrar sesión y redirigir
   const handleLogout = async () => {
     try {
       await logout();
-      navigate("/home"); // Redirige a /home tras cerrar sesión
+      navigate("/home");
     } catch (error) {
       console.error("Error al cerrar sesión:", error);
     }
   };
 
-  // Función para saber si un link está activo según la ruta actual
   const isActive = (path) => location.pathname === path;
-
   const toggleCollapse = () => setCollapsed(!collapsed);
 
   const menuItems = [
-    { label: "Dashboard", icon: <HouseDoorFill />, path: "/admin" },
-    { label: "Mensajes", icon: <Envelope />, path: "/admin/mensajes" },
+    { label: "Dashboard", icon: <Speedometer />, path: "/admin" },
     { label: "Analíticas", icon: <PieChart />, path: "/admin/analiticas" },
-    { label: "Órdenes / Schedules", icon: <Calendar3 />, path: "/admin/ordenes" },
-    { label: "Usuarios / Clientes", icon: <Person />, path: "/admin/usuarios" },
-    { label: "Productos / Menú", icon: <Folder />, path: "/admin/productos" },
-    { label: "Configuración", icon: <Gear />, path: "/admin/configuracion" },
+    { label: "Órdenes", icon: <Calendar3 />, path: "/admin/ordenes" },
+    { label: "Productos", icon: <Folder />, path: "/admin/productos" },
+    { label: "Mensajes", icon: <Envelope />, path: "/admin/mensajes" },
+    { label: "Usuarios", icon: <Person />, path: "/admin/usuarios" },
+    { label: "Configuración", icon: <Gear />, path: "Home" },
   ];
-
-  const MenuContent = () => (
-    <div className="sidebar-inner d-flex flex-column h-100 p-3">
-      {/* Header con Título y Botón Hamburguesa */}
-      <div className="d-flex align-items-center justify-content-between mb-4">
-        {!collapsed && <h4 className="fw-bold text-white m-0 logo-text">Dashboard</h4>}
-        <button 
-          className="btn btn-dark-custom btn-icon-only ms-auto"
-          onClick={toggleCollapse}
-          title="Colapsar menú"
-        >
-          <List size={20} />
-        </button>
-      </div>
-
-      {/* Buscador */}
-      {!collapsed ? (
-        <InputGroup className="mb-4 search-box">
-          <InputGroup.Text className="bg-transparent border-0 text-muted ps-3">
-            <Search size={16} />
-          </InputGroup.Text>
-          <Form.Control
-            type="text"
-            placeholder="Search..."
-            className="bg-transparent border-0 text-white shadow-none ps-2"
-          />
-        </InputGroup>
-      ) : (
-        <div className="d-flex justify-content-center mb-4">
-          <button className="btn btn-dark-custom btn-icon-only">
-            <Search size={18} />
-          </button>
-        </div>
-      )}
-
-      {/* Etiqueta Navegación */}
-      {!collapsed && (
-        <span className="text-uppercase nav-section-title mb-3">Navigation</span>
-      )}
-
-      {/* Menú de Links */}
-      <Nav className="flex-column gap-2 mb-auto">
-        {menuItems.map((item, index) => {
-          const active = isActive(item.path);
-          return (
-            <Nav.Link
-              key={index}
-              as={Link}
-              to={item.path}
-              className={`custom-nav-item d-flex align-items-center ${
-                active ? "active-item" : ""
-              } ${collapsed ? "justify-content-center px-0" : "px-3"}`}
-              title={collapsed ? item.label : ""}
-            >
-              <span className="nav-icon">{item.icon}</span>
-              {!collapsed && <span className="nav-text ms-3">{item.label}</span>}
-            </Nav.Link>
-          );
-        })}
-      </Nav>
-
-      {/* Footer / Usuario Logueado */}
-      <div className="sidebar-footer pt-3 mt-auto border-top-dark d-flex align-items-center justify-content-between">
-        <div className="d-flex align-items-center gap-3 overflow-hidden">
-          {user?.photoURL ? (
-            <img
-              src={user.photoURL}
-              alt="User Avatar"
-              className="rounded-3 profile-avatar"
-              referrerPolicy="no-referrer"
-            />
-          ) : (
-            <div className="rounded-3 profile-avatar empty-avatar d-flex align-items-center justify-content-center bg-secondary text-white">
-              {user?.displayName ? user.displayName.charAt(0).toUpperCase() : 'U'}
-            </div>
-          )}
-
-          {!collapsed && (
-            <div className="user-info text-truncate">
-              <small className="text-muted d-block font-size-xs">{user?.email}</small>
-              <span className="fw-semibold text-white small">
-                {user?.displayName || 'Usuario'}
-              </span>
-            </div>
-          )}
-        </div>
-
-        {!collapsed && (
-          <button 
-            className="btn btn-dark-custom btn-icon-sm" 
-            onClick={handleLogout} 
-            title="Cerrar sesión"
-            type="button"
-          >
-            <FiLogOut size={14} />
-          </button>
-        )}
-      </div>
-    </div>
-  );
 
   return (
     <>
-      {/* VERSIÓN DESKTOP */}
       <aside
-        className={`d-none d-lg-block dark-sidebar position-sticky top-0 vh-100 ${
+        className={`full-height-sidebar ${
           collapsed ? "sidebar-collapsed" : "sidebar-expanded"
         }`}
       >
-        <MenuContent />
-      </aside>
+        {/* Botón flotante en el borde derecho para expandir/colapsar */}
+        <button
+          className="toggle-sidebar-btn"
+          onClick={toggleCollapse}
+          title={collapsed ? "Expandir menú" : "Colapsar menú"}
+        >
+          {collapsed ? <ChevronRight size={13} /> : <ChevronLeft size={13} />}
+        </button>
 
-      {/* VERSIÓN MOBILE (Offcanvas) */}
-      <Offcanvas
-        show={showMobile}
-        onHide={onHideMobile}
-        responsive="lg"
-        className="d-lg-none dark-sidebar-mobile"
-      >
-        <Offcanvas.Body className="p-0">
-          <MenuContent />
-        </Offcanvas.Body>
-      </Offcanvas>
+        <div className="sidebar-inner d-flex flex-column h-100 p-3">
+          {/* Header con Perfil de Admin */}
+          <div className="profile-header d-flex align-items-center mb-4 pb-3 border-bottom-dark">
+            <div className="profile-avatar-container position-relative flex-shrink-0">
+              {user?.photoURL ? (
+                <img
+                  src={user.photoURL}
+                  alt="Avatar"
+                  className="profile-avatar"
+                  referrerPolicy="no-referrer"
+                />
+              ) : (
+                <div className="profile-avatar empty-avatar d-flex align-items-center justify-content-center">
+                  {user?.displayName ? user.displayName.charAt(0).toUpperCase() : "A"}
+                </div>
+              )}
+            </div>
+
+            {!collapsed && (
+              <div className="user-details ms-3 overflow-hidden">
+                <span className="user-role d-block text-uppercase fw-semibold">
+                  Administrador
+                </span>
+                <span className="user-name d-block text-truncate fw-bold">
+                  {user?.displayName || "Admin User"}
+                </span>
+              </div>
+            )}
+          </div>
+
+          {/* Etiqueta Menú */}
+
+
+          {/* Opciones de Navegación */}
+          <Nav className="flex-column gap-2 mb-auto custom-nav-list">
+            {menuItems.map((item, index) => {
+              const active = isActive(item.path);
+              return (
+                <Nav.Link
+                  key={index}
+                  as={Link}
+                  to={item.path}
+                  className={`custom-nav-item d-flex align-items-center ${
+                    active ? "active-item" : ""
+                  } ${collapsed ? "justify-content-center px-0" : "px-3"}`}
+                  title={collapsed ? item.label : ""}
+                >
+                  <span className="nav-icon">{item.icon}</span>
+                  {!collapsed && <span className="nav-text ms-3">{item.label}</span>}
+                </Nav.Link>
+              );
+            })}
+          </Nav>
+
+          {/* Footer / Botón de Cerrar Sesión */}
+          <div className="sidebar-footer pt-3 mt-auto border-top-dark">
+            <button
+              className={`logout-btn d-flex align-items-center border-0 bg-transparent w-100 ${
+                collapsed ? "justify-content-center px-0" : "px-3"
+              }`}
+              onClick={handleLogout}
+              title="Cerrar sesión"
+              type="button"
+            >
+              <FiLogOut className="logout-icon" size={18} />
+              {!collapsed && <span className="ms-3 fw-medium">Cerrar Sesión</span>}
+            </button>
+          </div>
+        </div>
+      </aside>
     </>
   );
 };
