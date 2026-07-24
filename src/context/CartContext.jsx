@@ -2,13 +2,25 @@ import { createContext, useState, useEffect } from "react";
 
 export const CartContext = createContext();
 
+// Función auxiliar para generar un hash/ID único basado en el producto y sus personalizaciones
+const generateItemKey = (item) => {
+  const sizeId = item.sizeSeleccionado?.id || "nosize";
+  const additionalIds = item.additionalSeleccionados
+    ? item.additionalSeleccionados
+        .map((a) => a.id)
+        .sort()
+        .join("-")
+    : "noadd";
+
+  return `${item.id}_${sizeId}_${additionalIds}`;
+};
+
 const CartContextProvider = ({ children }) => {
   const [cart, setCart] = useState([]);
 
   /* ===========================
       CARGAR CARRITO
   =========================== */
-
   useEffect(() => {
     try {
       const saved = localStorage.getItem("cartItems");
@@ -28,7 +40,6 @@ const CartContextProvider = ({ children }) => {
   /* ===========================
       GUARDAR CARRITO
   =========================== */
-
   useEffect(() => {
     try {
       localStorage.setItem("cartItems", JSON.stringify(cart));
@@ -40,14 +51,16 @@ const CartContextProvider = ({ children }) => {
   /* ===========================
       AGREGAR PRODUCTO
   =========================== */
-
   const addItem = (item, quantity = 1) => {
-    const existe = cart.find(producto => producto.id === item.id);
+    const itemKey = generateItemKey(item);
+    const precioUnitarioCalculado = Number(item.precioUnitario ?? item.precio ?? 0);
+
+    const existe = cart.find((producto) => producto.itemKey === itemKey);
 
     if (existe) {
       setCart(
-        cart.map(producto =>
-          producto.id === item.id
+        cart.map((producto) =>
+          producto.itemKey === itemKey
             ? {
                 ...producto,
                 quantity: producto.quantity + quantity,
@@ -55,19 +68,22 @@ const CartContextProvider = ({ children }) => {
             : producto
         )
       );
-
       return;
     }
 
     setCart([
       ...cart,
       {
+        itemKey,
         id: item.id,
         titulo: item.titulo,
-        precio: Number(item.precio),
+        precio: Number(item.precio || 0),
+        precioUnitario: precioUnitarioCalculado,
         quantity,
         marca: item.marca || "",
         imagen: item.imagen || "/img/no-image.png",
+        sizeSeleccionado: item.sizeSeleccionado || null,
+        additionalSeleccionados: item.additionalSeleccionados || [],
       },
     ]);
   };
@@ -75,18 +91,17 @@ const CartContextProvider = ({ children }) => {
   /* ===========================
       ACTUALIZAR CANTIDAD
   =========================== */
-
-  const updateQuantity = (id, quantity) => {
+  const updateQuantity = (keyOrId, quantity) => {
     const cantidad = Number(quantity);
 
     if (cantidad <= 0) {
-      removeItem(id);
+      removeItem(keyOrId);
       return;
     }
 
     setCart(
-      cart.map(item =>
-        item.id === id
+      cart.map((item) =>
+        item.itemKey === keyOrId || item.id === keyOrId
           ? {
               ...item,
               quantity: cantidad,
@@ -99,11 +114,10 @@ const CartContextProvider = ({ children }) => {
   /* ===========================
       AUMENTAR
   =========================== */
-
-  const increaseQuantity = id => {
+  const increaseQuantity = (keyOrId) => {
     setCart(
-      cart.map(item =>
-        item.id === id
+      cart.map((item) =>
+        item.itemKey === keyOrId || item.id === keyOrId
           ? {
               ...item,
               quantity: item.quantity + 1,
@@ -116,20 +130,21 @@ const CartContextProvider = ({ children }) => {
   /* ===========================
       DISMINUIR
   =========================== */
-
-  const decreaseQuantity = id => {
-    const producto = cart.find(item => item.id === id);
+  const decreaseQuantity = (keyOrId) => {
+    const producto = cart.find(
+      (item) => item.itemKey === keyOrId || item.id === keyOrId
+    );
 
     if (!producto) return;
 
     if (producto.quantity <= 1) {
-      removeItem(id);
+      removeItem(keyOrId);
       return;
     }
 
     setCart(
-      cart.map(item =>
-        item.id === id
+      cart.map((item) =>
+        item.itemKey === keyOrId || item.id === keyOrId
           ? {
               ...item,
               quantity: item.quantity - 1,
@@ -142,15 +157,15 @@ const CartContextProvider = ({ children }) => {
   /* ===========================
       ELIMINAR
   =========================== */
-
-  const removeItem = id => {
-    setCart(cart.filter(item => item.id !== id));
+  const removeItem = (keyOrId) => {
+    setCart(
+      cart.filter((item) => item.itemKey !== keyOrId && item.id !== keyOrId)
+    );
   };
 
   /* ===========================
       LIMPIAR
   =========================== */
-
   const clear = () => {
     setCart([]);
   };
@@ -158,7 +173,6 @@ const CartContextProvider = ({ children }) => {
   /* ===========================
       TOTAL PRODUCTOS
   =========================== */
-
   const cartTotal = () => {
     return cart.reduce((acc, item) => acc + item.quantity, 0);
   };
@@ -166,12 +180,11 @@ const CartContextProvider = ({ children }) => {
   /* ===========================
       TOTAL $
   =========================== */
-
   const sumTotal = () => {
-    return cart.reduce(
-      (acc, item) => acc + item.quantity * Number(item.precio),
-      0
-    );
+    return cart.reduce((acc, item) => {
+      const precio = Number(item.precioUnitario ?? item.precio ?? 0);
+      return acc + item.quantity * precio;
+    }, 0);
   };
 
   return (

@@ -2,7 +2,7 @@ import { useState, useEffect, useContext } from "react";
 import { CartContext } from "../../context/CartContext";
 import { useFavorites } from "../../context/FavoritesContext";
 import ItemCount from "./ItemCount";
-import { Carousel, Button } from "react-bootstrap";
+import { Carousel, Button, Form } from "react-bootstrap";
 import { motion } from "framer-motion";
 import { BsBookmarkStarFill } from "react-icons/bs";
 
@@ -12,38 +12,81 @@ const ItemDetail = ({ producto }) => {
 
   const [color, setColor] = useState("");
   const [talle, setTalle] = useState("");
+  const [sizeSeleccionado, setSizeSeleccionado] = useState(null);
+  const [additionalSeleccionados, setAdditionalSeleccionados] = useState([]);
   const [cantidad, setCantidad] = useState(1);
 
   useEffect(() => {
     if (producto) {
       setColor(producto.colores?.[0] || "");
       setTalle(producto.talles?.[0] || "");
+      
+      // Inicializar el tamaño por defecto si existe la lista
+      if (producto.size && producto.size.length > 0) {
+        setSizeSeleccionado(producto.size[0]);
+      } else {
+        setSizeSeleccionado(null);
+      }
+
+      setAdditionalSeleccionados([]);
       setCantidad(1);
     }
   }, [producto]);
 
   if (!producto) return null;
 
+  // Lógica de imágenes
   const imagenes =
     color && producto.imagenesPorColor?.[color]
       ? producto.imagenesPorColor[color]
-      : [producto.imagen];
+      : producto.imagen
+      ? [producto.imagen]
+      : [producto.pictureUrl || "/img/no-image.png"];
+
+  // Toggle de Adicionales
+  const handleToggleAdditional = (itemAdd) => {
+    setAdditionalSeleccionados((prev) => {
+      const existe = prev.some((a) => a.id === itemAdd.id);
+      if (existe) {
+        return prev.filter((a) => a.id !== itemAdd.id);
+      } else {
+        return [...prev, itemAdd];
+      }
+    });
+  };
+
+  // Cálculo de precio unitario dinámico
+  const precioBase = sizeSeleccionado
+    ? Number(sizeSeleccionado.precio)
+    : Number(producto.precio || 0);
+
+  const totalAdicionales = additionalSeleccionados.reduce(
+    (acc, add) => acc + Number(add.precio || 0),
+    0
+  );
+
+  const precioUnitario = precioBase + totalAdicionales;
 
   const handleAdd = () => {
-    if (!color || !talle) return;
+    // Si el producto define sizes y no hay ninguno seleccionado
+    if (producto.size?.length > 0 && !sizeSeleccionado) {
+      alert("Por favor selecciona un tamaño/variante.");
+      return;
+    }
 
-    addItem(
-      {
-        ...producto,
-        color,
-        talle,
-      },
-      cantidad
-    );
+    const itemParaCarrito = {
+      ...producto,
+      color,
+      talle,
+      sizeSeleccionado,
+      additionalSeleccionados,
+      precioUnitario,
+    };
+
+    addItem(itemParaCarrito, cantidad);
   };
 
   const handleFavorite = () => {
-    // ❌ Sin toasts → solo agrega/quita
     toggleFavorite(producto);
   };
 
@@ -58,10 +101,10 @@ const ItemDetail = ({ producto }) => {
                 <Carousel.Item key={i}>
                   <img
                     src={img}
-                    alt={`${producto.titulo} ${i + 1}`}
+                    alt={`${producto.titulo || producto.nombre} ${i + 1}`}
                     className="img-fluid rounded-4 shadow-sm mb-3"
                     style={{
-                      maxHeight: "350px",
+                      maxHeight: "380px",
                       objectFit: "cover",
                       width: "100%",
                     }}
@@ -72,19 +115,19 @@ const ItemDetail = ({ producto }) => {
           ) : (
             <img
               src={imagenes[0]}
-              alt={producto.titulo}
+              alt={producto.titulo || producto.nombre}
               className="img-fluid rounded-4 shadow-sm mb-3"
-              style={{ maxHeight: "350px", objectFit: "cover" }}
+              style={{ maxHeight: "380px", objectFit: "cover" }}
             />
           )}
         </div>
 
-        {/* INFORMACIÓN */}
+        {/* INFORMACIÓN DE PRODUCTO */}
         <div className="col-md-6">
-          {/* Título + Favorito */}
-          <div className="d-flex justify-content-between">
-            <h2>
-              {producto.marca} {producto.titulo}
+          <div className="d-flex justify-content-between align-items-center mb-2">
+            <h2 className="mb-0">
+              {producto.marca ? `${producto.marca} ` : ""}
+              {producto.titulo || producto.nombre}
             </h2>
 
             <motion.div
@@ -103,11 +146,61 @@ const ItemDetail = ({ producto }) => {
             </motion.div>
           </div>
 
-          <h4 className="fw-bold">
-            ${producto.precio?.toLocaleString("es-AR")}
-          </h4>
+          <h3 className="fw-bold text-success mb-3">
+            ${precioUnitario.toLocaleString("es-AR")}
+          </h3>
 
-          <p>{producto.descripcion || "Sin descripción disponible."}</p>
+          <p className="text-muted">
+            {producto.descripcion || "Sin descripción disponible."}
+          </p>
+
+          {/* OPCIONES DE TAMAÑO (SIZE) */}
+          {producto.size?.length > 0 && (
+            <div className="mb-3">
+              <strong>Tamaño:</strong>
+              <div className="d-flex flex-wrap gap-2 mt-2">
+                {producto.size.map((s) => (
+                  <Button
+                    key={s.id || s.nombre}
+                    variant={
+                      sizeSeleccionado?.id === s.id || sizeSeleccionado?.nombre === s.nombre
+                        ? "dark"
+                        : "outline-dark"
+                    }
+                    size="sm"
+                    onClick={() => setSizeSeleccionado(s)}
+                  >
+                    {s.nombre} (${Number(s.precio).toLocaleString("es-AR")})
+                  </Button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* OPCIONES DE ADICIONALES (ADDITIONAL) */}
+          {producto.additional?.length > 0 && (
+            <div className="mb-3">
+              <strong>Adicionales / Extras:</strong>
+              <div className="mt-2">
+                {producto.additional.map((add) => {
+                  const estaSeleccionado = additionalSeleccionados.some(
+                    (a) => a.id === add.id
+                  );
+                  return (
+                    <Form.Check
+                      key={add.id || add.nombre}
+                      type="checkbox"
+                      id={`add-${add.id}`}
+                      label={`${add.nombre} (+$${Number(add.precio).toLocaleString("es-AR")})`}
+                      checked={estaSeleccionado}
+                      onChange={() => handleToggleAdditional(add)}
+                      className="mb-1"
+                    />
+                  );
+                })}
+              </div>
+            </div>
+          )}
 
           {/* TALLE */}
           {producto.talles?.length > 0 && (
@@ -158,9 +251,15 @@ const ItemDetail = ({ producto }) => {
           </div>
 
           {/* BOTÓN CARRITO */}
-          <div className="mt-3">
-            <Button variant="dark" className="w-100" onClick={handleAdd}>
-              🛒 Agregar al carrito
+          <div className="mt-4">
+            <Button
+              variant="dark"
+              size="lg"
+              className="w-100"
+              onClick={handleAdd}
+              disabled={producto.disponible === false}
+            >
+              {producto.disponible === false ? "Agotado" : "🛒 Agregar al carrito"}
             </Button>
           </div>
         </div>

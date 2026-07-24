@@ -17,7 +17,7 @@ const Item = ({ producto, colorSeleccionado, handleQuickView }) => {
     producto.imagenesPorColor &&
     producto.imagenesPorColor[colorSeleccionado]
       ? producto.imagenesPorColor[colorSeleccionado]
-      : producto.imagen;
+      : producto.imagen || producto.pictureUrl || "/img/no-image.png";
 
   const handleFavorito = (e) => {
     e.stopPropagation();
@@ -25,9 +25,23 @@ const Item = ({ producto, colorSeleccionado, handleQuickView }) => {
     toggleFavorite(producto);
   };
 
+  // Lógica para mostrar el precio correcto (mínimo si tiene tamaños/size)
+  const obtenerPrecioDisplay = () => {
+    if (producto.size && producto.size.length > 0) {
+      const precios = producto.size.map((s) => Number(s.precio)).filter((p) => !isNaN(p));
+      if (precios.length > 0) {
+        const precioMinimo = Math.min(...precios);
+        return `Desde $${precioMinimo.toLocaleString("es-AR")}`;
+      }
+    }
+
+    const precioBase = Number(producto.precio || 0);
+    return `$${precioBase.toLocaleString("es-AR")}`;
+  };
+
   return (
     <div
-      className={`item-card ${hover ? "hover" : ""}`}
+      className={`item-card ${hover ? "hover" : ""} ${producto.disponible === false ? "out-of-stock" : ""}`}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
       onClick={() => handleQuickView(producto)}
@@ -50,6 +64,9 @@ const Item = ({ producto, colorSeleccionado, handleQuickView }) => {
           alt={producto.titulo || producto.nombre}
           className="item-img"
         />
+        {producto.disponible === false && (
+          <span className="badge-agotado">Agotado</span>
+        )}
       </div>
 
       {/* INFO */}
@@ -64,7 +81,7 @@ const Item = ({ producto, colorSeleccionado, handleQuickView }) => {
         )}
 
         <div className="item-bottom">
-          <p className="item-precio">${producto.precio}</p>
+          <p className="item-precio">{obtenerPrecioDisplay()}</p>
         </div>
       </div>
     </div>

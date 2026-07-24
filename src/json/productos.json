@@ -11,23 +11,13 @@
     "masVendido": true,
     "recomendado": true,
     "precio": 14500,
-    "variantes": [
-      {
-        "id": "porcion",
-        "nombre": "Porción",
-        "precio": 2500
-      },
-      {
-        "id": "chica",
-        "nombre": "Chica",
-        "precio": 14500
-      },
-      {
-        "id": "grande",
-        "nombre": "Grande",
-        "precio": 18500
-      }
+    "size": [
+      { "id": "porcion", "nombre": "Porción", "precio": 2500 },
+      { "id": "chica", "nombre": "Chica", "precio": 14500 },
+      { "id": "grande", "nombre": "Grande", "precio": 18500 }
     ],
+
+
     "stock": 999,
     "vegetariano": true,
     "vegano": false,
@@ -35,6 +25,10 @@
     "picante": false,
     "disponible": true
   },
+
+
+
+
   {
     "id": "002",
     "titulo": "Pizza Napolitana",
@@ -47,7 +41,7 @@
     "masVendido": true,
     "recomendado": true,
     "precio": 15800,
-    "variantes": [
+      "variantes": [
       {
         "id": "porcion",
         "nombre": "Porción",
@@ -84,7 +78,7 @@
     "recomendado": true,
     "precio": 17800,
     "stock": 999,
-        "variantes": [
+      "variantes": [
       {
         "id": "porcion",
         "nombre": "Porción",
@@ -122,7 +116,7 @@
     "masVendido": false,
     "recomendado": true,
     "precio": 16200,
-        "variantes": [
+      "variantes": [
       {
         "id": "porcion",
         "nombre": "Porción",
@@ -161,7 +155,7 @@
     "masVendido": true,
     "recomendado": false,
     "precio": 18400,
-        "variantes": [
+      "variables": [
       {
         "id": "porcion",
         "nombre": "Porción",
@@ -197,10 +191,12 @@
     "masVendido": true,
     "recomendado": true,
     "precio": 13500,
+    
+      "additional": [
+      { "id": "aceitunas", "nombre": "Aceitunas", "precio": 800 },
+      { "id": "queso", "nombre": "Queso", "precio": 1500 }
+    ],
     "stock": 999,
-    "talles": [],
-    "colores": [],
-    "imagenesPorColor": {},
     "vegetariano": false,
     "vegano": false,
     "sinTacc": false,
@@ -220,9 +216,6 @@
     "recomendado": true,
     "precio": 16800,
     "stock": 999,
-    "talles": [],
-    "colores": [],
-    "imagenesPorColor": {},
     "vegetariano": false,
     "vegano": false,
     "sinTacc": false,
@@ -242,9 +235,6 @@
     "recomendado": true,
     "precio": 17600,
     "stock": 999,
-    "talles": [],
-    "colores": [],
-    "imagenesPorColor": {},
     "vegetariano": false,
     "vegano": false,
     "sinTacc": false,
@@ -264,9 +254,6 @@
     "recomendado": true,
     "precio": 17100,
     "stock": 999,
-    "talles": [],
-    "colores": [],
-    "imagenesPorColor": {},
     "vegetariano": false,
     "vegano": false,
     "sinTacc": false,
@@ -286,9 +273,6 @@
     "recomendado": true,
     "precio": 14900,
     "stock": 999,
-    "talles": [],
-    "colores": [],
-    "imagenesPorColor": {},
     "vegetariano": true,
     "vegano": true,
     "sinTacc": false,
@@ -334,6 +318,8 @@
     "picante": false,
     "disponible": true
   },
+
+
   {
     "id": "012",
     "titulo": "Sorrentinos de Jamón y Queso",
@@ -347,9 +333,7 @@
     "recomendado": true,
     "precio": 14800,
     "stock": 999,
-    "talles": [],
-    "colores": [],
-    "imagenesPorColor": {},
+
     "vegetariano": false,
     "vegano": false,
     "sinTacc": false,

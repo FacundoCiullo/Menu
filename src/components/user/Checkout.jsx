@@ -59,22 +59,31 @@ const Checkout = () => {
 
     const buyer = { name: nombre, phone: telefono, email };
 
-    // GUARDAMOS SOLO LA VARIABLE SELECCIONADA Y EL PRECIO APLICADO
+    // GUARDAMOS TAMAÑOS Y ADICIONALES EN LA ORDEN DE FIRESTORE
     const items = cart.map((item) => {
-      const precioFinalUnitario = item.variable ? item.variable.precio : item.precio;
+      const precioUnitarioFinal = Number(item.precioUnitario ?? item.precio ?? 0);
+
       return {
         id: item.id,
+        itemKey: item.itemKey || item.id,
         title: item.titulo,
-        price: precioFinalUnitario,
+        price: precioUnitarioFinal,
         quantity: item.quantity,
-        subtotal: precioFinalUnitario * item.quantity,
-        variable: item.variable
+        subtotal: precioUnitarioFinal * item.quantity,
+        sizeSeleccionado: item.sizeSeleccionado
           ? {
-              id: item.variable.id,
-              nombre: item.variable.nombre,
-              precio: item.variable.precio,
+              id: item.sizeSeleccionado.id,
+              nombre: item.sizeSeleccionado.nombre,
+              precio: item.sizeSeleccionado.precio,
             }
           : null,
+        additionalSeleccionados: item.additionalSeleccionados
+          ? item.additionalSeleccionados.map((add) => ({
+              id: add.id,
+              nombre: add.nombre,
+              precio: add.precio,
+            }))
+          : [],
         imagen: item.imagen || "/img/no-image.png",
       };
     });
@@ -107,7 +116,9 @@ const Checkout = () => {
     return (
       <div className="container my-5 text-center">
         <h2>No hay productos en el carrito</h2>
-        <Link to="/" className="btn btn-dark mt-3">Volver a la tienda</Link>
+        <Link to="/" className="btn btn-dark mt-3">
+          Volver a la tienda
+        </Link>
       </div>
     );
   }
@@ -126,12 +137,24 @@ const Checkout = () => {
           <form onSubmit={generarOrden}>
             <div className="mb-3">
               <label className="form-label fw-semibold">Nombre</label>
-              <input type="text" className="form-control" value={nombre} readOnly disabled />
+              <input
+                type="text"
+                className="form-control"
+                value={nombre}
+                readOnly
+                disabled
+              />
             </div>
 
             <div className="mb-3">
               <label className="form-label fw-semibold">Email</label>
-              <input type="text" className="form-control" value={email} readOnly disabled />
+              <input
+                type="text"
+                className="form-control"
+                value={email}
+                readOnly
+                disabled
+              />
             </div>
 
             <div className="mb-3">
@@ -166,8 +189,8 @@ const Checkout = () => {
             <table className="table align-middle">
               <tbody>
                 {cart.map((item, index) => {
-                  const precioUnitario = item.variable ? item.variable.precio : item.precio;
-                  const itemKey = item.cartItemId || `${item.id}-${index}`;
+                  const precioUnitario = Number(item.precioUnitario ?? item.precio ?? 0);
+                  const itemKey = item.itemKey || `${item.id}-${index}`;
 
                   return (
                     <tr key={itemKey}>
@@ -182,19 +205,28 @@ const Checkout = () => {
 
                       <td>
                         <strong>{item.titulo}</strong>
-                        {item.variable && (
+
+                        {/* DETALLE TAMAÑO */}
+                        {item.sizeSeleccionado && (
                           <div className="small text-muted fw-semibold">
-                            Opción: {item.variable.nombre}
+                            Tamaño: {item.sizeSeleccionado.nombre}
+                          </div>
+                        )}
+
+                        {/* DETALLE ADICIONALES */}
+                        {item.additionalSeleccionados && item.additionalSeleccionados.length > 0 && (
+                          <div className="small text-muted">
+                            Extras: {item.additionalSeleccionados.map((a) => a.nombre).join(", ")}
                           </div>
                         )}
                       </td>
 
                       <td className="text-nowrap text-center">
-                        {item.quantity} x ${precioUnitario}
+                        {item.quantity} x ${precioUnitario.toLocaleString("es-AR")}
                       </td>
 
                       <td className="text-end fw-bold">
-                        ${item.quantity * precioUnitario}
+                        ${(item.quantity * precioUnitario).toLocaleString("es-AR")}
                       </td>
                     </tr>
                   );
@@ -205,7 +237,7 @@ const Checkout = () => {
                     Total a pagar:
                   </td>
                   <td className="fw-bold text-end pt-3 fs-5">
-                    ${sumTotal()}
+                    ${sumTotal().toLocaleString("es-AR")}
                   </td>
                 </tr>
               </tbody>

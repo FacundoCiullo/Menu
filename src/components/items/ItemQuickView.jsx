@@ -20,8 +20,8 @@ const ItemQuickView = ({ show, handleClose, producto }) => {
   // 1. DECLARACIÓN DE HOOKS (SIEMPRE ARRIBA DE TODO)
   // =========================================================================
   const [cantidad, setCantidad] = useState(1);
-  const [varianteSeleccionada, setVarianteSeleccionada] = useState(null);
-  const [adicionalesSeleccionados, setAdicionalesSeleccionados] = useState([]);
+  const [sizeSeleccionado, setSizeSeleccionado] = useState(null);
+  const [additionalSeleccionados, setAdditionalSeleccionados] = useState([]);
   const [localFavorite, setLocalFavorite] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
 
@@ -29,14 +29,14 @@ const ItemQuickView = ({ show, handleClose, producto }) => {
   const [editando, setEditando] = useState(false);
   const [cargandoGuardado, setCargandoGuardado] = useState(false);
   
-  // Estado del formulario Admin (incluye variantes y adicionales)
+  // Estado del formulario Admin (incluye size y additional)
   const [formAdmin, setFormAdmin] = useState({
     titulo: "",
     descripcion: "",
     precio: 0,
     imagen: "",
-    variantes: [],
-    adicionales: []
+    size: [],
+    additional: []
   });
 
   // Contextos y Navegación
@@ -48,23 +48,25 @@ const ItemQuickView = ({ show, handleClose, producto }) => {
   // EFECTO DE CARGA Y ACTUALIZACIÓN DE ESTADOS
   useEffect(() => {
     if (producto) {
-      if (producto.variantes && producto.variantes.length > 0) {
-        setVarianteSeleccionada(producto.variantes[0]);
+      // Selección del primer tamaño disponible (si existe)
+      if (producto.size && producto.size.length > 0) {
+        setSizeSeleccionado(producto.size[0]);
       } else {
-        setVarianteSeleccionada(null);
+        setSizeSeleccionado(null);
       }
-      setAdicionalesSeleccionados([]);
+
+      setAdditionalSeleccionados([]);
       setCantidad(1);
       setLocalFavorite(user ? isFavorite(producto.id) : false);
 
-      // Cargar datos actuales en el estado del admin (creando copias profundas de arrays)
+      // Cargar datos en el estado del admin
       setFormAdmin({
         titulo: producto.titulo || producto.nombre || "",
         descripcion: producto.descripcion || "",
         precio: producto.precio || 0,
         imagen: producto.imagen || producto.pictureUrl || "",
-        variantes: producto.variantes ? [...producto.variantes] : [],
-        adicionales: producto.adicionales ? [...producto.adicionales] : []
+        size: producto.size ? [...producto.size] : [],
+        additional: producto.additional ? [...producto.additional] : []
       });
 
       setEditando(false);
@@ -89,24 +91,24 @@ const ItemQuickView = ({ show, handleClose, producto }) => {
     }));
   };
 
-  // Edición de Variantes (Tamaños)
-  const handleVariantChangeAdmin = (index, field, value) => {
-    const nuevasVariantes = [...formAdmin.variantes];
-    nuevasVariantes[index] = {
-      ...nuevasVariantes[index],
+  // Edición de Sizes (Tamaños)
+  const handleSizeChangeAdmin = (index, field, value) => {
+    const nuevosSizes = [...formAdmin.size];
+    nuevosSizes[index] = {
+      ...nuevosSizes[index],
       [field]: field === "precio" ? Number(value) : value
     };
-    setFormAdmin((prev) => ({ ...prev, variantes: nuevasVariantes }));
+    setFormAdmin((prev) => ({ ...prev, size: nuevosSizes }));
   };
 
-  // Edición de Adicionales (Extras)
-  const handleAdicionalChangeAdmin = (index, field, value) => {
-    const nuevosAdicionales = [...formAdmin.adicionales];
-    nuevosAdicionales[index] = {
-      ...nuevosAdicionales[index],
+  // Edición de Additionals (Extras)
+  const handleAdditionalChangeAdmin = (index, field, value) => {
+    const nuevosAdditionals = [...formAdmin.additional];
+    nuevosAdditionals[index] = {
+      ...nuevosAdditionals[index],
       [field]: field === "precio" ? Number(value) : value
     };
-    setFormAdmin((prev) => ({ ...prev, adicionales: nuevosAdicionales }));
+    setFormAdmin((prev) => ({ ...prev, additional: nuevosAdditionals }));
   };
 
   // Actualización en Firestore
@@ -121,8 +123,8 @@ const ItemQuickView = ({ show, handleClose, producto }) => {
         titulo: formAdmin.titulo,
         descripcion: formAdmin.descripcion,
         precio: Number(formAdmin.precio),
-        variantes: formAdmin.variantes,
-        adicionales: formAdmin.adicionales
+        size: formAdmin.size,
+        additional: formAdmin.additional
       };
 
       await updateDoc(docRef, datosAActualizar);
@@ -136,13 +138,13 @@ const ItemQuickView = ({ show, handleClose, producto }) => {
       producto.titulo = formAdmin.titulo;
       producto.descripcion = formAdmin.descripcion;
       producto.precio = Number(formAdmin.precio);
-      producto.variantes = formAdmin.variantes;
-      producto.adicionales = formAdmin.adicionales;
+      producto.size = formAdmin.size;
+      producto.additional = formAdmin.additional;
 
-      // Si había una variante seleccionada, actualizamos su valor de referencia
-      if (varianteSeleccionada) {
-        const varianteActualizada = formAdmin.variantes.find(v => v.id === varianteSeleccionada.id);
-        if (varianteActualizada) setVarianteSeleccionada(varianteActualizada);
+      // Si había un tamaño seleccionado, actualizamos su valor
+      if (sizeSeleccionado) {
+        const sizeActualizado = formAdmin.size.find(s => s.id === sizeSeleccionado.id);
+        if (sizeActualizado) setSizeSeleccionado(sizeActualizado);
       }
 
       setEditando(false);
@@ -157,16 +159,18 @@ const ItemQuickView = ({ show, handleClose, producto }) => {
     }
   };
 
-  const precioBase = varianteSeleccionada ? varianteSeleccionada.precio : (formAdmin.precio || 0);
-  const precioAdicionales = adicionalesSeleccionados.reduce((total, adi) => total + (adi.precio || 0), 0);
-  const precioTotal = (precioBase + precioAdicionales) * cantidad;
+  // Cálculo dinámico del precio unitario y total
+  const precioBase = sizeSeleccionado ? sizeSeleccionado.precio : (formAdmin.precio || 0);
+  const precioAdditional = additionalSeleccionados.reduce((total, adi) => total + (adi.precio || 0), 0);
+  const precioUnitarioFinal = precioBase + precioAdditional;
+  const precioTotal = precioUnitarioFinal * cantidad;
 
-  const handleToggleAdicional = (adicional) => {
-    setAdicionalesSeleccionados((prev) => {
-      const existe = prev.find((item) => item.id === adicional.id);
+  const handleToggleAdditional = (extra) => {
+    setAdditionalSeleccionados((prev) => {
+      const existe = prev.find((item) => item.id === extra.id);
       return existe
-        ? prev.filter((item) => item.id !== adicional.id)
-        : [...prev, adicional];
+        ? prev.filter((item) => item.id !== extra.id)
+        : [...prev, extra];
     });
   };
 
@@ -180,17 +184,17 @@ const ItemQuickView = ({ show, handleClose, producto }) => {
   };
 
   const handleAgregarCarrito = () => {
-    if (producto.variantes?.length > 0 && !varianteSeleccionada) {
-      toast.error("Seleccioná una opción de tamaño ⚠️", { position: "top-center" });
+    // Validar solo si el producto realmente TIENE tamaños especificados
+    if (producto.size?.length > 0 && !sizeSeleccionado) {
+      toast.error("Seleccioná un tamaño ⚠️", { position: "top-center" });
       return;
     }
 
     const productoParaCarrito = {
       ...producto,
-      variante: varianteSeleccionada ? varianteSeleccionada.nombre : null,
-      varianteId: varianteSeleccionada ? varianteSeleccionada.id : null,
-      adicionales: adicionalesSeleccionados.map((a) => a.nombre),
-      precioUnitario: precioBase + precioAdicionales,
+      precioUnitario: precioUnitarioFinal,
+      sizeSeleccionado: sizeSeleccionado || null,
+      additionalSeleccionados: additionalSeleccionados || []
     };
 
     addItem(productoParaCarrito, cantidad);
@@ -313,24 +317,24 @@ const ItemQuickView = ({ show, handleClose, producto }) => {
                     />
                   </Form.Group>
 
-                  {/* EDICIÓN DE VARIANTES (TAMAÑOS) */}
-                  {formAdmin.variantes && formAdmin.variantes.length > 0 && (
+                  {/* EDICIÓN DE SIZES (TAMAÑOS) */}
+                  {formAdmin.size && formAdmin.size.length > 0 && (
                     <div className="iqv-section-block border p-2 rounded">
-                      <span className="iqv-label-text fw-bold text-warning">Precios por Tamaño (Variantes):</span>
+                      <span className="iqv-label-text fw-bold text-warning">Precios por Tamaño (Size):</span>
                       <div className="d-flex flex-column gap-2 mt-2">
-                        {formAdmin.variantes.map((v, idx) => (
-                          <div key={v.id || idx} className="d-flex gap-2 align-items-center">
+                        {formAdmin.size.map((s, idx) => (
+                          <div key={s.id || idx} className="d-flex gap-2 align-items-center">
                             <Form.Control
                               type="text"
-                              value={v.nombre}
-                              onChange={(e) => handleVariantChangeAdmin(idx, "nombre", e.target.value)}
+                              value={s.nombre}
+                              onChange={(e) => handleSizeChangeAdmin(idx, "nombre", e.target.value)}
                               placeholder="Nombre"
                               className="iqv-editable-input"
                             />
                             <Form.Control
                               type="number"
-                              value={v.precio}
-                              onChange={(e) => handleVariantChangeAdmin(idx, "precio", e.target.value)}
+                              value={s.precio}
+                              onChange={(e) => handleSizeChangeAdmin(idx, "precio", e.target.value)}
                               placeholder="Precio $"
                               className="iqv-editable-input"
                             />
@@ -340,24 +344,24 @@ const ItemQuickView = ({ show, handleClose, producto }) => {
                     </div>
                   )}
 
-                  {/* EDICIÓN DE ADICIONALES (EXTRAS) */}
-                  {formAdmin.adicionales && formAdmin.adicionales.length > 0 && (
+                  {/* EDICIÓN DE ADDITIONAL (EXTRAS) */}
+                  {formAdmin.additional && formAdmin.additional.length > 0 && (
                     <div className="iqv-section-block border p-2 rounded">
-                      <span className="iqv-label-text fw-bold text-warning">Precios de Agregados (Extras):</span>
+                      <span className="iqv-label-text fw-bold text-warning">Precios de Adicionales (Additional):</span>
                       <div className="d-flex flex-column gap-2 mt-2">
-                        {formAdmin.adicionales.map((adi, idx) => (
+                        {formAdmin.additional.map((adi, idx) => (
                           <div key={adi.id || idx} className="d-flex gap-2 align-items-center">
                             <Form.Control
                               type="text"
                               value={adi.nombre}
-                              onChange={(e) => handleAdicionalChangeAdmin(idx, "nombre", e.target.value)}
+                              onChange={(e) => handleAdditionalChangeAdmin(idx, "nombre", e.target.value)}
                               placeholder="Extra"
                               className="iqv-editable-input"
                             />
                             <Form.Control
                               type="number"
                               value={adi.precio}
-                              onChange={(e) => handleAdicionalChangeAdmin(idx, "precio", e.target.value)}
+                              onChange={(e) => handleAdditionalChangeAdmin(idx, "precio", e.target.value)}
                               placeholder="Precio $"
                               className="iqv-editable-input"
                             />
@@ -376,21 +380,21 @@ const ItemQuickView = ({ show, handleClose, producto }) => {
                     {producto.descripcion || "Sin descripción disponible."}
                   </p>
 
-                  {/* VARIANTES / TAMAÑOS */}
-                  {producto.variantes?.length > 0 && (
+                  {/* SIZES / TAMAÑOS */}
+                  {producto.size?.length > 0 && (
                     <div className="iqv-section-block">
-                      <span className="iqv-label-text">variantes:</span>
+                      <span className="iqv-label-text">Tamaños:</span>
                       <div className="iqv-chips-container">
-                        {producto.variantes.map((v) => {
-                          const isSelected = varianteSeleccionada?.id === v.id;
+                        {producto.size.map((s) => {
+                          const isSelected = sizeSeleccionado?.id === s.id;
                           return (
                             <button
-                              key={v.id}
+                              key={s.id}
                               type="button"
                               className={`iqv-chip-btn ${isSelected ? "active" : ""}`}
-                              onClick={() => setVarianteSeleccionada(v)}
+                              onClick={() => setSizeSeleccionado(s)}
                             >
-                              {v.nombre}
+                              {s.nombre} (${s.precio.toLocaleString("es-AR")})
                             </button>
                           );
                         })}
@@ -398,20 +402,20 @@ const ItemQuickView = ({ show, handleClose, producto }) => {
                     </div>
                   )}
 
-                  {/* ADICIONALES / EXTRAS */}
-                  {producto.adicionales?.length > 0 && (
+                  {/* ADDITIONAL / EXTRAS */}
+                  {producto.additional?.length > 0 && (
                     <div className="iqv-section-block">
-                      <span className="iqv-label-text">Agregados extra:</span>
+                      <span className="iqv-label-text">Adicionales extra:</span>
                       <div className="iqv-adicionales-list">
-                        {producto.adicionales.map((adi) => {
-                          const estaSeleccionado = adicionalesSeleccionados.some(
+                        {producto.additional.map((adi) => {
+                          const estaSeleccionado = additionalSeleccionados.some(
                             (item) => item.id === adi.id
                           );
                           return (
                             <div
                               key={adi.id}
                               className={`iqv-adicional-item ${estaSeleccionado ? "active" : ""}`}
-                              onClick={() => handleToggleAdicional(adi)}
+                              onClick={() => handleToggleAdditional(adi)}
                             >
                               <Form.Check
                                 type="checkbox"
@@ -478,9 +482,9 @@ const ItemQuickView = ({ show, handleClose, producto }) => {
                     type="button"
                     className="iqv-btn-primary-action"
                     onClick={handleAgregarCarrito}
-                    disabled={!producto.disponible}
+                    disabled={producto.disponible === false}
                   >
-                    {producto.disponible ? <span>Agregar</span> : "No disponible"}
+                    {producto.disponible !== false ? <span>Agregar</span> : "No disponible"}
                   </button>
                 )}
               </div>
