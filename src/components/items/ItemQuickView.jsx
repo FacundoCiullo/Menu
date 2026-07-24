@@ -8,7 +8,6 @@ import { motion } from "framer-motion";
 import { toast, ToastContainer } from "react-toastify";
 import { Heart, HeartFill, Plus, Dash, X, PencilSquare, CheckLg, ArrowLeft } from "react-bootstrap-icons";
 
-// IMPORTS DE FIREBASE
 import { db } from "../../firebase"; 
 import { doc, updateDoc } from "firebase/firestore";
 
@@ -16,20 +15,15 @@ import "react-toastify/dist/ReactToastify.css";
 import "./style/itemQuickView.css";
 
 const ItemQuickView = ({ show, handleClose, producto }) => {
-  // =========================================================================
-  // 1. DECLARACIÓN DE HOOKS (SIEMPRE ARRIBA DE TODO)
-  // =========================================================================
   const [cantidad, setCantidad] = useState(1);
   const [sizeSeleccionado, setSizeSeleccionado] = useState(null);
   const [additionalSeleccionados, setAdditionalSeleccionados] = useState([]);
   const [localFavorite, setLocalFavorite] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
 
-  // Estados de edición Admin
   const [editando, setEditando] = useState(false);
   const [cargandoGuardado, setCargandoGuardado] = useState(false);
   
-  // Estado del formulario Admin (incluye size y additional)
   const [formAdmin, setFormAdmin] = useState({
     titulo: "",
     descripcion: "",
@@ -39,16 +33,35 @@ const ItemQuickView = ({ show, handleClose, producto }) => {
     additional: []
   });
 
-  // Contextos y Navegación
   const { addItem } = useContext(CartContext);
   const { toggleFavorite, isFavorite } = useFavorites();
   const { user, esAdmin } = useAuth();
   const navigate = useNavigate();
 
-  // EFECTO DE CARGA Y ACTUALIZACIÓN DE ESTADOS
+  // -------------------------------------------------------------
+  // CONTROL DEL BOTÓN "ATRÁS" DEL CELULAR/NAVEGADOR
+  // -------------------------------------------------------------
+  useEffect(() => {
+    if (!show) return;
+
+    window.history.pushState({ modalOpen: true }, "");
+
+    const handlePopState = () => {
+      handleClose();
+    };
+
+    window.addEventListener("popstate", handlePopState);
+
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+      if (window.history.state?.modalOpen) {
+        window.history.back();
+      }
+    };
+  }, [show, handleClose]);
+
   useEffect(() => {
     if (producto) {
-      // Selección del primer tamaño disponible (si existe)
       if (producto.size && producto.size.length > 0) {
         setSizeSeleccionado(producto.size[0]);
       } else {
@@ -59,7 +72,6 @@ const ItemQuickView = ({ show, handleClose, producto }) => {
       setCantidad(1);
       setLocalFavorite(user ? isFavorite(producto.id) : false);
 
-      // Cargar datos en el estado del admin
       setFormAdmin({
         titulo: producto.titulo || producto.nombre || "",
         descripcion: producto.descripcion || "",
@@ -73,16 +85,18 @@ const ItemQuickView = ({ show, handleClose, producto }) => {
     }
   }, [producto, user, isFavorite]);
 
-  // =========================================================================
-  // 2. RETORNO ANTICIPADO (DESPUÉS DE LOS HOOKS)
-  // =========================================================================
   if (!producto) return null;
 
-  // =========================================================================
-  // 3. FUNCIONES DE LÓGICA Y EDICIÓN
-  // =========================================================================
+  // EVALUACIÓN DE TIPO DE SELECCIÓN DE ADICIONALES
+  const subcat = (producto.subcategoria || "").toLowerCase();
+  const cat = (producto.categoria || "").toLowerCase();
+  const type = (producto.additionalType || "").toLowerCase();
 
-  // Inputs principales (Título, Descripción, Precio Base)
+  const esSeleccionUnica = 
+    type === "single" || 
+    subcat.includes("pasta") || 
+    cat.includes("pasta");
+
   const handleInputChangeAdmin = (e) => {
     const { name, value } = e.target;
     setFormAdmin((prev) => ({
@@ -91,7 +105,6 @@ const ItemQuickView = ({ show, handleClose, producto }) => {
     }));
   };
 
-  // Edición de Sizes (Tamaños)
   const handleSizeChangeAdmin = (index, field, value) => {
     const nuevosSizes = [...formAdmin.size];
     nuevosSizes[index] = {
@@ -101,7 +114,6 @@ const ItemQuickView = ({ show, handleClose, producto }) => {
     setFormAdmin((prev) => ({ ...prev, size: nuevosSizes }));
   };
 
-  // Edición de Additionals (Extras)
   const handleAdditionalChangeAdmin = (index, field, value) => {
     const nuevosAdditionals = [...formAdmin.additional];
     nuevosAdditionals[index] = {
@@ -111,7 +123,6 @@ const ItemQuickView = ({ show, handleClose, producto }) => {
     setFormAdmin((prev) => ({ ...prev, additional: nuevosAdditionals }));
   };
 
-  // Actualización en Firestore
   const handleConfirmarActualizacion = async () => {
     try {
       setCargandoGuardado(true);
@@ -134,14 +145,12 @@ const ItemQuickView = ({ show, handleClose, producto }) => {
         autoClose: 2000,
       });
 
-      // Actualizamos la referencia local del producto
       producto.titulo = formAdmin.titulo;
       producto.descripcion = formAdmin.descripcion;
       producto.precio = Number(formAdmin.precio);
       producto.size = formAdmin.size;
       producto.additional = formAdmin.additional;
 
-      // Si había un tamaño seleccionado, actualizamos su valor
       if (sizeSeleccionado) {
         const sizeActualizado = formAdmin.size.find(s => s.id === sizeSeleccionado.id);
         if (sizeActualizado) setSizeSeleccionado(sizeActualizado);
@@ -159,16 +168,33 @@ const ItemQuickView = ({ show, handleClose, producto }) => {
     }
   };
 
-  // Cálculo dinámico del precio unitario y total
   const precioBase = sizeSeleccionado ? sizeSeleccionado.precio : (formAdmin.precio || 0);
   const precioAdditional = additionalSeleccionados.reduce((total, adi) => total + (adi.precio || 0), 0);
   const precioUnitarioFinal = precioBase + precioAdditional;
   const precioTotal = precioUnitarioFinal * cantidad;
 
+  const handleSelectSize = (s) => {
+    if (sizeSeleccionado?.id === s.id) {
+      setSizeSeleccionado(null);
+    } else {
+      setSizeSeleccionado(s);
+    }
+  };
+
+  // -------------------------------------------------------------
+  // LÓGICA DE ADICIONALES (ÚNICA O MÚLTIPLE)
+  // -------------------------------------------------------------
   const handleToggleAdditional = (extra) => {
     setAdditionalSeleccionados((prev) => {
-      const existe = prev.find((item) => item.id === extra.id);
-      return existe
+      const yaSeleccionado = prev.some((item) => item.id === extra.id);
+
+      // Si es selección única (por additionalType: "single" o subcategoría Pastas)
+      if (esSeleccionUnica) {
+        return yaSeleccionado ? [] : [extra];
+      }
+
+      // De lo contrario, Selección Múltiple (Hamburguesas, Pizzas, etc.)
+      return yaSeleccionado
         ? prev.filter((item) => item.id !== extra.id)
         : [...prev, extra];
     });
@@ -184,9 +210,15 @@ const ItemQuickView = ({ show, handleClose, producto }) => {
   };
 
   const handleAgregarCarrito = () => {
-    // Validar solo si el producto realmente TIENE tamaños especificados
     if (producto.size?.length > 0 && !sizeSeleccionado) {
       toast.error("Seleccioná un tamaño ⚠️", { position: "top-center" });
+      return;
+    }
+
+    // Si es requerido (o si es pasta y tiene opciones disponibles)
+    const esRequerido = producto.additionalRequired || esSeleccionUnica;
+    if (esRequerido && producto.additional?.length > 0 && additionalSeleccionados.length === 0) {
+      toast.error("Seleccioná una salsa u opción ⚠️", { position: "top-center" });
       return;
     }
 
@@ -219,16 +251,12 @@ const ItemQuickView = ({ show, handleClose, producto }) => {
     toast.success(msg, { position: "top-center", autoClose: 700 });
   };
 
-  // =========================================================================
-  // 4. VISTA COMPONENTE
-  // =========================================================================
   return (
     <>
       <Modal show={show} onHide={handleClose} centered className="iqv-modal-custom">
         <Modal.Body className="p-0">
           <div className="iqv-card-container">
             
-            {/* IMAGEN Y BOTONES FLOTANTES */}
             <div className="iqv-image-wrapper">
               <img
                 src={producto.imagen}
@@ -244,7 +272,7 @@ const ItemQuickView = ({ show, handleClose, producto }) => {
                   onClick={() => setEditando(!editando)}
                   title={editando ? "Cancelar edición" : "Editar información de producto"}
                 >
-                  {editando ? <ArrowLeft size={20} color="#fff" /> : <PencilSquare size={20} color="#fff" />}
+                  {editando ? <ArrowLeft size={20} /> : <PencilSquare size={20} />}
                 </motion.button>
               )}
 
@@ -257,7 +285,7 @@ const ItemQuickView = ({ show, handleClose, producto }) => {
                   {localFavorite ? (
                     <HeartFill size={24} color="#e63946" />
                   ) : (
-                    <Heart size={24} color="#ffffff" />
+                    <Heart size={24} color="var(--iqv-text-primary, #ffffff)" />
                   )}
                 </motion.div>
               )}
@@ -267,20 +295,17 @@ const ItemQuickView = ({ show, handleClose, producto }) => {
               </button>
             </div>
 
-            {/* CONTENIDO DEL PRODUCTO */}
             <div className="iqv-body-content">
 
-              {/* MODO EDICIÓN ADMIN */}
               {esAdmin && editando ? (
                 <div className="iqv-admin-form-container d-flex flex-column gap-3">
-                  <div className="d-flex align-items-center justify-content-between border-bottom border-secondary pb-2 mb-1">
-                    <span className="badge bg-warning text-dark fw-bold">
+                  <div className="d-flex align-items-center justify-content-between border-bottom pb-2 mb-1 iqv-admin-header">
+                    <span className="badge iqv-admin-badge">
                       Modo Edición Activado ✏️
                     </span>
-                    <small className="text-muted">Edición de datos y precios</small>
+                    <small className="iqv-admin-subtitle">Edición de datos y precios</small>
                   </div>
 
-                  {/* Campo Título */}
                   <Form.Group>
                     <Form.Label className="iqv-input-label">Título del Producto</Form.Label>
                     <Form.Control
@@ -292,7 +317,6 @@ const ItemQuickView = ({ show, handleClose, producto }) => {
                     />
                   </Form.Group>
 
-                  {/* Campo Descripción */}
                   <Form.Group>
                     <Form.Label className="iqv-input-label">Descripción</Form.Label>
                     <Form.Control
@@ -305,7 +329,6 @@ const ItemQuickView = ({ show, handleClose, producto }) => {
                     />
                   </Form.Group>
 
-                  {/* Campo Precio Base */}
                   <Form.Group>
                     <Form.Label className="iqv-input-label">Precio Base ($)</Form.Label>
                     <Form.Control
@@ -317,10 +340,9 @@ const ItemQuickView = ({ show, handleClose, producto }) => {
                     />
                   </Form.Group>
 
-                  {/* EDICIÓN DE SIZES (TAMAÑOS) */}
                   {formAdmin.size && formAdmin.size.length > 0 && (
-                    <div className="iqv-section-block border p-2 rounded">
-                      <span className="iqv-label-text fw-bold text-warning">Precios por Tamaño (Size):</span>
+                    <div className="iqv-edit-section rounded">
+                      <span className="iqv-label-text fw-bold iqv-accent-text">Precios por Tamaño (Size):</span>
                       <div className="d-flex flex-column gap-2 mt-2">
                         {formAdmin.size.map((s, idx) => (
                           <div key={s.id || idx} className="d-flex gap-2 align-items-center">
@@ -344,10 +366,9 @@ const ItemQuickView = ({ show, handleClose, producto }) => {
                     </div>
                   )}
 
-                  {/* EDICIÓN DE ADDITIONAL (EXTRAS) */}
                   {formAdmin.additional && formAdmin.additional.length > 0 && (
-                    <div className="iqv-section-block border p-2 rounded">
-                      <span className="iqv-label-text fw-bold text-warning">Precios de Adicionales (Additional):</span>
+                    <div className="iqv-edit-section rounded">
+                      <span className="iqv-label-text fw-bold iqv-accent-text">Precios de Adicionales / Salsas:</span>
                       <div className="d-flex flex-column gap-2 mt-2">
                         {formAdmin.additional.map((adi, idx) => (
                           <div key={adi.id || idx} className="d-flex gap-2 align-items-center">
@@ -355,7 +376,7 @@ const ItemQuickView = ({ show, handleClose, producto }) => {
                               type="text"
                               value={adi.nombre}
                               onChange={(e) => handleAdditionalChangeAdmin(idx, "nombre", e.target.value)}
-                              placeholder="Extra"
+                              placeholder="Extra / Salsa"
                               className="iqv-editable-input"
                             />
                             <Form.Control
@@ -373,64 +394,34 @@ const ItemQuickView = ({ show, handleClose, producto }) => {
 
                 </div>
               ) : (
-                /* VISTA NORMAL DE LECTURA */
                 <>
                   <h2 className="iqv-product-title">{producto.titulo}</h2>
                   <p className="iqv-product-description">
                     {producto.descripcion || "Sin descripción disponible."}
                   </p>
 
-                  {/* SIZES / TAMAÑOS */}
+                  {/* SECCIÓN TAMAÑOS */}
                   {producto.size?.length > 0 && (
-                    <div className="iqv-section-block">
-                      <span className="iqv-label-text">Tamaños:</span>
-                      <div className="iqv-chips-container">
+                    <div className="iqv-options-group mt-2">
+                      <span className="iqv-group-title">
+                        Tamaño:
+                        {sizeSeleccionado && (
+                          <small className="iqv-selected-badge ms-2">
+                            ({sizeSeleccionado.nombre})
+                          </small>
+                        )}
+                      </span>
+                      <div className="iqv-options-list">
                         {producto.size.map((s) => {
                           const isSelected = sizeSeleccionado?.id === s.id;
                           return (
-                            <button
-                              key={s.id}
-                              type="button"
-                              className={`iqv-chip-btn ${isSelected ? "active" : ""}`}
-                              onClick={() => setSizeSeleccionado(s)}
-                            >
-                              {s.nombre} (${s.precio.toLocaleString("es-AR")})
-                            </button>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* ADDITIONAL / EXTRAS */}
-                  {producto.additional?.length > 0 && (
-                    <div className="iqv-section-block">
-                      <span className="iqv-label-text">Adicionales extra:</span>
-                      <div className="iqv-adicionales-list">
-                        {producto.additional.map((adi) => {
-                          const estaSeleccionado = additionalSeleccionados.some(
-                            (item) => item.id === adi.id
-                          );
-                          return (
                             <div
-                              key={adi.id}
-                              className={`iqv-adicional-item ${estaSeleccionado ? "active" : ""}`}
-                              onClick={() => handleToggleAdditional(adi)}
+                              key={s.id}
+                              className={`iqv-option-card ${isSelected ? "active" : ""}`}
+                              onClick={() => handleSelectSize(s)}
                             >
-                              <Form.Check
-                                type="checkbox"
-                                id={`adi-${adi.id}`}
-                                checked={estaSeleccionado}
-                                onChange={() => {}}
-                                label={
-                                  <span className="iqv-adicional-label">
-                                    {adi.nombre}{" "}
-                                    <b className="ms-1">
-                                      (${adi.precio.toLocaleString("es-AR")})
-                                    </b>
-                                  </span>
-                                }
-                              />
+                              <span className="iqv-option-name">{s.nombre}</span>
+                              <b className="iqv-option-price">${s.precio.toLocaleString("es-AR")}</b>
                             </div>
                           );
                         })}
@@ -438,7 +429,43 @@ const ItemQuickView = ({ show, handleClose, producto }) => {
                     </div>
                   )}
 
-                  {/* CANTIDAD Y PRECIO */}
+                  {/* SECCIÓN ADICIONALES / SALSAS */}
+                  {producto.additional?.length > 0 && (
+                    <div className="iqv-options-group mt-3">
+                      <span className="iqv-group-title">
+                        {esSeleccionUnica ? "Salsa / Elección:" : "Adicionales extras:"}
+                        {additionalSeleccionados.length > 0 && (
+                          <small className="iqv-selected-badge ms-2">
+                            ({esSeleccionUnica 
+                              ? additionalSeleccionados[0].nombre 
+                              : `${additionalSeleccionados.length} selec.`})
+                          </small>
+                        )}
+                      </span>
+                      <div className="iqv-options-list">
+                        {producto.additional.map((adi) => {
+                          const estaSeleccionado = additionalSeleccionados.some(
+                            (item) => item.id === adi.id
+                          );
+                          return (
+                            <div
+                              key={adi.id}
+                              className={`iqv-option-card ${estaSeleccionado ? "active" : ""}`}
+                              onClick={() => handleToggleAdditional(adi)}
+                            >
+                              <span className="iqv-option-name">{adi.nombre}</span>
+                              <b className="iqv-option-price">
+                                {adi.precio > 0 
+                                  ? `+ $${adi.precio.toLocaleString("es-AR")}` 
+                                  : "Sin cargo"}
+                              </b>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+
                   <div className="iqv-quantity-price-row">
                     <div className="iqv-qty-selector-wrapper">
                       <span className="iqv-label-text mb-0">Cantidad:</span>
@@ -463,12 +490,11 @@ const ItemQuickView = ({ show, handleClose, producto }) => {
                 </>
               )}
 
-              {/* BOTONES DE ACCIÓN */}
               <div className="iqv-footer-actions mt-3">
                 {esAdmin && editando ? (
                   <button
                     type="button"
-                    className="iqv-btn-primary-action bg-warning text-dark fw-bold border-0 d-flex align-items-center justify-content-center gap-2"
+                    className="iqv-btn-primary-action iqv-btn-admin-save"
                     onClick={handleConfirmarActualizacion}
                     disabled={cargandoGuardado}
                   >
@@ -494,15 +520,14 @@ const ItemQuickView = ({ show, handleClose, producto }) => {
         </Modal.Body>
       </Modal>
 
-      {/* MODAL LOGIN */}
-      <Modal show={showLoginModal} onHide={() => setShowLoginModal(false)} centered>
+      <Modal show={showLoginModal} onHide={() => setShowLoginModal(false)} centered className="iqv-modal-custom">
         <Modal.Header closeButton>
-          <Modal.Title>Iniciar sesión</Modal.Title>
+          <Modal.Title className="iqv-product-title">Iniciar sesión</Modal.Title>
         </Modal.Header>
-        <Modal.Body className="text-center">
-          <p>Debés iniciar sesión para agregar a favoritos.</p>
+        <Modal.Body className="text-center iqv-body-content">
+          <p className="iqv-product-description">Debés iniciar sesión para agregar a favoritos.</p>
         </Modal.Body>
-        <Modal.Footer>
+        <Modal.Footer style={{ backgroundColor: "var(--iqv-bg-card)", borderColor: "var(--iqv-border)" }}>
           <Button variant="secondary" onClick={() => setShowLoginModal(false)}>
             Entendido
           </Button>

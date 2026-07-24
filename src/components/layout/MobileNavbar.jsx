@@ -1,5 +1,3 @@
-// src/components/layout/MobileNavbar.jsx
-
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { AiOutlineHome, AiFillHome, AiOutlineArrowLeft } from "react-icons/ai";
 import { BsHeart, BsHeartFill } from "react-icons/bs";
@@ -40,52 +38,63 @@ const MobileNavbar = () => {
     <>
       {/* 🔼 MOBILE TOP HEADER */}
       <header className="mobile-header d-md-none">
-        {/* Botón atrás */}
-        <button className="back-btn" onClick={() => navigate(-1)}>
+        <button className="back-btn" onClick={() => navigate(-1)} aria-label="Volver atrás">
           <AiOutlineArrowLeft size={22} />
         </button>
 
-        {/* Título dinámico */}
         <h2 className="header-title">{pageTitle}</h2>
 
-        {/* CartWidget */}
         <div className="header-cart">
           {totalCarrito > 0 && <span className="cart-badge">{totalCarrito}</span>}
 
-          <Link to="/cart">
-            {path === "/cart"
-              ? <RiShoppingCart2Fill size={26} />
-              : <RiShoppingCart2Line size={26} />}
+          <Link to="/cart" aria-label="Ver carrito">
+            {path === "/cart" ? (
+              <RiShoppingCart2Fill size={24} />
+            ) : (
+              <RiShoppingCart2Line size={24} />
+            )}
           </Link>
         </div>
       </header>
 
-      {/* 🔽 MOBILE NAVBAR (abajo) */}
-      <nav className="mobile-nav d-md-none">
-        <Link to="/Home" className={path === "/Home" ? "active" : ""}>
+      {/* 🔽 MOBILE NAVBAR (ABAJO) */}
+      <nav className="mobile-nav d-md-none" aria-label="Navegación principal mobile">
+        <Link to="/Home" className={path === "/Home" ? "active" : ""} aria-label="Inicio">
           {path === "/Home" ? <AiFillHome size={24} /> : <AiOutlineHome size={24} />}
         </Link>
 
-        <Link to="/favoritos" className={path === "/favoritos" ? "active" : ""}>
+        <Link to="/favoritos" className={path === "/favoritos" ? "active" : ""} aria-label="Favoritos">
           {path === "/favoritos" ? <BsHeartFill size={22} /> : <BsHeart size={22} />}
         </Link>
 
-        <Link to="/Productos" className={path === "/Productos" ? "active" : ""}>
-          <LuBoxes size={28} />
+        <Link to="/Productos" className={path === "/Productos" ? "active" : ""} aria-label="Productos">
+          <LuBoxes size={26} />
         </Link>
 
         <div className="cart-icon-wrapper">
           {totalCarrito > 0 && <span className="cart-badge">{totalCarrito}</span>}
-          <Link to="/cart" className={path === "/cart" ? "active" : ""}>
-            {path === "/cart"
-              ? <RiShoppingCart2Fill size={28} />
-              : <RiShoppingCart2Line size={28} />}
+          <Link to="/cart" className={path === "/cart" ? "active" : ""} aria-label="Carrito">
+            {path === "/cart" ? (
+              <RiShoppingCart2Fill size={26} />
+            ) : (
+              <RiShoppingCart2Line size={26} />
+            )}
           </Link>
         </div>
 
-        <button className="mobile-avatar-btn" onClick={() => setShowSidebar(!showSidebar)}>
+        <button
+          className="mobile-avatar-btn"
+          onClick={() => setShowSidebar(!showSidebar)}
+          aria-label="Abrir menú de usuario"
+          type="button"
+        >
           {user ? (
-            <img src={user.photoURL} className="mobile-avatar" alt="user" referrerPolicy="no-referrer" />
+            <img
+              src={user.photoURL}
+              className="mobile-avatar"
+              alt="Avatar del usuario"
+              referrerPolicy="no-referrer"
+            />
           ) : (
             <FaUserCircle size={24} />
           )}

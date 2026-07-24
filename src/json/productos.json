@@ -12,12 +12,10 @@
     "recomendado": true,
     "precio": 14500,
     "size": [
-      { "id": "porcion", "nombre": "Porción", "precio": 2500 },
+      { "id": "porcion", "nombre": "Porción", "precio": 5000 },
       { "id": "chica", "nombre": "Chica", "precio": 14500 },
-      { "id": "grande", "nombre": "Grande", "precio": 18500 }
+      { "id": "grande", "nombre": "Grande", "precio": 20000 }
     ],
-
-
     "stock": 999,
     "vegetariano": true,
     "vegano": false,
@@ -25,9 +23,6 @@
     "picante": false,
     "disponible": true
   },
-
-
-
 
   {
     "id": "002",
@@ -41,22 +36,10 @@
     "masVendido": true,
     "recomendado": true,
     "precio": 15800,
-      "variantes": [
-      {
-        "id": "porcion",
-        "nombre": "Porción",
-        "precio": 2500
-      },
-      {
-        "id": "chica",
-        "nombre": "Chica",
-        "precio": 15800
-      },
-      {
-        "id": "grande",
-        "nombre": "Grande",
-        "precio": 18500
-      }
+    "size": [
+      { "id": "porcion", "nombre": "Porción", "precio": 6000 },
+      { "id": "chica", "nombre": "Chica", "precio": 15800 },
+      { "id": "grande", "nombre": "Grande", "precio": 22000 }
     ],
     "stock": 999,
     "vegetariano": true,
@@ -76,24 +59,12 @@
     "nuevo": true,
     "masVendido": true,
     "recomendado": true,
-    "precio": 17800,
+    "precio": 20000,
     "stock": 999,
-      "variantes": [
-      {
-        "id": "porcion",
-        "nombre": "Porción",
-        "precio": 2500
-      },
-      {
-        "id": "chica",
-        "nombre": "Chica",
-        "precio": 14500
-      },
-      {
-        "id": "grande",
-        "nombre": "Grande",
-        "precio": 18500
-      }
+    "size": [
+      { "id": "porcion", "nombre": "Porción", "precio": 6000 },
+      { "id": "chica", "nombre": "Chica", "precio": 20000 },
+      { "id": "grande", "nombre": "Grande", "precio": 25000 }
     ],
     "talles": [],
     "colores": [],
@@ -115,23 +86,11 @@
     "nuevo": false,
     "masVendido": false,
     "recomendado": true,
-    "precio": 16200,
-      "variantes": [
-      {
-        "id": "porcion",
-        "nombre": "Porción",
-        "precio": 2500
-      },
-      {
-        "id": "chica",
-        "nombre": "Chica",
-        "precio": 14500
-      },
-      {
-        "id": "grande",
-        "nombre": "Grande",
-        "precio": 18500
-      }
+    "precio": 15000,
+    "size": [
+      { "id": "porcion", "nombre": "Porción", "precio": 5000 },
+      { "id": "chica", "nombre": "Chica", "precio": 15000 },
+      { "id": "grande", "nombre": "Grande", "precio": 20000 }
     ],
     "stock": 999,
     "talles": [],
@@ -154,23 +113,11 @@
     "nuevo": false,
     "masVendido": true,
     "recomendado": false,
-    "precio": 18400,
-      "variables": [
-      {
-        "id": "porcion",
-        "nombre": "Porción",
-        "precio": 2500
-      },
-      {
-        "id": "chica",
-        "nombre": "Chica",
-        "precio": 14500
-      },
-      {
-        "id": "grande",
-        "nombre": "Grande",
-        "precio": 18500
-      }
+    "precio": 20000,
+    "size": [
+      { "id": "porcion", "nombre": "Porción", "precio": 6000 },
+      { "id": "chica", "nombre": "Chica", "precio": 20000 },
+      { "id": "grande", "nombre": "Grande", "precio": 25000 }
     ],
     "stock": 999,
     "vegetariano": false,
@@ -192,10 +139,11 @@
     "recomendado": true,
     "precio": 13500,
     
-      "additional": [
-      { "id": "aceitunas", "nombre": "Aceitunas", "precio": 800 },
-      { "id": "queso", "nombre": "Queso", "precio": 1500 }
+    "additional": [
+      { "id": "queso", "nombre": "Queso", "precio": 1500 },
+      { "id": "bacon", "nombre": "Bacon", "precio": 3500 }
     ],
+
     "stock": 999,
     "vegetariano": false,
     "vegano": false,
@@ -215,6 +163,11 @@
     "masVendido": true,
     "recomendado": true,
     "precio": 16800,
+    
+    "additional": [
+      { "id": "queso", "nombre": "Queso", "precio": 1500 },
+      { "id": "bacon", "nombre": "Bacon", "precio": 3500 }
+    ],
     "stock": 999,
     "vegetariano": false,
     "vegano": false,
@@ -234,6 +187,11 @@
     "masVendido": true,
     "recomendado": true,
     "precio": 17600,
+
+    "additional": [
+      { "id": "queso", "nombre": "Queso", "precio": 1500 },
+      { "id": "bacon", "nombre": "Bacon", "precio": 3500 }
+    ],
     "stock": 999,
     "vegetariano": false,
     "vegano": false,
@@ -253,6 +211,10 @@
     "masVendido": false,
     "recomendado": true,
     "precio": 17100,
+    "additional": [
+      { "id": "queso", "nombre": "Queso", "precio": 1500 },
+      { "id": "bacon", "nombre": "Bacon", "precio": 3500 }
+    ],
     "stock": 999,
     "vegetariano": false,
     "vegano": false,
@@ -260,7 +222,7 @@
     "picante": false,
     "disponible": true
   },
-  {
+{
     "id": "010",
     "titulo": "Burger Veggie",
     "imagen": "/img/hamburguesas/h-5.png",
@@ -272,6 +234,11 @@
     "masVendido": false,
     "recomendado": true,
     "precio": 14900,
+    "additionalType": "multiple",
+    "additionalRequired": false,
+    "additional": [
+      { "id": "queso", "nombre": "Queso", "precio": 1500 }
+    ],
     "stock": 999,
     "vegetariano": true,
     "vegano": true,
@@ -279,7 +246,7 @@
     "picante": false,
     "disponible": true
   },
-    {
+  {
     "id": "011",
     "titulo": "Ravioles de Ricota",
     "imagen": "/img/pastas/p-1.png",
@@ -291,22 +258,13 @@
     "masVendido": true,
     "recomendado": true,
     "precio": 13200,
-      "variantes": [
-      {
-        "id": "Blanca",
-        "nombre": "Blanca",
-        "precio": 2500
-      },
-      {
-        "id": "Boloñesa",
-        "nombre": "Boloñesa",
-        "precio": 14500
-      },
-      {
-        "id": "Fileto",
-        "nombre": "Fileto",
-        "precio": 18500
-      }
+    "additionalType": "single",
+    "additionalRequired": true,
+    "additional": [
+      { "id": "salsa de tomate", "nombre": "Salsa de tomate", "precio": 3000 },
+      { "id": "salsa boloñesa", "nombre": "Salsa boloñesa", "precio": 6000 },
+      { "id": "salsa de queso", "nombre": "Salsa de queso", "precio": 4000 },
+      { "id": "salsa blanca", "nombre": "salsa blanca", "precio": 3500 }
     ],
     "stock": 999,
     "talles": [],
@@ -318,8 +276,7 @@
     "picante": false,
     "disponible": true
   },
-
-
+  
   {
     "id": "012",
     "titulo": "Sorrentinos de Jamón y Queso",
@@ -332,8 +289,13 @@
     "masVendido": true,
     "recomendado": true,
     "precio": 14800,
+    "additional": [
+      { "id": "salsa de tomate", "nombre": "Salsa de tomate", "precio": 3000 },
+      { "id": "salsa boloñesa", "nombre": "Salsa boloñesa", "precio": 6000 },
+      { "id": "salsa de queso", "nombre": "Salsa de queso", "precio": 4000 },
+      { "id": "salsa blanca", "nombre": "salsa blanca", "precio": 3500 }
+    ],
     "stock": 999,
-
     "vegetariano": false,
     "vegano": false,
     "sinTacc": false,
@@ -352,10 +314,13 @@
     "masVendido": false,
     "recomendado": true,
     "precio": 12600,
+    "additional": [
+      { "id": "salsa de tomate", "nombre": "Salsa de tomate", "precio": 3000 },
+      { "id": "salsa boloñesa", "nombre": "Salsa boloñesa", "precio": 6000 },
+      { "id": "salsa de queso", "nombre": "Salsa de queso", "precio": 4000 },
+      { "id": "salsa blanca", "nombre": "salsa blanca", "precio": 3500 }
+    ],
     "stock": 999,
-    "talles": [],
-    "colores": [],
-    "imagenesPorColor": {},
     "vegetariano": true,
     "vegano": false,
     "sinTacc": false,
@@ -374,10 +339,13 @@
     "masVendido": true,
     "recomendado": true,
     "precio": 12900,
+    "additional": [
+      { "id": "salsa de tomate", "nombre": "Salsa de tomate", "precio": 3000 },
+      { "id": "salsa boloñesa", "nombre": "Salsa boloñesa", "precio": 6000 },
+      { "id": "salsa de queso", "nombre": "Salsa de queso", "precio": 4000 },
+      { "id": "salsa blanca", "nombre": "salsa blanca", "precio": 3500 }
+    ],
     "stock": 999,
-    "talles": [],
-    "colores": [],
-    "imagenesPorColor": {},
     "vegetariano": true,
     "vegano": false,
     "sinTacc": false,
@@ -395,11 +363,12 @@
     "nuevo": false,
     "masVendido": true,
     "recomendado": false,
-    "precio": 6500,
+    "precio": 10000,
+    "size": [
+      { "id": "porcion", "nombre": "Porción", "precio": 10000 },
+      { "id": "grande", "nombre": "Grande", "precio": 15000 }
+    ],
     "stock": 999,
-    "talles": [],
-    "colores": [],
-    "imagenesPorColor": {},
     "vegetariano": true,
     "vegano": true,
     "sinTacc": true,
@@ -417,11 +386,12 @@
     "nuevo": false,
     "masVendido": true,
     "recomendado": true,
-    "precio": 8900,
+    "precio": 15000,
+    "size": [
+      { "id": "porcion", "nombre": "Porción", "precio": 15000 },
+      { "id": "grande", "nombre": "Grande", "precio": 20000 }
+    ],
     "stock": 999,
-    "talles": [],
-    "colores": [],
-    "imagenesPorColor": {},
     "vegetariano": false,
     "vegano": false,
     "sinTacc": true,
@@ -440,10 +410,11 @@
     "masVendido": false,
     "recomendado": true,
     "precio": 8400,
+    "size": [
+      { "id": "porcion", "nombre": "Porción", "precio": 8400 },
+      { "id": "grande", "nombre": "Grande", "precio": 14000 }
+    ],
     "stock": 999,
-    "talles": [],
-    "colores": [],
-    "imagenesPorColor": {},
     "vegetariano": true,
     "vegano": false,
     "sinTacc": false,
@@ -461,11 +432,12 @@
     "nuevo": false,
     "masVendido": true,
     "recomendado": true,
-    "precio": 7200,
+    "precio": 5000,
+    "size": [
+      { "id": "unidad", "nombre": "Unidad", "precio": 5000 },
+      { "id": "x6", "nombre": "X6", "precio": 28000 }
+    ],
     "stock": 999,
-    "talles": [],
-    "colores": [],
-    "imagenesPorColor": {},
     "vegetariano": false,
     "vegano": false,
     "sinTacc": false,
@@ -485,9 +457,6 @@
     "recomendado": true,
     "precio": 9800,
     "stock": 999,
-    "talles": [],
-    "colores": [],
-    "imagenesPorColor": {},
     "vegetariano": false,
     "vegano": false,
     "sinTacc": false,
@@ -507,9 +476,6 @@
     "recomendado": true,
     "precio": 10200,
     "stock": 999,
-    "talles": [],
-    "colores": [],
-    "imagenesPorColor": {},
     "vegetariano": true,
     "vegano": false,
     "sinTacc": true,
@@ -529,9 +495,6 @@
     "recomendado": false,
     "precio": 10800,
     "stock": 999,
-    "talles": [],
-    "colores": [],
-    "imagenesPorColor": {},
     "vegetariano": false,
     "vegano": false,
     "sinTacc": true,
@@ -551,9 +514,6 @@
     "recomendado": true,
     "precio": 11800,
     "stock": 999,
-    "talles": [],
-    "colores": [],
-    "imagenesPorColor": {},
     "vegetariano": true,
     "vegano": true,
     "sinTacc": false,
@@ -573,9 +533,6 @@
     "recomendado": true,
     "precio": 11400,
     "stock": 999,
-    "talles": [],
-    "colores": [],
-    "imagenesPorColor": {},
     "vegetariano": true,
     "vegano": true,
     "sinTacc": false,
@@ -595,9 +552,6 @@
     "recomendado": true,
     "precio": 12600,
     "stock": 999,
-    "talles": [],
-    "colores": [],
-    "imagenesPorColor": {},
     "vegetariano": true,
     "vegano": true,
     "sinTacc": true,
@@ -617,9 +571,6 @@
     "recomendado": true,
     "precio": 5800,
     "stock": 999,
-    "talles": [],
-    "colores": [],
-    "imagenesPorColor": {},
     "vegetariano": true,
     "vegano": false,
     "sinTacc": true,
@@ -639,9 +590,6 @@
     "recomendado": true,
     "precio": 5800,
     "stock": 999,
-    "talles": [],
-    "colores": [],
-    "imagenesPorColor": {},
     "vegetariano": true,
     "vegano": false,
     "sinTacc": true,
@@ -661,9 +609,6 @@
     "recomendado": true,
     "precio": 6900,
     "stock": 999,
-    "talles": [],
-    "colores": [],
-    "imagenesPorColor": {},
     "vegetariano": true,
     "vegano": false,
     "sinTacc": false,
@@ -681,11 +626,13 @@
     "nuevo": false,
     "masVendido": true,
     "recomendado": true,
-    "precio": 4500,
+    "precio": 7500,
     "stock": 999,
-    "talles": ["473ml"],
-    "colores": [],
-    "imagenesPorColor": {},
+    "size": [
+      { "id": "354ml", "nombre": "354ml", "precio": 5500 },
+      { "id": "750ml", "nombre": "750ml", "precio": 7500 },
+      { "id": "1L", "nombre": "1L", "precio": 14500 }
+    ],
     "vegetariano": true,
     "vegano": true,
     "sinTacc": true,
@@ -703,11 +650,13 @@
     "nuevo": true,
     "masVendido": true,
     "recomendado": true,
-    "precio": 6500,
+    "precio": 7500,
     "stock": 999,
-    "talles": ["473ml"],
-    "colores": [],
-    "imagenesPorColor": {},
+    "size": [
+      { "id": "354ml", "nombre": "354ml", "precio": 5500 },
+      { "id": "750ml", "nombre": "750ml", "precio": 7500 },
+      { "id": "1L", "nombre": "1L", "precio": 14500 }
+    ],
     "vegetariano": true,
     "vegano": true,
     "sinTacc": true,
@@ -727,9 +676,11 @@
     "recomendado": true,
     "precio": 6200,
     "stock": 999,
-    "talles": ["473ml"],
-    "colores": [],
-    "imagenesPorColor": {},
+    "size": [
+      { "id": "354ml", "nombre": "354ml", "precio": 5500 },
+      { "id": "750ml", "nombre": "750ml", "precio": 6200 },
+      { "id": "1L", "nombre": "1L", "precio": 14500 }
+    ],
     "vegetariano": true,
     "vegano": true,
     "sinTacc": true,
@@ -749,9 +700,9 @@
     "recomendado": true,
     "precio": 6800,
     "stock": 999,
-    "talles": ["330ml"],
-    "colores": [],
-    "imagenesPorColor": {},
+    "size": [
+      { "id": "330ml", "nombre": "330ml", "precio": 6800 }
+    ],
     "vegetariano": true,
     "vegano": true,
     "sinTacc": true,
@@ -771,9 +722,6 @@
     "recomendado": true,
     "precio": 14500,
     "stock": 999,
-    "talles": ["750ml"],
-    "colores": [],
-    "imagenesPorColor": {},
     "vegetariano": true,
     "vegano": true,
     "sinTacc": true,
@@ -793,9 +741,6 @@
     "recomendado": true,
     "precio": 13500,
     "stock": 999,
-    "talles": ["750ml"],
-    "colores": [],
-    "imagenesPorColor": {},
     "vegetariano": true,
     "vegano": true,
     "sinTacc": true,
@@ -813,11 +758,13 @@
     "nuevo": false,
     "masVendido": true,
     "recomendado": true,
-    "precio": 3000,
+    "precio": 6000,
     "stock": 999,
-    "talles": ["500ml"],
-    "colores": [],
-    "imagenesPorColor": {},
+    "size": [
+      { "id": "354ml", "nombre": "354ml", "precio": 3000 },
+      { "id": "750ml", "nombre": "750ml", "precio": 6000 },
+      { "id": "1L", "nombre": "1L", "precio": 10000 }
+    ],
     "vegetariano": true,
     "vegano": true,
     "sinTacc": true,
@@ -837,9 +784,11 @@
     "recomendado": true,
     "precio": 3000,
     "stock": 999,
-    "talles": ["500ml"],
-    "colores": [],
-    "imagenesPorColor": {},
+    "size": [
+      { "id": "354ml", "nombre": "354ml", "precio": 3000 },
+      { "id": "500ml", "nombre": "500ml", "precio": 6000 },
+      { "id": "1L", "nombre": "1L", "precio": 10000 }
+    ],
     "vegetariano": true,
     "vegano": true,
     "sinTacc": true,
@@ -859,9 +808,10 @@
     "recomendado": false,
     "precio": 2200,
     "stock": 999,
-    "talles": ["500ml"],
-    "colores": [],
-    "imagenesPorColor": {},
+    "size": [
+      { "id": "500ml", "nombre": "500ml", "precio": 2200 },
+      { "id": "1L", "nombre": "1L", "precio": 5000 }
+    ],
     "vegetariano": true,
     "vegano": true,
     "sinTacc": true,

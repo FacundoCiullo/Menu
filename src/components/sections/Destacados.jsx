@@ -62,7 +62,7 @@ const Destacados = ({ limit = 8 }) => {
       <div className="d-flex destacados">
         <h2 className="fw-bold m-0">Destacados</h2>
 
-      <Link className="link-underline-dark" to="/Productos">
+      <Link className="link-underline-dark " to="/Productos">
             <p className="text-white">Ver más</p>
         </Link>
       </div>

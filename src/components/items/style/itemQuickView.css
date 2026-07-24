@@ -1,27 +1,77 @@
-/* Quitar los bordes por defecto del Modal de Bootstrap */
-.iqv-modal-custom .modal-content {
-  border-radius: 16px;
-  overflow: hidden;
-  border: none;
-  max-width: 440px; /* Ancho de tarjeta compacta como la foto */
-  margin: 30px;
-  border: 5px solid var(--text);
+/* =========================================================================
+    1) TOKENS PRIMITIVOS (Paletas puras)
+   ========================================================================= */
+:root {
+  /* Escala Neutral (Monocromo & Dark Obsidian) */
+
+    /* Fondo general y tarjetas */
+  --iqv-bg-card: #0f0f12;           /* Negro puro enriquecido */
+  --iqv-bg-surface: #16161a;        /* Superficie de contraste sutil */
+  --iqv-bg-hover: #222228;          /* Hover metálico suave */
+  
+  /* Textos */
+  --iqv-text-primary: #f5f5f7;       /* Blanco marfil de alto contraste */
+  --iqv-text-secondary: #a1a1aa;     /* Gris platino para descripciones */
+  
+  /* Bordes y Divisiones */
+  --iqv-border: #2a2a30;            /* Bordes tenues */
+  --iqv-border-input: #3a3a42;      /* Bordes de inputs */
+  
+  /* Acentos Gold Elite */
+  --iqv-primary-accent: #d4af37;    /* Oro clásico metálico */
+  --iqv-primary-accent-bg: rgba(212, 175, 55, 0.12); /* Brillo dorado transparente */
+  --iqv-admin-accent: #e5c158;     /* Oro brillante para destacar paneles */
+  
+  /* Sombras y Luces */
+  --iqv-shadow: rgba(0, 0, 0, 0.7);
+  --iqv-gold-glow: 0 4px 20px rgba(212, 175, 55, 0.25);
 }
 
-/* Contenedor vertical de la tarjeta */
+/* Compatibilidad forzada para modo oscuro automático o activo por selector */
+[data-theme="dark"], .dark-theme, body.dark-mode {
+  --iqv-bg-card: #0f0f12;
+  --iqv-bg-surface: #16161a;
+  --iqv-bg-hover: #222228;
+  --iqv-text-primary: #f5f5f7;
+  --iqv-text-secondary: #a1a1aa;
+  --iqv-border: #2a2a30;
+  --iqv-border-input: #3a3a42;
+  --iqv-primary-accent: #d4af37;
+  --iqv-primary-accent-bg: rgba(212, 175, 55, 0.12);
+  --iqv-admin-accent: #e5c158;
+  --iqv-shadow: rgba(0, 0, 0, 0.7);
+}
+
+
+
+/* =========================================================================
+    ESTILOS GENERALES Y MODAL
+   ========================================================================= */
+
+.iqv-modal-custom .modal-content {
+  border-radius: 20px;
+  overflow: hidden;
+  border: 1px solid var(--iqv-border);
+  max-width: 440px;
+  margin: 30px auto 60px;
+  background-color: var(--iqv-bg-card);
+  box-shadow: var(--iqv-shadow) 0px 15px 35px;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
 .iqv-card-container {
   display: flex;
   flex-direction: column;
-  background-color: var(--text);
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background-color: var(--iqv-bg-card);
+  color: var(--iqv-text-primary);
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
 }
 
-/* Wrapper de Imagen y botones de acción flotantes */
+/* Imagen y acciones flotantes */
 .iqv-image-wrapper {
   position: relative;
-  width: 100%;
-  padding-top: 60%; /* Ratio de aspecto 4:3 para la imagen */
-  background-color: var(--text);
+  padding-top: 60%;
+  background-color: #050507;
 }
 
 .iqv-main-img {
@@ -33,33 +83,37 @@
   object-fit: cover;
 }
 
-/* Favorito Flotante Arriba Izquierda */
 .iqv-floating-fav {
   position: absolute;
   top: 16px;
   left: 16px;
   width: 40px;
   height: 40px;
+  border-radius: 50%;
+  background: rgba(15, 15, 18, 0.65);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(212, 175, 55, 0.3);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-  transition: background 0.2s ease;
   z-index: 10;
-}
-.iqv-floating-fav:hover {
-  background: rgba(255, 255, 255, 0.4);
+  transition: all 0.2s ease;
 }
 
-/* Botón de Cerrar Flotante Arriba Derecha */
+.iqv-floating-fav:hover {
+  background: rgba(15, 15, 18, 0.9);
+  border-color: var(--iqv-primary-accent);
+}
+
 .iqv-floating-close {
   position: absolute;
   top: 16px;
   right: 16px;
-  background: rgba(0, 0, 0, 0.6);
-  border: none;
-  color: #ffffff;
+  background: rgba(15, 15, 18, 0.65);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--iqv-border);
+  color: var(--iqv-text-primary);
   border-radius: 50%;
   width: 40px;
   height: 40px;
@@ -67,233 +121,233 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-  transition: background 0.2s ease;
   z-index: 10;
-}
-.iqv-floating-close:hover {
-  background: rgba(0, 0, 0, 0.8);
+  transition: all 0.2s ease;
 }
 
-/* Cuerpo de la información */
+.iqv-floating-close:hover {
+  background: rgba(22, 22, 26, 0.95);
+  border-color: var(--iqv-text-secondary);
+}
+
 .iqv-body-content {
-  padding: 20px;
+  padding: 24px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
+  background-color: var(--iqv-bg-card);
 }
 
 .iqv-product-title {
   font-size: 24px;
   font-weight: 700;
-  color: #212529;
+  letter-spacing: -0.02em;
+  color: var(--iqv-text-primary);
   margin: 0;
 }
 
 .iqv-product-description {
   font-size: 14px;
-  color: #6c757d;
-  margin: 10px 0;
-  line-height: 1.4;
+  color: var(--iqv-text-secondary);
+  margin: 4px 0;
+  line-height: 1.5;
 }
 
-/* Bloques de Secciones generales */
+/* =========================================================================
+   GRUPO DE OPCIONES Y TARJETAS SELECCIONABLES (GOLD TOUCH)
+   ========================================================================= */
 
-.iqv-section-block {
-  border-top: 1px solid #ccc;
+.iqv-options-group {
   display: flex;
   flex-direction: column;
-  padding-top: 12px;
   gap: 8px;
 }
 
-.iqv-label-text {
-  font-size: 15px;
+.iqv-group-title {
+  font-size: 14px;
   font-weight: 600;
-  color: #212529;
-}
-
-/* Chips Minimalistas para Variantes (Tamaño) */
-.iqv-chips-container {
+  color: var(--iqv-text-primary);
   display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
+  align-items: center;
 }
 
-.iqv-chip-btn {
-  background: #ffffff;
-  border: 1px solid #ced4da;
-  color: #212529;
-  padding: 6px 16px;
-  border-radius: 16px;
+.iqv-selected-badge {
+  color: var(--iqv-primary-accent);
+  font-weight: 600;
   font-size: 13px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s ease;
 }
 
-.iqv-chip-btn:hover {
-  background-color: #f8f9fa;
-  border-color: #6c757d;
-}
-
-.iqv-chip-btn.active {
-  background-color: #212529;
-  border-color: #212529;
-  color: #ffffff;
-}
-
-/* Lista de Adicionales */
-.iqv-adicionales-list {
+.iqv-options-list {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  max-height: 120px;
+  gap: 8px;
+  max-height: 220px;
   overflow-y: auto;
 }
 
-.iqv-adicional-item {
-  padding: 8px;
-  border: 1px solid #dee2e6;
-  border-radius: 6px;
+/* Tarjeta Botón Seleccionable */
+.iqv-option-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 18px;
+  border: 1px solid var(--iqv-border-input);
+  border-radius: 25px;
+  background-color: var(--iqv-bg-surface);
   cursor: pointer;
-}
-.iqv-adicional-item.active {
-  background-color: #f8f9fa;
+  transition: all 0.2s ease;
+  user-select: none;
 }
 
-/* Fila de Cantidad y Precio */
+.iqv-option-card:hover {
+  background-color: var(--iqv-bg-hover);
+  border-color: rgba(212, 175, 55, 0.4);
+}
+
+.iqv-option-card.active {
+  border-color: var(--iqv-primary-accent);
+  background-color: var(--iqv-primary-accent-bg);
+  box-shadow: 0 0 10px rgba(212, 175, 55, 0.15);
+}
+
+.iqv-option-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--iqv-text-primary);
+}
+
+.iqv-option-price {
+  font-size: 14px;
+  color: var(--iqv-text-primary);
+}
+
+.iqv-option-card.active .iqv-option-name,
+.iqv-option-card.active .iqv-option-price {
+  color: var(--iqv-primary-accent);
+  font-weight: 700;
+}
+
+/* =========================================================================
+   CANTIDAD Y PRECIOS
+   ========================================================================= */
+
 .iqv-quantity-price-row {
-    border-top: 1px solid #ccc;
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    margin-top: 10px;
-    padding-top: 10px;
-    padding-right: 10px;
+  border-top: 1px solid var(--iqv-border);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-top: 12px;
+  padding-top: 14px;
 }
 
 .iqv-qty-selector-wrapper {
   display: flex;
   align-items: flex-start;
   flex-direction: column;
-  gap: 12px;
+  gap: 8px;
 }
 
-/* Contador de cantidad */
+.iqv-label-text {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--iqv-text-primary);
+}
 
 .iqv-qty-counter {
   display: flex;
   align-items: center;
-  border: 1px solid #ced4da;
-  border-radius: 16px;
+  border: 1px solid var(--iqv-border-input);
+  border-radius: 20px;
   overflow: hidden;
-  background-color: #fff;
+  background-color: var(--iqv-bg-surface);
 }
 
 .iqv-qty-counter button {
   border: none;
   background: transparent;
-  padding: 6px 8px;
+  padding: 6px 12px;
   cursor: pointer;
-  color: #212529;
+  color: var(--iqv-text-primary);
   display: flex;
   align-items: center;
-  transition: background 0.2s;
+  transition: background-color 0.2s, color 0.2s;
 }
 
 .iqv-qty-counter button:hover:not(:disabled) {
-  background-color: #f1f3f5;
+  background-color: var(--iqv-bg-hover);
+  color: var(--iqv-primary-accent);
 }
 
 .iqv-qty-counter button:disabled {
-  opacity: 0.3;
+  opacity: 0.25;
   cursor: not-allowed;
 }
 
 .iqv-qty-value {
   font-size: 15px;
-  font-weight: 600;
-  min-width: 30px;
+  font-weight: 700;
+  min-width: 28px;
   text-align: center;
+  color: var(--iqv-text-primary);
 }
 
-/* Visualización del precio (Grande y verde negrita como la foto) */
 .iqv-price-display {
-  font-size: 28px;
+  font-size: 30px;
   font-weight: 800;
-  color: #198754; 
+  letter-spacing: -0.03em;
+  color: var(--iqv-primary-accent); 
+  text-shadow: 0 0 12px rgba(212, 175, 55, 0.2);
 }
 
-/* Botones inferiores finales */
+/* =========================================================================
+  ACCIONES Y EDICIÓN ADMIN (GOLD ACCENTS)
+   ========================================================================= */
+
 .iqv-footer-actions {
-  
   display: flex;
   gap: 10px;
-  margin-top: 10px;
-}
-
-.iqv-btn-icon-only {
-  width: 50px;
-  height: 48px;
-  background-color: #2a2d34;
-  border: none;
-  color: #ffffff;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: opacity 0.2s;
+  margin-top: 12px;
 }
 
 .iqv-btn-primary-action {
   flex: 1;
-  height: 48px;
-  background-color: var(--success);
+  height: 50px;
+  background: linear-gradient(135deg, #e5c158 0%, #b8860b 100%);
   border: none;
-  color: #ffffff;
-  font-weight: 600;
+  color: #0f0f12;
+  font-weight: 700;
   font-size: 15px;
+  letter-spacing: 0.02em;
   border-radius: 30px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: background-color 0.2s;
+  box-shadow: var(--iqv-gold-glow);
 }
 
-.iqv-btn-icon-only:hover,
 .iqv-btn-primary-action:hover {
-  opacity: 0.9;
+  opacity: 0.95;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 24px rgba(212, 175, 55, 0.35);
 }
 
-.iqv-btn-icon-only:disabled,
 .iqv-btn-primary-action:disabled {
-  background-color: #6c757d;
+  background: var(--iqv-bg-surface);
+  border: 1px solid var(--iqv-border);
+  color: var(--iqv-text-secondary);
+  box-shadow: none;
   cursor: not-allowed;
   opacity: 0.6;
 }
 
-.iqv-chip-static-label {
-  background-color: #212529;
-  color: #ffffff;
-  padding: 6px 16px;
-  border-radius: 8px;
-  font-size: 14px;
-  font-weight: 600;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* Botón Flotante para habilitar edición (Admin) */
 .iqv-floating-edit-btn {
   position: absolute;
-  top: 14px;
-  left: 14px;
-  background-color: #ff9f0a;
+  top: 16px;
+  left: 16px;
+  background: linear-gradient(135deg, #d4af37 0%, #aa7c11 100%);
   border: none;
+  color: #0f0f12;
   width: 40px;
   height: 40px;
   border-radius: 50%;
@@ -302,40 +356,70 @@
   justify-content: center;
   cursor: pointer;
   z-index: 10;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-  transition: all 0.2s ease;
-}
-
-.iqv-floating-edit-btn:hover {
-  transform: scale(1.1);
-  background-color: #f08c00;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+  transition: transform 0.2s ease, background-color 0.2s ease;
 }
 
 .iqv-floating-edit-btn.active {
-  background-color: #6c757d;
+  background: var(--iqv-bg-surface);
+  border: 1px solid var(--iqv-border);
+  color: var(--iqv-text-primary);
 }
 
-/* Estilos de los inputs editables */
+.iqv-admin-header {
+  border-color: var(--iqv-border) !important;
+}
+
+.iqv-admin-badge {
+  background-color: var(--iqv-admin-accent);
+  color: #0f0f12;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+
+.iqv-admin-subtitle {
+  color: var(--iqv-text-secondary);
+}
+
+.iqv-edit-section {
+  border: 1px solid var(--iqv-border);
+  padding: 10px;
+  background-color: var(--iqv-bg-surface);
+}
+
+.iqv-accent-text {
+  color: var(--iqv-admin-accent);
+}
+
 .iqv-input-label {
-  font-size: 0.85rem;
-  color: #a1a1aa;
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--iqv-text-secondary);
   margin-bottom: 4px;
   display: block;
 }
 
 .iqv-editable-input {
-  background-color: #18181b !important;
-  color: #ffffff !important;
-  border: 1px solid #3f3f46 !important;
-  border-radius: 8px !important;
+  background-color: #121216 !important;
+  color: var(--iqv-text-primary) !important;
+  border: 1px solid var(--iqv-border-input) !important;
+  border-radius: 10px !important;
   padding: 8px 12px !important;
   font-size: 0.95rem;
-  transition: border-color 0.2s ease;
+  transition: all 0.2s ease;
 }
 
 .iqv-editable-input:focus {
-  background-color: #27272a !important;
-  border-color: #ffcc00 !important;
-  box-shadow: 0 0 0 0.2rem rgba(255, 204, 0, 0.2) !important;
-  color: #ffffff !important;
+  background-color: var(--iqv-bg-card) !important;
+  border-color: var(--iqv-primary-accent) !important;
+  box-shadow: 0 0 0 0.2rem rgba(212, 175, 55, 0.2) !important;
+  color: var(--iqv-text-primary) !important;
+}
+
+.iqv-btn-admin-save {
+  background: linear-gradient(135deg, #e5c158 0%, #b8860b 100%);
+  color: #0f0f12;
+  font-weight: 800;
 }

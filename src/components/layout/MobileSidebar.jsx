@@ -70,7 +70,7 @@ const MobileSidebar = ({ showSidebar, setShowSidebar, user }) => {
                 <>
                   <img
                     src={user.photoURL}
-                    alt="avatar"
+                    alt="Avatar de usuario"
                     className="sidebar-avatar"
                     referrerPolicy="no-referrer"
                   />
@@ -79,14 +79,12 @@ const MobileSidebar = ({ showSidebar, setShowSidebar, user }) => {
                 </>
               ) : (
                 <>
-                  <div className="sidebar-avatar empty-avatar"></div>
+                  <div className="sidebar-avatar empty-avatar" />
                   <h3>Bienvenido</h3>
                   <p>Iniciá sesión para ver tu cuenta</p>
 
-            <hr className="sidebar-separator" />
-
-                  <button className="google-login-btn" onClick={handleLogin}>
-                    <FaGoogle className="me-2" /> Iniciar sesión con Google
+                  <button className="google-login-btn" onClick={handleLogin} type="button">
+                    <FaGoogle /> Iniciar sesión con Google
                   </button>
                 </>
               )}
@@ -94,7 +92,7 @@ const MobileSidebar = ({ showSidebar, setShowSidebar, user }) => {
 
             <hr className="sidebar-separator" />
 
-            {/* ITEMS */}
+            {/* ITEMS DE NAVEGACIÓN */}
             <div className="sidebar-items">
               {user && (
                 <>
@@ -110,23 +108,22 @@ const MobileSidebar = ({ showSidebar, setShowSidebar, user }) => {
                     <FaHistory /> Historial
                   </Link>
 
-                  {/* Logout como link */}
-                  <button className="sidebar-item logout-btn" onClick={handleLogout}>
+                  <button className="sidebar-item logout-btn" onClick={handleLogout} type="button">
                     <FiLogOut /> Cerrar sesión
                   </button>
 
                   {esAdmin && (
                     <>
+                      <hr className="sidebar-separator" />
                       <Link to="/admin" className="sidebar-item admin-item" onClick={() => setShowSidebar(false)}>
                         <FaUserCog /> Panel de administración
                       </Link>
-                      
-                      <button className="sidebar-item update-btn" onClick={handleActualizarProductos}>
+
+                      <button className="sidebar-item update-btn" onClick={handleActualizarProductos} type="button">
                         <FaSync /> Actualizar productos
                       </button>
                     </>
                   )}
-
                 </>
               )}
             </div>

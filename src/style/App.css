@@ -1,76 +1,150 @@
-/* =========================================================
-  🎨 1) DESIGN TOKENS – Colores, tipografías, sombras, etc.
-========================================================= */
-
-/* Neutral palette + tokens globales */
+/* =========================================================================
+    1) TOKENS PRIMITIVOS (Paletas puras)
+   ========================================================================= */
 :root {
-  --black: #0a0a0a;
-  --dark: #282828;
-  --gray-300: #c5c5c5;
-  --gray-600: #717171;
-  --white: #ffffff;
 
-  --success: #1a8151;
-  --danger: #cd4444;
-  --blue-soft: #3d71d1c1;
+  --pr-black-100: #050507;
+  --pr-black-200: #0a0a0c;
+  --pr-black-300: #0f0f12;
+  --pr-black-400: #141417;
+  --pr-black-500: #1a1a1e;
+  
+  --pr-gray-100: #222228;
+  --pr-gray-200: #2a2a30;
+  --pr-gray-300: #3a3a42;
+  --pr-gray-400: #717171;
+  --pr-gray-500: #a1a1aa;
+  --pr-gray-600: #c5c5c5;
+  --pr-gray-700: #f5f5f7;
+  --pr-white: #ffffff;
 
-  --radius-base: 1rem;
+  /* Acentos Gold Elite */
+  --pr-gold-300: #e5c158;
+  --pr-gold-400: #d4af37;
+  --pr-gold-500: #b8860b;
+  --pr-gold-glow: rgba(212, 175, 55, 0.25);
+  --pr-gold-surface: rgba(212, 175, 55, 0.12);
+
+  /* Estados Feedback */
+  --pr-success: #1a8151;
+  --pr-danger: #cd4444;
+  --pr-warning: #ff9f0a;
+  --pr-info: #3d71d1;
+
+  /* Tipografía */
+  --font-main: 'Urbanist', -apple-system, BlinkMacSystemFont, sans-serif;
+  
+  /* Layout & Modificadores */
+  --radius-xs: 0.375rem; /* 6px */
+  --radius-sm: 0.5rem;   /* 8px */
+  --radius-md: 0.75rem;  /* 12px */
+  --radius-lg: 1rem;      /* 16px */
+  --radius-pill: 9999px;
+
+  --transition-fast: 0.15s ease;
   --transition-base: 0.3s ease;
+  --transition-slow: 0.5s ease;
 
-  --font-base: 'Urbanist', sans-serif;
-
-    --background: #141414;
-    --text: #f5f5f5;
-    --text-muted: #9e9e9e;
-    --card: #1f1f1f;
-    --border: #333;
-    --accent: #ff7f11;
-    --nav-bg: #111;
-    --nav-text: #fff;
-    --switch-bg: #333;
-    --switch-knob: var(--accent);
-
-
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.6);
+  --shadow-lg: 0 15px 35px rgba(0, 0, 0, 0.8);
+  --shadow-gold: 0 4px 20px var(--pr-gold-glow);
 }
 
-/* =========================================================
-  🧱 2) BASE / RESET
-========================================================= */
-* {
+/* =========================================================================
+   2) TOKENS SEMÁNTICOS (Variables por defecto / Tema Dark Gold Elite)
+   ========================================================================= */
+:root {
+  /* Fondos principales */
+  --bg-app: var(--pr-black-200);
+  --bg-main: var(--pr-black-400);
+  --bg-card: var(--pr-black-300);
+  --bg-surface: var(--pr-gray-100);
+  --bg-hover: var(--pr-gray-200);
+
+  /* Textos y Jerarquía */
+  --text-primary: var(--pr-gray-700);
+  --text-secondary: var(--pr-gray-500);
+  --text-muted: var(--pr-gray-400);
+  --text-inverse: var(--pr-black-100);
+
+  /* Bordes & Divisiones */
+  --border-subtle: var(--pr-gray-200);
+  --border-input: var(--pr-gray-300);
+  --border-focus: var(--pr-gold-400);
+
+  /* Acentos de Marca (Gold Elite) */
+  --accent-primary: var(--pr-gold-400);
+  --accent-hover: var(--pr-gold-300);
+  --accent-surface: var(--pr-gold-surface);
+  --accent-gradient: linear-gradient(135deg, var(--pr-gold-300) 0%, var(--pr-gold-500) 100%);
+
+  /* Navegación y UI específica */
+  --nav-bg: var(--pr-black-100);
+  --nav-text: var(--pr-white);
+  --switch-bg: var(--pr-gray-200);
+  --switch-knob: var(--accent-primary);
+
+  /* Feedback semántico */
+  --color-success: var(--pr-success);
+  --color-danger: var(--pr-danger);
+  --color-warning: var(--pr-warning);
+  --color-info: var(--pr-info);
+}
+
+/* =========================================================================
+   3) TEMAS ALTERNATIVOS (Ej: si querés volver al Naranja o cambiar en el futuro)
+   ========================================================================= */
+[data-theme="orange"] {
+  --accent-primary: #ff7f11;
+  --accent-hover: #ff9533;
+  --accent-surface: rgba(255, 127, 17, 0.12);
+  --accent-gradient: linear-gradient(135deg, #ff9533 0%, #d96200 100%);
+  --shadow-gold: 0 4px 20px rgba(255, 127, 17, 0.25);
+}
+
+/* =========================================================================
+   4) BASE / RESET Y REGLAS GLOBALES
+   ========================================================================= */
+*, *::before, *::after {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
 body, .App {
-  font-family: var(--font-base);
-  background-color: var(--color-bg-primary);
-  color: var(--text);
-  transition: background 0.3s ease, color 0.3s ease;
+  font-family: var(--font-main);
+  background-color: var(--bg-app);
+  color: var(--text-primary);
+  transition: background-color var(--transition-base), color var(--transition-base);
+  -webkit-font-smoothing: antialiased;
 }
 
 main {
-  background: var(--background);
+  background: var(--bg-main);
   padding-top: 2rem;
   padding-bottom: 2rem;
-  margin: 0 0rem;
   min-height: 100vh;
 }
 
-@media (max-width: 575.98px) {
-  main {
-    padding-top: 2rem;
-    padding-bottom: 2rem;
-    margin: 0 0rem;
+/* Tipografía global rápida */
+h1, h2, h3, h4, h5, h6 {
+  color: var(--text-primary);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+p {
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+/* Responsive Overrides */
+@media (min-width: 1400px) {
+  .container, .container-lg, .container-md, .container-sm, .container-xl, .container-xxl {
+    max-width: none;
   }
 }
-
-@media (min-width: 1400px) {
-    .container, .container-lg, .container-md, .container-sm, .container-xl, .container-xxl {
-        max-width: none;
-    }
-}
-
 /* =========================================================
   🧩 3) HELPERS – clases utilitarias
 ========================================================= */
@@ -163,5 +237,48 @@ main {
 }
 
 /* Social bar */
+
+
+
+/* =========================================================
+  🧩 3) HELPERS – clases utilitarias
+========================================================= */
+
+/* Contenedor */
+
+.container {
+
+  margin-bottom: 3rem;
+  background: var(--background);
+}
+
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.shadow-soft {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.section {
+  padding: rem 2rem;
+}
+
+
+
+/* =========================================================
+  🔔 4) TOASTIFY CUSTOM
+========================================================= */
+
+.Toastify__toast--success {
+  background-color: #222 !important;
+  color: #fff !important;
+  border-radius: 12px !important;
+  border-left: 5px solid #0d6efd !important;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+}
+
 
 

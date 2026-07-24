@@ -10,39 +10,50 @@ import { auth } from "../../firebase";
 import Sidebar from "./Sidebar";
 import { useState } from "react";
 
-
 const NavBar = () => {
   const [user] = useAuthState(auth);
   const [showSidebar, setShowSidebar] = useState(false);
 
   return (
     <>
-      <Navbar bg="dark" variant="dark" expand="lg" fixed="top" className="navbar-custom shadow-sm px-4 py-2">
+      <Navbar expand="lg" fixed="top" className="navbar-custom shadow-sm px-4 py-2">
         <div className="d-flex align-items-center navbar-custom2 w-100">
 
           {/* Logo */}
           <Navbar.Brand as={Link} to="/" className="d-flex align-items-center">
-            <BsBoxes size={28} className="me-2" />
+            <BsBoxes size={28} className="nav-brand-icon me-2" />
           </Navbar.Brand>
 
           {/* Links Desktop */}
-          <Nav className="d-none d-lg-flex align-items-center gap-3">
-            <Nav.Link as={Link} to="/" className="nav-underline text-white">Inicio</Nav.Link>
-            <Nav.Link as={Link} to="/Productos" className="nav-underline text-white">Menú</Nav.Link>
-            <Nav.Link as={Link} to="/Contactos" className="nav-underline text-white"></Nav.Link>
+          <Nav className="d-none d-lg-flex align-items-center gap-4">
+            <Nav.Link as={Link} to="/" className="nav-underline">Inicio</Nav.Link>
+            <Nav.Link as={Link} to="/Productos" className="nav-underline">Menú</Nav.Link>
+            <Nav.Link as={Link} to="/Contactos" className="nav-underline">Contactos</Nav.Link>
           </Nav>
 
-          {/* Carrito */}
-          <CartWidget />
+          {/* Área de usuario y Carrito */}
+          <div className="d-flex align-items-center gap-3">
+            <CartWidget />
 
-          {/* Avatar abre sidebar */}
-          <Button variant="link" className="p-0 border-0" onClick={() => setShowSidebar(true)}>
-            {user ? (
-              <img src={user.photoURL} alt="usuario" className="nav-avatar" referrerPolicy="no-referrer" />
-            ) : (
-              <FaUserCircle size={28} color="white" />
-            )}
-          </Button>
+            {/* Avatar abre sidebar */}
+            <Button 
+              variant="link" 
+              className="p-0 border-0" 
+              onClick={() => setShowSidebar(true)}
+              aria-label="Menú de usuario"
+            >
+              {user ? (
+                <img 
+                  src={user.photoURL} 
+                  alt="usuario" 
+                  className="nav-avatar" 
+                  referrerPolicy="no-referrer" 
+                />
+              ) : (
+                <FaUserCircle size={28} className="text-secondary" />
+              )}
+            </Button>
+          </div>
 
         </div>
       </Navbar>
