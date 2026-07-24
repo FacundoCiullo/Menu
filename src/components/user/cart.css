@@ -1,5 +1,5 @@
 /* =========================================================
-   VARIABLES & ESTRUCTURA GENERAL
+  VARIABLES & ESTRUCTURA GENERAL
 ========================================================= */
 .cart-page {
   min-height: 85vh;
@@ -15,12 +15,13 @@
 }
 
 /* =========================================================
-   HEADER
+  HEADER
 ========================================================= */
 .cart-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-top: 12px;
   margin-bottom: 30px;
   flex-wrap: wrap;
   gap: 15px;
@@ -84,7 +85,7 @@
 }
 
 /* =========================================================
-   GRID LAYOUT
+  GRID LAYOUT
 ========================================================= */
 .cart-grid-layout {
   display: grid;
@@ -94,7 +95,7 @@
 }
 
 /* =========================================================
-   TARJETA DE PRODUCTO
+  TARJETA DE PRODUCTO
 ========================================================= */
 .cart-items {
   display: flex;
@@ -266,7 +267,7 @@
 }
 
 /* =========================================================
-   RESUMEN DE COMPRA
+  RESUMEN DE COMPRA
 ========================================================= */
 .cart-summary {
   background: var(--iqv-bg-card, #1a1a1e);
@@ -337,7 +338,7 @@
 }
 
 /* =========================================================
-   CARRITO VACÍO
+  CARRITO VACÍO
 ========================================================= */
 .empty-box {
   text-align: center;
@@ -391,11 +392,12 @@
 }
 
 /* =========================================================
-   RESPONSIVE ADAPTATIONS
+  RESPONSIVE ADAPTATIONS
 ========================================================= */
 @media (max-width: 850px) {
   .cart-grid-layout {
     grid-template-columns: 1fr;
+    gap: 15px;
   }
 
   .cart-summary {

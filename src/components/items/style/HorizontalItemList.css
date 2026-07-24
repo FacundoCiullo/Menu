@@ -59,6 +59,6 @@
 
 @media (max-width: 480px) {
   .slider-card-product {
-    flex: 0 0 80%;
+    flex: 0 0 45%;
   }
 }

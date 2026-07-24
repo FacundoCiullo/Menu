@@ -433,7 +433,7 @@ const ItemQuickView = ({ show, handleClose, producto }) => {
                   {producto.additional?.length > 0 && (
                     <div className="iqv-options-group mt-3">
                       <span className="iqv-group-title">
-                        {esSeleccionUnica ? "Salsa / Elección:" : "Adicionales extras:"}
+                        {esSeleccionUnica ? "Elección:" : "Adicionales extras:"}
                         {additionalSeleccionados.length > 0 && (
                           <small className="iqv-selected-badge ms-2">
                             ({esSeleccionUnica 

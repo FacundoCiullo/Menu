@@ -183,7 +183,7 @@ const WidgetOrdenes = ({ ordenes = [], loading, onUpdateStatus }) => {
                     <Accordion.Body className="p-0">
                       <div className="orden-items-container">
                         <div className="orden-items-title">
-                          ITEMS ({orden.items?.length || 0})
+                          PRODUCTOS ({orden.items?.length || 0})
                         </div>
                         <ul className="orden-items-list">
                           {orden.items?.map((it, idx) => {

@@ -24,7 +24,7 @@ const MobileNavbar = () => {
 
   // Títulos automáticos según la ruta
   const titles = {
-    "/Home": "App Menu Demo",
+    "/Home": "Inicio",
     "/favoritos": "Favoritos",
     "/Productos": "Menú",
     "/cart": "Carrito",
@@ -57,33 +57,47 @@ const MobileNavbar = () => {
         </div>
       </header>
 
+
       {/* 🔽 MOBILE NAVBAR (ABAJO) */}
       <nav className="mobile-nav d-md-none" aria-label="Navegación principal mobile">
-        <Link to="/Home" className={path === "/Home" ? "active" : ""} aria-label="Inicio">
+        <Link 
+        to="/Home" 
+        className={`nav-center-btn ${path === "/Home" ? "active" : ""}`}  
+        aria-label="Inicio">
           {path === "/Home" ? <AiFillHome size={24} /> : <AiOutlineHome size={24} />}
         </Link>
 
-        <Link to="/favoritos" className={path === "/favoritos" ? "active" : ""} aria-label="Favoritos">
-          {path === "/favoritos" ? <BsHeartFill size={22} /> : <BsHeart size={22} />}
+        <Link 
+        to="/favoritos" 
+        className={`nav-center-btn ${path === "/Favoritos" ? "active" : ""}`}  
+        aria-label="Favoritos">
+          {path === "/favoritos" ? <BsHeartFill size={24} /> : <BsHeart size={24} />}
         </Link>
 
-        <Link to="/Productos" className={path === "/Productos" ? "active" : ""} aria-label="Productos">
-          <LuBoxes size={26} />
+        <Link 
+          to="/Productos" 
+          className={`nav-center-btn ${path === "/Productos" ? "active" : ""}`} 
+          aria-label="Productos"
+        >
+          <LuBoxes size={36} />
         </Link>
 
         <div className="cart-icon-wrapper">
           {totalCarrito > 0 && <span className="cart-badge">{totalCarrito}</span>}
-          <Link to="/cart" className={path === "/cart" ? "active" : ""} aria-label="Carrito">
+          <Link 
+          to="/cart" 
+                  className={`nav-center-btn ${path === "/cart" ? "active" : ""}`}  
+          aria-label="Carrito">
             {path === "/cart" ? (
-              <RiShoppingCart2Fill size={26} />
+              <RiShoppingCart2Fill size={24} />
             ) : (
-              <RiShoppingCart2Line size={26} />
+              <RiShoppingCart2Line size={24} />
             )}
           </Link>
         </div>
 
         <button
-          className="mobile-avatar-btn"
+          className="mobile-avatar-btn "
           onClick={() => setShowSidebar(!showSidebar)}
           aria-label="Abrir menú de usuario"
           type="button"
@@ -96,7 +110,7 @@ const MobileNavbar = () => {
               referrerPolicy="no-referrer"
             />
           ) : (
-            <FaUserCircle size={24} />
+            <FaUserCircle  />
           )}
         </button>
       </nav>

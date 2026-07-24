@@ -2,14 +2,35 @@
     🛍 ESTILOS PARA TARJETAS DE PRODUCTO (PREMIUM DARK GOLD)
    ========================================================================= */
 
+/* Contenedor principal */
+.category-banner-wrapper {
+  position: relative; /* Esencial para posicionar el título sobre la imagen */
+  width: 100%;
+  margin: 40px 0;
+}
+
 /* Banner de Categoría */
 .category-banner {
   width: 100%;
   height: 100px;
   object-fit: cover;
   border-radius: var(--radius-lg);
-  margin: 40px 0;
   display: block;
+  filter: brightness(0.5);
+}
+
+/* Título centrado horizontal y verticalmente */
+.category-title-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  
+  /* Estilos opcionales para legibilidad */
+  color: #ffffff;
+  margin: 0;
+  text-align: center;
+  text-shadow: 0px 2px 4px rgba(224, 221, 221, 0.7); /* Ayuda a que resalte sobre el fondo */
 }
 
 /* Grilla general de productos */
@@ -224,29 +245,20 @@
    ========================================================================= */
 
 @media (max-width: 575.98px) {
-  .items-container {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    margin-bottom: 2rem;
-  }
-
   .category-banner {
     height: 80px;
     margin: 10px 0;
     border-radius: var(--radius-md);
   }
 
-  .item-card {
-    flex-direction: row;
-    height: auto;
-  }
 
-  .item-img-wrapper {
-    width: 105px;
-    min-width: 105px;
-    aspect-ratio: 1;
-  }
+  /* Favorito */
+.item-fav {
+  top: 10px;
+  right: 10px;
+  border-radius: 50%;
+  backdrop-filter: blur(4px);
+}
 
   .item-info {
     padding: 10px 12px;
