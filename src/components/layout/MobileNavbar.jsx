@@ -1,8 +1,9 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { AiOutlineHome, AiFillHome, AiOutlineArrowLeft } from "react-icons/ai";
+import { AiOutlineArrowLeft } from "react-icons/ai";
 import { BsHeart, BsHeartFill } from "react-icons/bs";
-import { RiShoppingCart2Line, RiShoppingCart2Fill } from "react-icons/ri";
-import { LuBoxes } from "react-icons/lu";
+import { RiShoppingCart2Line, RiShoppingCart2Fill} from "react-icons/ri";
+import { SiFoodpanda, SiHomeassistantcommunitystore } from "react-icons/si";
+import { BsPlusCircle, BsPlusCircleFill  } from "react-icons/bs";
 import { FaUserCircle } from "react-icons/fa";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../../firebase";
@@ -44,58 +45,6 @@ const MobileNavbar = () => {
 
         <h2 className="header-title">{pageTitle}</h2>
 
-        <div className="header-cart">
-          {totalCarrito > 0 && <span className="cart-badge">{totalCarrito}</span>}
-
-          <Link to="/cart" aria-label="Ver carrito">
-            {path === "/cart" ? (
-              <RiShoppingCart2Fill size={24} />
-            ) : (
-              <RiShoppingCart2Line size={24} />
-            )}
-          </Link>
-        </div>
-      </header>
-
-
-      {/* 🔽 MOBILE NAVBAR (ABAJO) */}
-      <nav className="mobile-nav d-md-none" aria-label="Navegación principal mobile">
-        <Link 
-        to="/Home" 
-        className={`nav-center-btn ${path === "/Home" ? "active" : ""}`}  
-        aria-label="Inicio">
-          {path === "/Home" ? <AiFillHome size={24} /> : <AiOutlineHome size={24} />}
-        </Link>
-
-        <Link 
-        to="/favoritos" 
-        className={`nav-center-btn ${path === "/Favoritos" ? "active" : ""}`}  
-        aria-label="Favoritos">
-          {path === "/favoritos" ? <BsHeartFill size={24} /> : <BsHeart size={24} />}
-        </Link>
-
-        <Link 
-          to="/Productos" 
-          className={`nav-center-btn ${path === "/Productos" ? "active" : ""}`} 
-          aria-label="Productos"
-        >
-          <LuBoxes size={36} />
-        </Link>
-
-        <div className="cart-icon-wrapper">
-          {totalCarrito > 0 && <span className="cart-badge">{totalCarrito}</span>}
-          <Link 
-          to="/cart" 
-                  className={`nav-center-btn ${path === "/cart" ? "active" : ""}`}  
-          aria-label="Carrito">
-            {path === "/cart" ? (
-              <RiShoppingCart2Fill size={24} />
-            ) : (
-              <RiShoppingCart2Line size={24} />
-            )}
-          </Link>
-        </div>
-
         <button
           className="mobile-avatar-btn "
           onClick={() => setShowSidebar(!showSidebar)}
@@ -113,6 +62,54 @@ const MobileNavbar = () => {
             <FaUserCircle  />
           )}
         </button>
+      </header>
+
+
+      {/* 🔽 MOBILE NAVBAR (ABAJO) */}
+      <nav className="mobile-nav d-md-none" aria-label="Navegación principal mobile">
+        <Link 
+        to="/Home" 
+        className={`nav-center-btn ${path === "/Home" ? "active" : ""}`}  
+        aria-label="Inicio">
+          {path === "/Home" ? <SiHomeassistantcommunitystore size={28} /> : <SiHomeassistantcommunitystore size={24} />}
+        </Link>
+
+        <Link 
+        to="/favoritos" 
+        className={`nav-center-btn ${path === "/Favoritos" ? "active" : ""}`}  
+        aria-label="Favoritos">
+          {path === "/favoritos" ? <BsHeartFill size={28} /> : <BsHeart size={24} />}
+        </Link>
+
+        <Link 
+        to="/Productos" 
+        className={`nav-center-btn ${path === "/Productos" ? "active" : ""}`}  
+        aria-label="Productos">
+          {path === "/Productos"? <BsPlusCircleFill size={28} /> : <BsPlusCircle size={24} />}
+        </Link>
+
+        <Link 
+        to="/Historial" 
+        className={`nav-center-btn ${path === "/Historial" ? "active" : ""}`} 
+        aria-label="Historial">
+          {path === "/Historial" ? <SiFoodpanda size={28} /> : <SiFoodpanda size={24} />}
+        </Link>
+
+        <div className="cart-icon-wrapper" >
+          {totalCarrito  > 0 && <span className="cart-badge"> {totalCarrito}</span>}
+          <Link 
+          to="/cart" 
+                  className={`nav-center-btn ${path === "/cart" ? "active" : ""}`}  
+          aria-label="Carrito">
+            {path === "/cart" ? (
+              <RiShoppingCart2Fill size={28} />
+            ) : (
+              <RiShoppingCart2Line size={24} />
+            )}
+          </Link>
+        </div>
+
+
       </nav>
 
       <MobileSidebar

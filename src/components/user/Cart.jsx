@@ -110,10 +110,14 @@ const Cart = () => {
 
                       {/* TAMAÑO SELECCIONADO */}
                       {item.sizeSeleccionado && (
-                        <div className="cart-item-detail">
-                          <span className="iqv-custom-badge">
-                            Tamaño: <b>{item.sizeSeleccionado.nombre}</b> (${item.sizeSeleccionado.precio.toLocaleString("es-AR")})
-                          </span>
+                        <div className="cart-extras-list">
+                          <span className="extras-title">Tamaño:</span>
+                          <ul>
+                            <li>
+                              {item.sizeSeleccionado.nombre}{" "}
+                              <span>${item.sizeSeleccionado.precio.toLocaleString("es-AR")}</span>
+                            </li>
+                          </ul>
                         </div>
                       )}
 
@@ -124,7 +128,8 @@ const Cart = () => {
                           <ul>
                             {item.additionalSeleccionados.map((extra, idx) => (
                               <li key={extra.id || idx}>
-                                + {extra.nombre} <span>(+${extra.precio.toLocaleString("es-AR")})</span>
+                                + {extra.nombre}{" "}
+                                <span>+${extra.precio.toLocaleString("es-AR")}</span>
                               </li>
                             ))}
                           </ul>

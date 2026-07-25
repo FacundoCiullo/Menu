@@ -17,13 +17,14 @@
   --pr-gray-600: #c5c5c5;
   --pr-gray-700: #f5f5f7;
   --pr-white: #ffffff;
+  --pr-edit: #ffe345;
 
   /* Acentos Gold Elite */
-  --pr-gold-300: #e5c158;
-  --pr-gold-400: #d4af37;
-  --pr-gold-500: #b8860b;
-  --pr-gold-glow: rgba(212, 175, 55, 0.25);
-  --pr-gold-surface: rgba(212, 175, 55, 0.12);
+  --pr-gold-300: #f99c2a;
+  --pr-gold-400: #ff8c00;
+  --pr-gold-500: #ffbf71;
+  --pr-gold-glow: rgba(253, 186, 16, 0.25);
+  --pr-gold-surface: rgba(212, 165, 55, 0.12);
 
   /* Estados Feedback */
   --pr-success: #1a8151;
@@ -52,7 +53,7 @@
 }
 
 /* =========================================================================
-   2) TOKENS SEMÁNTICOS (Variables por defecto / Tema Dark Gold Elite)
+    2) TOKENS SEMÁNTICOS (Variables por defecto / Tema Dark Gold Elite)
    ========================================================================= */
 :root {
   /* Fondos principales */
@@ -61,6 +62,7 @@
   --bg-card: var(--pr-black-300);
   --bg-surface: var(--pr-gray-100);
   --bg-hover: var(--pr-gray-200);
+  --bg-edit: var(--pr-edit);
 
   /* Textos y Jerarquía */
   --text-primary: var(--pr-gray-700);
@@ -93,7 +95,7 @@
 }
 
 /* =========================================================================
-   3) TEMAS ALTERNATIVOS (Ej: si querés volver al Naranja o cambiar en el futuro)
+    3) TEMAS ALTERNATIVOS (Ej: si querés volver al Naranja o cambiar en el futuro)
    ========================================================================= */
 [data-theme="orange"] {
   --accent-primary: #ff7f11;
@@ -104,7 +106,7 @@
 }
 
 /* =========================================================================
-   4) BASE / RESET Y REGLAS GLOBALES
+    4) BASE / RESET Y REGLAS GLOBALES
    ========================================================================= */
 *, *::before, *::after {
   margin: 0;

@@ -1,5 +1,5 @@
 /* ==========================================
-   SIDEBAR FULL HEIGHT OVERLAY MODE
+    SIDEBAR FULL HEIGHT OVERLAY MODE
    ========================================== */
 
 :root {
@@ -151,10 +151,11 @@
   }
   .toggle-sidebar-btn {
     position: absolute;
-    top: 75px;
-    right: -40px;
-    width: 36px;
-    height: 36px;
+    top: 70px;
+    right: -60px;
+    width: 46px;
+    height: 46px;
+      border: 0.5px solid var(--pr-white);
   }
   .sidebar-expanded .toggle-sidebar-btn{
     right: -18px;

@@ -186,8 +186,8 @@
 @media (max-width: 768px) {
   .admin-main-content {
     margin-left: 0;
-    padding: 12px;
-    padding-top: 15px;
+    padding: 18px;
+    padding-top: 22px;
   }
   
 
@@ -206,6 +206,11 @@
   .widget-2,
   .widget-3{
     margin-top: 10px;
+  }
+
+  .widget-3,
+  .widget-4{
+    display: none;
   }
 
 /* 4. DISPOSITIVOS MÓVILES (max-width: 576px)
@@ -254,4 +259,12 @@
   .grid-item .accordion-button {
     font-size: 0.85rem;
   }
+
+  .p-2{
+    padding: .1rem !important;
+  }
+
+  .grid-item .accordion-button {
+  padding: 1px 0;
+}
 }

@@ -21,7 +21,7 @@
   height: 80%;
   background: var(--bg-surface);
   border: 1px solid var(--border-subtle);
-
+  justify-content: space-between;
   z-index: 1000;
   display: flex;
   flex-direction: column;
@@ -50,8 +50,8 @@
   border-radius: 50%;
   object-fit: cover;
   margin-bottom: 12px;
-  border: 2px solid var(--accent-primary);
-  box-shadow: 0 0 12px var(--pr-gold-glow);
+  border: 2px solid var(--pr-white);
+  box-shadow: 0 0 12px var(--pr-gray-700);
 }
 
 .empty-avatar {
@@ -102,8 +102,8 @@
 .sidebar-separator {
   border: none;
   height: 1px;
-  background: linear-gradient(90deg, transparent, var(--border-subtle), transparent);
-  margin: 16px 0;
+  background: linear-gradient(90deg, transparent, var(--text-primary), transparent);
+  margin: 12px 0;
 }
 
 /* Lista de Items */
@@ -155,6 +155,8 @@
 
 /* Botón Admin de actualización */
 .update-btn {
+  display: flex;
+  justify-content: center;
   margin-top: 8px;
   background: var(--accent-gradient);
   color: var(--text-inverse) !important;

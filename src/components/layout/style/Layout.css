@@ -17,7 +17,7 @@
 
 .navbar-custom2 {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   align-items: center;
 }
 
@@ -83,7 +83,7 @@
 
 
 /* ---------------------------
-   SIDEBAR (OFFCANVAS DESKTOP)
+  SIDEBAR (OFFCANVAS DESKTOP)
 --------------------------- */
 .sidebar-offcanvas {
   background-color: var(--bg-surface) !important;

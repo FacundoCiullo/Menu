@@ -88,7 +88,7 @@ const DashboardHome = () => {
           <h1>Dashboard General</h1>
         </div>
         <div className="badge bg-light text-dark border p-2 fs-6">
-          📅 Viendo día: <b>{new Date(fechaFiltro).toLocaleDateString("es-AR")}</b>
+          Viendo día: <b>{new Date(fechaFiltro).toLocaleDateString("es-AR")}</b>
         </div>
       </header>
 
@@ -193,7 +193,7 @@ const DashboardHome = () => {
           </div>
 
           {/* FILA CON CASILLAS 8 Y 9 (MÁS Y MENOS VENDIDOS) */}
-          <div className="subgrid-8-9">
+          <div className="subgrid-8">
             
             {/* CASILLA 8: MÁS VENDIDOS */}
             <div className="grid-item widget-8">
@@ -212,22 +212,7 @@ const DashboardHome = () => {
               </Accordion>
             </div>
 
-            {/* CASILLA 9: MENOS VENDIDOS */}
-            <div className="grid-item widget-9">
-              <Accordion defaultActiveKey="0" flush>
-                <Accordion.Item eventKey="0">
-                  <Accordion.Header>📉 Menos Vendidos</Accordion.Header>
-                  <Accordion.Body className="p-0 pt-2">
-                    <WidgetTopProductos
-                      ordenes={ordenesDelDia}
-                      todosLosProductos={productosMenu}
-                      loading={loading}
-                      modoInicial="menos"
-                    />
-                  </Accordion.Body>
-                </Accordion.Item>
-              </Accordion>
-            </div>
+
 
           </div>
 

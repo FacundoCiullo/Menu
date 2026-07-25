@@ -123,7 +123,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  transform: translateY(-10px); /* Eleva el botón fuera de la barra */
+  transform: translateY(-2px); /* Eleva el botón fuera de la barra */
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
@@ -136,12 +136,12 @@
   4. AVATAR DE USUARIO
    ------------------------------------------------------------------------- */
 .mobile-avatar {
-  width: 48px;
-  height: 48px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   object-fit: cover;
-  border: 1.5px solid var(--pr-gray-200);
-    transform: translateY(-10px); /* Eleva el botón fuera de la barra */
+  border: 1.5px solid var(--pr-white);
+  transform: translateY(-2px); /* Eleva el botón fuera de la barra */
 }
 
 
@@ -156,16 +156,17 @@
 }
 
 .cart-badge {
+  z-index: 999;
   position: absolute;
-  top: -5px;
+  top: -6px;
   right: -8px;
-  min-width: 18px;
-  height: 18px;
+  min-width: 20px;
+  height: 20px;
   padding: 0 5px;
   background: var(--accent-gradient);
   color: var(--text-inverse);
-  font-size: 0.68rem;
-  font-weight: 800;
+  font-size: 0.75rem;
+  font-weight: 700;
   line-height: 18px;
   text-align: center;
   border-radius: var(--radius-pill);
