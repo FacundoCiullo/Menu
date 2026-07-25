@@ -202,16 +202,13 @@
   }
 }
 
-  .widget-1,
-  .widget-2,
-  .widget-3{
+  .widget-1, 
+  .widget-2, 
+  .widget-3,
+  .widget-4{
     margin-top: 10px;
   }
 
-  .widget-3,
-  .widget-4{
-    display: none;
-  }
 
 /* 4. DISPOSITIVOS MÓVILES (max-width: 576px)
   Una sola columna limpia para scroll fluido
@@ -227,7 +224,9 @@
   }
 
   /* Todos los widgets pasan a ocupar el 100% (span 1 de 1 columna) */
-  .widget-1{
+  .widget-1,  
+  .widget-3,
+  .widget-4{
     margin-top: 10px;
   }
 
@@ -242,6 +241,11 @@
   .widget-5,
   .widget-columna-derecha {
     grid-column: span 2;
+  }
+
+  .widget-3,
+  .widget-4{
+    display: none;
   }
 
   /* Subgrilla (widgets 8 y 9) también se apilan verticalmente */

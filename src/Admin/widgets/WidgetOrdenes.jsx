@@ -67,7 +67,7 @@ const WidgetOrdenes = ({ ordenes = [], loading, onUpdateStatus }) => {
 
       {/* Barra de Filtros */}
       <div className="mb-3 border-bottom pb-2">
-        <Nav variant="pills" className="gap-1 align-items-center justify-content-center">
+        <Nav variant="pills" className="gap-1 align-items-center justify-content-center flex-row flex-nowrap">
           <Button
             size="sm"
             variant={filtroActivo === "todos" ? "dark" : "outline-secondary"}

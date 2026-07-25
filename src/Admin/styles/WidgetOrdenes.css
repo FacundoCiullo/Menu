@@ -251,3 +251,75 @@
   padding: 0.3rem 0.75rem;
   border-radius: 20px;
 }
+
+/* ==========================================
+  SOLUCIÓN RESPONSIVE (Evita Scroll Horizontal)
+   ========================================== */
+
+/* 1. Ajustes globales de seguridad para textos largos */
+.cliente-email, 
+.cliente-nombre, 
+.orden-id {
+  word-break: break-word; /* Evita que correos largos fuercen el ancho del contenedor */
+  overflow-wrap: anywhere;
+}
+
+/* 2. Adaptación para pantallas pequeñas / contenedores estrechos */
+@media (max-width: 768px) {
+  
+  /* Pasa la tarjeta de 3 columnas a 1 sola columna */
+  .orden-grid-layout {
+    grid-template-columns: 1fr;
+    gap: 0.8rem;
+  }
+
+  /* La columna del medio (Selector de Estado) se alinea a la izquierda/centro según el espacio */
+  .grid-col-center {
+    align-items: flex-start;
+    width: 100%;
+  }
+
+  /* Los botones de estado se adaptan al ancho disponible */
+  .orden-status-selector {
+    display: flex;
+    flex-wrap: wrap; /* Si no caben en una fila, bajan suavemente */
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .pill-status {
+    flex: 1;
+    text-align: center;
+    padding: 0.3rem 0.5rem;
+  }
+
+  /* La columna derecha (ID, Precio, Flecha) pasa a distribuirse horizontalmente al final */
+  .grid-col-right {
+    align-items: flex-start;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+    border-top: 1px dashed #e5e7eb;
+    padding-top: 0.5rem;
+  }
+
+  .orden-accordion-trigger {
+    margin-top: 0;
+  }
+
+  /* Ajuste de los productos en pantallas pequeñas */
+  .orden-item-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.3rem;
+  }
+
+  .orden-item-inline-details {
+    flex-wrap: wrap; /* Si el título o detalles son largos, pasan abajo limpiamente */
+    gap: 0.5rem;
+  }
+
+  .orden-item-precio {
+    align-self: flex-end; /* El precio del producto queda abajo a la derecha */
+  }
+}
