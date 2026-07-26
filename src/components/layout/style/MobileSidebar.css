@@ -15,10 +15,12 @@
 /* Panel Lateral Flotante / Tarjeta Elite */
 .mobile-sidebar-panel {
   position: fixed;
-  bottom: 5rem;
+  top: 5rem;
   right: 0;
-  width: min(85vw, 320px);
-  height: 80%;
+  width: min(85vw, 270px);
+  height: auto !important; /* Deja que crezca según el contenido */
+  max-height: 100% !important;
+  overflow-y: hidden !important; /* Desactiva el scroll vertical */
   background: var(--bg-surface);
   border: 1px solid var(--border-subtle);
   justify-content: space-between;
@@ -28,7 +30,6 @@
   padding: 24px 18px;
   box-shadow: var(--shadow-gold), -8px 0 24px rgba(0, 0, 0, 0.8);
   border-radius: 25px 0 0 25px;
-  overflow-y: auto;
   font-family: var(--font-main);
   scrollbar-width: none;
 }

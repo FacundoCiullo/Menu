@@ -105,6 +105,7 @@
 /* Favorito */
 .item-fav {
   position: absolute;
+  padding: 7px 6px 4px;
   top: 10px;
   right: 12px;
   z-index: 2;
@@ -254,6 +255,7 @@
 
   /* Favorito */
 .item-fav {
+  
   top: 10px;
   right: 10px;
   border-radius: 50%;

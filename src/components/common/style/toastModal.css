@@ -1,0 +1,98 @@
+/* Contenedor Modal de Notificación Estilo Card Centrada */
+.tm-modal-custom .modal-dialog {
+  max-width: 320px;
+  margin: auto;
+}
+
+.tm-modal-custom .modal-content {
+  border-radius: 28px !important;
+  border: none;
+  overflow: visible;
+  background-color: #ffffff;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
+}
+
+.tm-body {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2.2rem 1.5rem 1.8rem 1.5rem;
+  text-align: center;
+}
+
+/* Circulo blanco flotante superior */
+.tm-icon-wrapper {
+  position: absolute;
+  top: -38px;
+  width: 76px;
+  height: 76px;
+  background-color: #ffffff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+.tm-icon {
+  font-size: 70px;
+}
+
+/* Colores de Iconos */
+.tm-icon-success { color: #008000; }
+.tm-icon-warning { color: #f39c12; }
+.tm-icon-error { color: #e74c3c; }
+.tm-icon-info { color: #f39c12; }
+
+/* Textos */
+.tm-subheading {
+  font-size: 0.8rem;
+  color: #95a5a6;
+  margin-top: 25px;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  font-weight: 600;
+}
+
+.tm-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #2c3e50;
+  margin-top: 4px;
+  margin-bottom: 8px;
+}
+
+.tm-desc {
+  font-size: 0.9rem;
+  color: #7f8c8d;
+  margin-bottom: 20px;
+}
+
+.tm-desc strong {
+  color: #2c3e50;
+}
+
+/* Botón adaptable según el tipo */
+.tm-btn {
+  width: 100%;
+  padding: 12px 0;
+  color: #ffffff;
+  border: none;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: transform 0.15s ease, opacity 0.2s ease;
+}
+
+.tm-btn-success { background-color: #008000; }
+.tm-btn-warning { background-color: #f39c12; }
+.tm-btn-error { background-color: #e74c3c; }
+.tm-btn-info { background-color: #f39c12; }
+
+.tm-btn:active {
+  transform: scale(0.97);
+  opacity: 0.9;
+}

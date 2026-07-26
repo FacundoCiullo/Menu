@@ -21,7 +21,7 @@
 
   /* Acentos Gold Elite */
   --pr-gold-300: #f99c2a;
-  --pr-gold-400: #ff8c00;
+  --pr-gold-400: #f39c12;
   --pr-gold-500: #ffbf71;
   --pr-gold-glow: rgba(253, 186, 16, 0.25);
   --pr-gold-surface: rgba(212, 165, 55, 0.12);
@@ -98,7 +98,7 @@
     3) TEMAS ALTERNATIVOS (Ej: si querés volver al Naranja o cambiar en el futuro)
    ========================================================================= */
 [data-theme="orange"] {
-  --accent-primary: #ff7f11;
+  --accent-primary: #f39c12;
   --accent-hover: #ff9533;
   --accent-surface: rgba(255, 127, 17, 0.12);
   --accent-gradient: linear-gradient(135deg, #ff9533 0%, #d96200 100%);
@@ -174,18 +174,6 @@ p {
 }
 
 
-
-/* =========================================================
-  🔔 4) TOASTIFY CUSTOM
-========================================================= */
-
-.Toastify__toast--success {
-  background-color: #222 !important;
-  color: #fff !important;
-  border-radius: 12px !important;
-  border-left: 5px solid #0d6efd !important;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.25);
-}
 
 /* =========================================================
   🖼 5) MODAL – Quick View

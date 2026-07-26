@@ -59,7 +59,7 @@ const MobileNavbar = () => {
               referrerPolicy="no-referrer"
             />
           ) : (
-            <FaUserCircle  />
+            <FaUserCircle size={30} />
           )}
         </button>
       </header>
@@ -88,13 +88,6 @@ const MobileNavbar = () => {
           {path === "/Productos"? <BsPlusCircleFill size={28} /> : <BsPlusCircle size={24} />}
         </Link>
 
-        <Link 
-        to="/Historial" 
-        className={`nav-center-btn ${path === "/Historial" ? "active" : ""}`} 
-        aria-label="Historial">
-          {path === "/Historial" ? <SiFoodpanda size={28} /> : <SiFoodpanda size={24} />}
-        </Link>
-
         <div className="cart-icon-wrapper" >
           {totalCarrito  > 0 && <span className="cart-badge"> {totalCarrito}</span>}
           <Link 
@@ -109,6 +102,12 @@ const MobileNavbar = () => {
           </Link>
         </div>
 
+          <Link 
+          to="/Historial" 
+          className={`nav-center-btn ${path === "/Historial" ? "active" : ""}`} 
+          aria-label="Historial">
+            {path === "/Historial" ? <SiFoodpanda size={28} /> : <SiFoodpanda size={24} />}
+          </Link>
 
       </nav>
 

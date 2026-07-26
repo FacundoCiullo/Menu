@@ -73,96 +73,113 @@ const Cart = () => {
         </header>
 
         <div className="cart-grid-layout">
+          {/* LÍNEA TROQUELADA CABECERA DEL TICKET */}
+          <div className="ticket-divider-container">
+            <div className="ticket-notch left"></div>
+            <div className="ticket-divider-line"></div>
+            <div className="ticket-notch right"></div>
+          </div>
+
           {/* LISTA DE PRODUCTOS */}
           <section className="cart-items">
             <AnimatePresence>
-              {cart.map((item) => {
+              {cart.map((item, index) => {
                 const itemKey = item.itemKey || item.id;
                 const precioUnitario = item.precioUnitario ?? item.precio ?? 0;
 
                 return (
-                  <motion.article 
-                    className="cart-card" 
-                    key={itemKey}
-                    initial={{ opacity: 0, y: 15 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, x: -50 }}
-                    transition={{ duration: 0.25 }}
-                  >
-                    <div className="cart-image">
-                      <img src={item.imagen} alt={item.titulo} />
-                    </div>
-
-                    <div className="cart-info">
-                      <div className="cart-title">
-                        <h2>
-                          {item.marca && `${item.marca} `}
-                          {item.titulo}
-                        </h2>
-                        <button
-                          className="delete-button"
-                          onClick={() => removeItem(itemKey)}
-                          title="Eliminar producto"
-                        >
-                          <Trash3Fill size={16} />
-                        </button>
+                  <React.Fragment key={itemKey}>
+                    <motion.article 
+                      className="cart-card"
+                      initial={{ opacity: 0, y: 15 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, x: -50 }}
+                      transition={{ duration: 0.25 }}
+                    >
+                      <div className="cart-image">
+                        <img src={item.imagen} alt={item.titulo} />
                       </div>
 
-                      {/* TAMAÑO SELECCIONADO */}
-                      {item.sizeSeleccionado && (
-                        <div className="cart-extras-list">
-                          <span className="extras-title">Tamaño:</span>
-                          <ul>
-                            <li>
-                              {item.sizeSeleccionado.nombre}{" "}
-                              <span>${item.sizeSeleccionado.precio.toLocaleString("es-AR")}</span>
-                            </li>
-                          </ul>
+                      <div className="cart-info">
+                        <div className="cart-title">
+                          <h2>
+                            {item.marca && `${item.marca} `}
+                            {item.titulo}
+                          </h2>
+                          <button
+                            className="delete-button"
+                            onClick={() => removeItem(itemKey)}
+                            title="Eliminar producto"
+                          >
+                            <Trash3Fill size={16} />
+                          </button>
                         </div>
-                      )}
 
-                      {/* ADICIONALES SELECCIONADOS */}
-                      {item.additionalSeleccionados && item.additionalSeleccionados.length > 0 && (
-                        <div className="cart-extras-list">
-                          <span className="extras-title">Adicionales:</span>
-                          <ul>
-                            {item.additionalSeleccionados.map((extra, idx) => (
-                              <li key={extra.id || idx}>
-                                + {extra.nombre}{" "}
-                                <span>+${extra.precio.toLocaleString("es-AR")}</span>
+                        {/* TAMAÑO SELECCIONADO */}
+                        {item.sizeSeleccionado && (
+                          <div className="cart-extras-list">
+                            <span className="extras-title">Tamaño:</span>
+                            <ul>
+                              <li>
+                                {item.sizeSeleccionado.nombre}{" "}
+                                <span>${item.sizeSeleccionado.precio.toLocaleString("es-AR")}</span>
                               </li>
-                            ))}
-                          </ul>
-                        </div>
-                      )}
+                            </ul>
+                          </div>
+                        )}
 
-                      <div className="cart-controls-row">
-                        <div className="quantity-box">
-                          <button
-                            className="qty-button"
-                            onClick={() => decreaseQuantity(itemKey)}
-                            disabled={item.quantity <= 1}
-                          >
-                            <Dash size={16} />
-                          </button>
-                          <span className="quantity-number">{item.quantity}</span>
-                          <button
-                            className="qty-button"
-                            onClick={() => increaseQuantity(itemKey)}
-                          >
-                            <Plus size={16} />
-                          </button>
-                        </div>
+                        {/* ADICIONALES SELECCIONADOS */}
+                        {item.additionalSeleccionados && item.additionalSeleccionados.length > 0 && (
+                          <div className="cart-extras-list">
+                            <span className="extras-title">Adicionales:</span>
+                            <ul>
+                              {item.additionalSeleccionados.map((extra, idx) => (
+                                <li key={extra.id || idx}>
+                                  + {extra.nombre}{" "}
+                                  <span>+${extra.precio.toLocaleString("es-AR")}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
 
-                        <div className="subtotal-box">
-                          <small>Subtotal</small>
-                          <strong>
-                            ${(precioUnitario * item.quantity).toLocaleString("es-AR")}
-                          </strong>
+                        <div className="cart-controls-row">
+                          <div className="quantity-box">
+                            <button
+                              className="qty-button"
+                              onClick={() => decreaseQuantity(itemKey)}
+                              disabled={item.quantity <= 1}
+                            >
+                              <Dash size={16} />
+                            </button>
+                            <span className="quantity-number">{item.quantity}</span>
+                            <button
+                              className="qty-button"
+                              onClick={() => increaseQuantity(itemKey)}
+                            >
+                              <Plus size={16} />
+                            </button>
+                          </div>
+
+                          <div className="subtotal-box">
+                            <small>Subtotal</small>
+                            <strong>
+                              ${(precioUnitario * item.quantity).toLocaleString("es-AR")}
+                            </strong>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </motion.article>
+                    </motion.article>
+
+                    {/* LÍNEA TROQUELADA ENTRE PRODUCTOS */}
+                    {index < cart.length - 1 && (
+                      <div className="ticket-divider-container">
+                        <div className="ticket-notch left"></div>
+                        <div className="ticket-divider-line"></div>
+                        <div className="ticket-notch right"></div>
+                      </div>
+                    )}
+                  </React.Fragment>
                 );
               })}
             </AnimatePresence>

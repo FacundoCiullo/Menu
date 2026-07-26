@@ -1,33 +1,25 @@
 /* =========================================================================
-    1) TOKENS PRIMITIVOS (Paletas puras)
+   1) TOKENS PRIMITIVOS (Paletas puras)
    ========================================================================= */
 :root {
-  /* Escala Neutral (Monocromo & Dark Obsidian) */
-
-    /* Fondo general y tarjetas */
-  --iqv-bg-card: #0f0f12;           /* Negro puro enriquecido */
-  --iqv-bg-surface: #16161a;        /* Superficie de contraste sutil */
-  --iqv-bg-hover: #222228;          /* Hover metálico suave */
+  --iqv-bg-card: #0f0f12;
+  --iqv-bg-surface: #16161a;
+  --iqv-bg-hover: #222228;
   
-  /* Textos */
-  --iqv-text-primary: #ffffff;       /* Blanco marfil de alto contraste */
-  --iqv-text-secondary: #a1a1aa;     /* Gris platino para descripciones */
+  --iqv-text-primary: #ffffff;
+  --iqv-text-secondary: #a1a1aa;
   
-  /* Bordes y Divisiones */
-  --iqv-border: #2a2a30;            /* Bordes tenues */
-  --iqv-border-input: #3a3a42;      /* Bordes de inputs */
+  --iqv-border: #2a2a30;
+  --iqv-border-input: #3a3a42;
   
-  /* Acentos Gold Elite */
-  --iqv-primary-accent: #ff8c00;    /* Oro clásico metálico */
-  --iqv-primary-accent-bg: rgba(212, 175, 55, 0.12); /* Brillo dorado transparente */
-  --iqv-admin-accent: #e5c158;     /* Oro brillante para destacar paneles */
+  --iqv-primary-accent: #f39c12;
+  --iqv-primary-accent-bg: rgba(212, 175, 55, 0.12);
+  --iqv-admin-accent: #e5c158;
   
-  /* Sombras y Luces */
   --iqv-shadow: rgba(0, 0, 0, 0.7);
   --iqv-gold-glow: 0 4px 20px rgba(212, 175, 55, 0.25);
 }
 
-/* Compatibilidad forzada para modo oscuro automático o activo por selector */
 [data-theme="dark"], .dark-theme, body.dark-mode {
   --iqv-bg-card: #0f0f12;
   --iqv-bg-surface: #16161a;
@@ -36,16 +28,14 @@
   --iqv-text-secondary: #a1a1aa;
   --iqv-border: #2a2a30;
   --iqv-border-input: #3a3a42;
-  --iqv-primary-accent: #d4af37;
+  --iqv-primary-accent: #f39c12;
   --iqv-primary-accent-bg: rgba(212, 175, 55, 0.12);
   --iqv-admin-accent: #e5c158;
   --iqv-shadow: rgba(0, 0, 0, 0.7);
 }
 
-
-
 /* =========================================================================
-    ESTILOS GENERALES Y MODAL
+   ESTILOS GENERALES Y MODAL
    ========================================================================= */
 
 .iqv-modal-custom .modal-content {
@@ -67,7 +57,7 @@
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
 }
 
-/* Imagen y acciones flotantes */
+/* Imagen y acciones flotantes superior */
 .iqv-image-wrapper {
   position: relative;
   padding-top: 60%;
@@ -83,27 +73,29 @@
   object-fit: cover;
 }
 
-.iqv-floating-fav {
+.iqv-floating-edit-btn {
   position: absolute;
   top: 16px;
   left: 16px;
+  background: #f39c12;
+  border: none;
+  color: #ffffff;
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: rgba(15, 15, 18, 0.65);
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(212, 175, 55, 0.3);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   z-index: 10;
-  transition: all 0.2s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+  transition: transform 0.2s ease, background-color 0.2s ease;
 }
 
-.iqv-floating-fav:hover {
-  background: rgba(15, 15, 18, 0.9);
-  border-color: var(--iqv-primary-accent);
+.iqv-floating-edit-btn.active {
+  background: var(--iqv-bg-surface);
+  border: 1px solid var(--iqv-border);
+  color: var(--iqv-text-primary);
 }
 
 .iqv-floating-close {
@@ -130,6 +122,7 @@
   border-color: var(--iqv-text-secondary);
 }
 
+/* Cuerpo de la Tarjeta */
 .iqv-body-content {
   padding: 24px;
   display: flex;
@@ -138,18 +131,43 @@
   background-color: var(--iqv-bg-card);
 }
 
+/* Fila de Título y Favorito */
+.iqv-header-title-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
 .iqv-product-title {
-  font-size: 24px;
+  font-size: 22px;
   font-weight: 700;
   letter-spacing: -0.02em;
   color: var(--iqv-text-primary);
   margin: 0;
+  line-height: 1.25;
+}
+
+.iqv-fav-btn {
+  background: transparent;
+  border: none;
+  padding: 7px 6px 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border-radius: 50%;
+  transition: background-color 0.2s ease;
+}
+
+.iqv-fav-btn:hover {
+  background-color: var(--iqv-bg-hover);
 }
 
 .iqv-product-description {
   font-size: 14px;
   color: var(--iqv-text-secondary);
-  margin: 4px 0;
+  margin: 2px 0 6px;
   line-height: 1.5;
 }
 
@@ -185,12 +203,11 @@
   overflow-y: auto;
 }
 
-/* Tarjeta Botón Seleccionable */
 .iqv-option-card {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 12px 18px;
+  padding: 8px 18px;
   border: 1px solid var(--iqv-border-input);
   border-radius: 25px;
   background-color: var(--iqv-bg-surface);
@@ -205,7 +222,7 @@
 }
 
 .iqv-option-card.active {
-  border-color: var(--accent-gradient);
+  border-color: var(--iqv-primary-accent);
   background-color: var(--iqv-primary-accent-bg);
   box-shadow: 0 0 10px rgba(212, 175, 55, 0.15);
 }
@@ -292,7 +309,7 @@
 }
 
 .iqv-price-display {
-  font-size: 30px;
+  font-size: 28px;
   font-weight: 800;
   letter-spacing: -0.03em;
   color: var(--iqv-text-primary); 
@@ -300,7 +317,7 @@
 }
 
 /* =========================================================================
-  ACCIONES Y EDICIÓN ADMIN (GOLD ACCENTS)
+   ACCIONES Y EDICIÓN ADMIN
    ========================================================================= */
 
 .iqv-footer-actions {
@@ -312,24 +329,24 @@
 .iqv-btn-primary-action {
   flex: 1;
   height: 50px;
-  background: var(--accent-hover);
-  color: var(--iqv-text-primary);
+    background: var(--accent-gradient, linear-gradient(135deg, #ff8c00, #e63946));
+    color: #ffffff;
   font-weight: 700;
   font-size: 15px;
   letter-spacing: 0.02em;
   border-radius: 30px;
-  border: 0.5px solid var(--text-primary);
+  border: none;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-
+  transition: all 0.2s ease;
 }
 
 .iqv-btn-primary-action:hover {
   opacity: 0.95;
   transform: translateY(-1px);
-  box-shadow: 0 6px 24px rgba(212, 175, 55, 0.35);
+  box-shadow: var(--iqv-gold-glow);
 }
 
 .iqv-btn-primary-action:disabled {
@@ -339,83 +356,6 @@
   box-shadow: none;
   cursor: not-allowed;
   opacity: 0.6;
-}
-
-.iqv-floating-edit-btn {
-  position: absolute;
-  top: 16px;
-  left: 16px;
-  background: var(--accent-gradient);
-  border: none;
-  color: #ffffff;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  z-index: 10;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
-  transition: transform 0.2s ease, background-color 0.2s ease;
-}
-
-.iqv-floating-edit-btn.active {
-  background: var(--iqv-bg-surface);
-  border: 1px solid var(--iqv-border);
-  color: var(--iqv-text-primary);
-}
-
-.iqv-admin-header {
-  border-color: var(--iqv-border) !important;
-}
-
-.iqv-admin-badge {
-  background-color: var(--iqv-admin-accent);
-  color: #0f0f12;
-  font-weight: 800;
-  letter-spacing: 0.02em;
-}
-
-.iqv-admin-subtitle {
-  color: var(--iqv-text-secondary);
-}
-
-.iqv-edit-section {
-  border: 1px solid var(--iqv-border);
-  padding: 10px;
-  background-color: var(--iqv-bg-surface);
-}
-
-.iqv-accent-text {
-  color: var(--iqv-admin-accent);
-}
-
-.iqv-input-label {
-  font-size: 0.82rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  color: var(--iqv-text-secondary);
-  margin-bottom: 4px;
-  display: block;
-}
-
-.iqv-editable-input {
-  background-color: #121216 !important;
-  color: var(--iqv-text-primary) !important;
-  border: 1px solid var(--iqv-border-input) !important;
-  border-radius: 10px !important;
-  padding: 8px 12px !important;
-  font-size: 0.95rem;
-  transition: all 0.2s ease;
-}
-
-.iqv-editable-input:focus {
-  background-color: var(--iqv-bg-card) !important;
-  border-color: var(--iqv-primary-accent) !important;
-  box-shadow: 0 0 0 0.2rem rgba(212, 175, 55, 0.2) !important;
-  color: var(--iqv-text-primary) !important;
 }
 
 .iqv-btn-admin-save {

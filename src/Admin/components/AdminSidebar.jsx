@@ -65,7 +65,7 @@ const AdminSidebar = () => {
 
         <div className="sidebar-inner d-flex flex-column h-100 p-3">
           {/* Header con Perfil de Admin */}
-          <div className="profile-header d-flex align-items-center mb-4 pb-3 border-bottom-dark">
+          <div className="profile-header d-flex align-items-center mb-4 pb-3 border-bottom-dark flex-column" >
             <div className="profile-avatar-container position-relative flex-shrink-0">
               {user?.photoURL ? (
                 <img
