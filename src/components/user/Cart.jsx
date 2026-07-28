@@ -184,7 +184,11 @@ const Cart = () => {
               })}
             </AnimatePresence>
           </section>
-
+                      <div className="ticket-divider-container">
+                        <div className="ticket-notch left"></div>
+                        <div className="ticket-divider-line"></div>
+                        <div className="ticket-notch right"></div>
+                      </div>
           {/* RESUMEN DE COMPRA */}
           <section className="cart-summary">
             <h3>Resumen de Compra</h3>

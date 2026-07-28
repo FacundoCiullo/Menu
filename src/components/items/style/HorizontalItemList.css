@@ -9,14 +9,15 @@
   overflow-y: hidden;
   scroll-behavior: smooth;
   scroll-snap-type: x mandatory;
-  padding: 10px 15px 20px;
+  padding: 10px 15px 10px;
   scrollbar-width: none;
-  margin-top: 2rem;
+  margin-top: 0px;
 }
 
 .horizontal-scroll::-webkit-scrollbar {
   display: none;
 }
+
 
 /* Card */
 
@@ -48,6 +49,7 @@
   .horizontal-scroll {
     gap: 14px;
     padding-inline: 12px;
+    margin-top: 1rem;
   }
 
   .slider-card-product {

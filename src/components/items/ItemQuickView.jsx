@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import { Modal } from "react-bootstrap";
 import { CartContext } from "../../context/CartContext";
 import { useFavorites } from "../../context/FavoritesContext";
@@ -12,11 +12,16 @@ import {
   X, 
   PencilSquare, 
   CheckLg, 
-  ArrowLeft 
+  ArrowLeft,
+  Upload,
+  Image as ImageIcon,
+  Trash,
+  TagFill
 } from "react-bootstrap-icons";
 
-import { db } from "../../firebase"; 
-import { doc, updateDoc } from "firebase/firestore";
+import { db, storage } from "../../firebase"; 
+import { doc, updateDoc, deleteDoc, collection, addDoc } from "firebase/firestore";
+import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 
 // Sub-componentes
 import ToastModal from "../common/ToastModal";
@@ -25,13 +30,41 @@ import ProductOptions from "../common/ProductOptions";
 
 import "./style/itemQuickView.css";
 
-const ItemQuickView = ({ show, handleClose, producto }) => {
+const DEFAULT_IMAGE =
+  "/img/edit-1.png";
+
+const ItemQuickView = ({ show, handleClose, producto, onRefresh }) => {
+  const isCreationMode = !producto; // Si no hay producto, es MODO CREACIÓN
+
   const [cantidad, setCantidad] = useState(1);
   const [sizeSeleccionado, setSizeSeleccionado] = useState(null);
   const [additionalSeleccionados, setAdditionalSeleccionados] = useState([]);
   const [editando, setEditando] = useState(false);
   const [cargandoGuardado, setCargandoGuardado] = useState(false);
-  
+  const [cargandoEliminacion, setCargandoEliminacion] = useState(false);
+
+  // Modal de confirmación para borrar
+  const [showConfirmDelete, setShowConfirmDelete] = useState(false);
+
+  // Estados Formulario Admin
+  const [formData, setFormData] = useState({});
+  const [sizes, setSizes] = useState([]);
+  const [additionals, setAdditionals] = useState([]);
+
+  // Subida de imagen
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [isUploading, setIsUploading] = useState(false);
+  const [showImageUrlInput, setShowImageUrlInput] = useState(false);
+
+  const fileInputRef = useRef(null);
+
+  const editandoRef = useRef(editando);
+  useEffect(() => {
+    editandoRef.current = editando;
+  }, [editando]);
+
   const [toastConfig, setToastConfig] = useState({
     show: false,
     type: "success",
@@ -40,29 +73,24 @@ const ItemQuickView = ({ show, handleClose, producto }) => {
     message: ""
   });
 
-  const [formAdmin, setFormAdmin] = useState({
-    titulo: "",
-    descripcion: "",
-    precio: 0,
-    imagen: "",
-    size: [],
-    additional: []
-  });
-
   const { addItem } = useContext(CartContext);
   const { toggleFavorite, isFavorite } = useFavorites();
-  const { user, esAdmin } = useAuth();
+  const { esAdmin } = useAuth();
 
   const isFav = producto ? isFavorite(producto.id) : false;
 
-  // Manejo del botón "Atrás" en dispositivos móviles (History API)
+  // Manejo del botón atrás del navegador
   useEffect(() => {
     if (!show) return;
 
     window.history.pushState({ modalOpen: true }, "");
 
     const handlePopState = () => {
-      handleClose();
+      if (editandoRef.current && !isCreationMode) {
+        setEditando(false);
+      } else {
+        handleClose();
+      }
     };
 
     window.addEventListener("popstate", handlePopState);
@@ -73,245 +101,385 @@ const ItemQuickView = ({ show, handleClose, producto }) => {
         window.history.back();
       }
     };
-  }, [show, handleClose]);
+  }, [show, handleClose, isCreationMode]);
 
-  // Reset y carga inicial de datos del producto
+  // Inicialización de datos (Creación vs Edición)
   useEffect(() => {
-    if (producto) {
+    if (!show) return;
+
+    if (isCreationMode) {
+      // Plantilla Limpia para Nuevo Producto
+      setFormData({
+        titulo: "",
+        descripcion: "",
+        categoria: "",
+        subcategoria: "",
+        precio: "",
+        precioAnterior: "",
+        descuentoPorcentaje: 0,
+        oferta: false,
+        recomendado: false,
+        vegetariano: false,
+        vegano: false,
+        sinTacc: false,
+        picante: false,
+        disponible: true,
+        imagen: "",
+        additionalType: "multiple",
+        additionalRequired: false,
+      });
+      setSizes([]);
+      setAdditionals([]);
+      setEditando(true); // En modo creación entra directamente editando
+    } else {
+      // Cargar Datos Existentes
       setSizeSeleccionado(producto.size?.length > 0 ? producto.size[0] : null);
       setAdditionalSeleccionados([]);
       setCantidad(1);
 
-      setFormAdmin({
+      setFormData({
         titulo: producto.titulo || producto.nombre || "",
         descripcion: producto.descripcion || "",
+        categoria: producto.categoria || "",
+        subcategoria: producto.subcategoria || "",
         precio: producto.precio || 0,
+        precioAnterior: producto.precioAnterior || 0,
+        descuentoPorcentaje: producto.descuentoPorcentaje || 0,
+        oferta: Boolean(producto.oferta),
+        recomendado: Boolean(producto.recomendado),
+        vegetariano: Boolean(producto.vegetariano),
+        vegano: Boolean(producto.vegano),
+        sinTacc: Boolean(producto.sinTacc),
+        picante: Boolean(producto.picante),
+        disponible: producto.disponible !== false,
         imagen: producto.imagen || producto.pictureUrl || "",
-        size: producto.size ? [...producto.size] : [],
-        additional: producto.additional ? [...producto.additional] : []
+        additionalType: producto.additionalType || "multiple",
+        additionalRequired: Boolean(producto.additionalRequired),
       });
 
+      setSizes(producto.size ? producto.size.map(s => ({ ...s })) : []);
+      setAdditionals(producto.additional ? producto.additional.map(a => ({ ...a })) : []);
       setEditando(false);
     }
-  }, [producto]);
 
-  if (!producto) return null;
+    setSelectedFile(null);
+    setImagePreview(null);
+    setShowImageUrlInput(false);
+    setShowConfirmDelete(false);
+  }, [producto, show, isCreationMode]);
 
-  const subcat = (producto.subcategoria || "").toLowerCase();
-  const cat = (producto.categoria || "").toLowerCase();
-  const type = (producto.additionalType || "").toLowerCase();
+  // Cálculo de Descuento
+  useEffect(() => {
+    if (!editando) return;
+    const pActual = Number(formData.precio);
+    const pAnterior = Number(formData.precioAnterior);
 
-  const esSeleccionUnica = 
-    type === "single" || 
-    subcat.includes("pasta") || 
-    cat.includes("pasta");
+    if (formData.oferta && pAnterior > 0 && pActual > 0 && pAnterior > pActual) {
+      const diff = pAnterior - pActual;
+      const pct = Math.round((diff / pAnterior) * 100);
+      setFormData((prev) => ({ ...prev, descuentoPorcentaje: pct }));
+    } else {
+      setFormData((prev) => ({ ...prev, descuentoPorcentaje: 0 }));
+    }
+  }, [formData.precio, formData.precioAnterior, formData.oferta, editando]);
 
-  // Handlers para la edición de Admin
-  const handleInputChangeAdmin = (e) => {
-    const { name, value } = e.target;
-    setFormAdmin((prev) => ({
+  // Handlers
+  const handleChangeAdmin = (e) => {
+    const { name, value, type, checked } = e.target;
+    setFormData((prev) => ({
       ...prev,
-      [name]: name === "precio" ? Number(value) : value,
+      [name]: type === "checkbox" ? checked : value,
     }));
   };
 
-  const handleSizeChangeAdmin = (index, field, value) => {
-    const nuevosSizes = [...formAdmin.size];
-    nuevosSizes[index] = {
-      ...nuevosSizes[index],
-      [field]: field === "precio" ? Number(value) : value
-    };
-    setFormAdmin((prev) => ({ ...prev, size: nuevosSizes }));
+  const handleTriggerFileInput = () => {
+    if (fileInputRef.current) fileInputRef.current.click();
   };
 
-  const handleAdditionalChangeAdmin = (index, field, value) => {
-    const nuevosAdditionals = [...formAdmin.additional];
-    nuevosAdditionals[index] = {
-      ...nuevosAdditionals[index],
-      [field]: field === "precio" ? Number(value) : value
-    };
-    setFormAdmin((prev) => ({ ...prev, additional: nuevosAdditionals }));
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setSelectedFile(file);
+      setImagePreview(URL.createObjectURL(file));
+    }
   };
 
-  const handleConfirmarActualizacion = async () => {
-    try {
-      setCargandoGuardado(true);
-      const idStr = String(producto.id).padStart(3, "0");
-      const docRef = doc(db, "items", idStr);
+  const uploadImageToStorage = async (file, folderName) => {
+    const sanitizedFolder = folderName
+      ? folderName.toLowerCase().trim().replace(/[^a-z0-9]/g, "_")
+      : "varios";
 
-      const datosAActualizar = {
-        titulo: formAdmin.titulo,
-        descripcion: formAdmin.descripcion,
-        precio: Number(formAdmin.precio),
-        size: formAdmin.size,
-        additional: formAdmin.additional
-      };
+    const fileName = `${Date.now()}_${file.name.replace(/\s+/g, "_")}`;
+    const storageRef = ref(storage, `img/${sanitizedFolder}/${fileName}`);
+    const uploadTask = uploadBytesResumable(storageRef, file);
 
-      await updateDoc(docRef, datosAActualizar);
+    return new Promise((resolve, reject) => {
+      const timer = setTimeout(() => {
+        uploadTask.cancel();
+        reject(new Error("Timeout en Storage"));
+      }, 8000);
 
-      // Actualizar localmente el objeto producto
-      producto.titulo = formAdmin.titulo;
-      producto.descripcion = formAdmin.descripcion;
-      producto.precio = Number(formAdmin.precio);
-      producto.size = formAdmin.size;
-      producto.additional = formAdmin.additional;
+      uploadTask.on(
+        "state_changed",
+        (snapshot) => {
+          const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+          setUploadProgress(progress);
+        },
+        (error) => {
+          clearTimeout(timer);
+          reject(error);
+        },
+        async () => {
+          clearTimeout(timer);
+          const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+          resolve(downloadURL);
+        }
+      );
+    });
+  };
 
-      if (sizeSeleccionado) {
-        const sizeActualizado = formAdmin.size.find(s => s.id === sizeSeleccionado.id);
-        if (sizeActualizado) setSizeSeleccionado(sizeActualizado);
-      }
+  // Tamaños y Adicionales
+  const handleAddSize = () => setSizes((prev) => [...prev, { id: "", nombre: "", precio: 0 }]);
+  const handleSizeChange = (index, field, value) => {
+    const updated = [...sizes];
+    updated[index][field] = field === "precio" ? Number(value) : value;
+    if (field === "nombre") updated[index].id = value.toLowerCase().trim().replace(/\s+/g, "_");
+    setSizes(updated);
+  };
+  const handleRemoveSize = (index) => setSizes((prev) => prev.filter((_, i) => i !== index));
 
-      setEditando(false);
+  const handleAddAdditional = () => setAdditionals((prev) => [...prev, { id: "", nombre: "", precio: 0 }]);
+  const handleAdditionalChange = (index, field, value) => {
+    const updated = [...additionals];
+    updated[index][field] = field === "precio" ? Number(value) : value;
+    if (field === "nombre") updated[index].id = value.toLowerCase().trim().replace(/\s+/g, "_");
+    setAdditionals(updated);
+  };
+  const handleRemoveAdditional = (index) => setAdditionals((prev) => prev.filter((_, i) => i !== index));
 
+  // Guardar (Creación o Edición) en Firestore
+  const handleConfirmarGuardado = async () => {
+    if (!formData.titulo || !formData.precio) {
       setToastConfig({
         show: true,
-        type: "success",
-        subheading: "Base de Datos",
-        title: "¡Producto actualizado!",
-        message: "Los datos del producto se guardaron correctamente."
+        type: "error",
+        subheading: "Campo Requerido",
+        title: "Faltan Datos",
+        message: "Ingresá al menos el Título y el Precio Base."
       });
+      return;
+    }
+
+    try {
+      setCargandoGuardado(true);
+      let finalImageUrl = formData.imagen;
+
+      if (selectedFile) {
+        setIsUploading(true);
+        try {
+          finalImageUrl = await uploadImageToStorage(
+            selectedFile,
+            formData.subcategoria || formData.categoria
+          );
+        } catch (error) {
+          console.warn("Fallback a imagen por defecto:", error);
+          finalImageUrl = formData.imagen || DEFAULT_IMAGE;
+        } finally {
+          setIsUploading(false);
+        }
+      }
+
+      const datosAEnviar = {
+        ...formData,
+        imagen: finalImageUrl || DEFAULT_IMAGE,
+        precio: Number(formData.precio) || 0,
+        precioAnterior: formData.oferta ? Number(formData.precioAnterior) || 0 : 0,
+        descuentoPorcentaje: formData.oferta ? formData.descuentoPorcentaje : 0,
+        size: sizes,
+        additional: additionals
+      };
+
+      if (isCreationMode) {
+        // MODO CREACIÓN
+        await addDoc(collection(db, "items"), datosAEnviar);
+        setToastConfig({
+          show: true,
+          type: "success",
+          subheading: "Base de Datos",
+          title: "¡Producto Creado!",
+          message: "El nuevo producto fue guardado correctamente."
+        });
+      } else {
+        // MODO EDICIÓN
+        const idStr = String(producto.id).padStart(3, "0");
+        const docRef = doc(db, "items", idStr);
+        await updateDoc(docRef, datosAEnviar);
+        Object.assign(producto, datosAEnviar);
+
+        setToastConfig({
+          show: true,
+          type: "success",
+          subheading: "Base de Datos",
+          title: "¡Producto Actualizado!",
+          message: "Los cambios se guardaron con éxito."
+        });
+      }
+
+      if (onRefresh) onRefresh();
+
+      setTimeout(() => {
+        handleClose();
+      }, 1000);
 
     } catch (error) {
-      console.error("Error al actualizar Firestore:", error);
+      console.error("Error al guardar en Firestore:", error);
       setToastConfig({
         show: true,
         type: "error",
         subheading: "Error de Guardado",
         title: "Ocurrió un problema",
-        message: "No se pudieron aplicar los cambios en la base de datos."
+        message: "No se pudieron guardar los cambios."
       });
     } finally {
       setCargandoGuardado(false);
     }
   };
 
-  // Cálculos de Precios
-  const precioBase = sizeSeleccionado ? sizeSeleccionado.precio : (formAdmin.precio || 0);
+  // Eliminar Producto
+  const handleConfirmarEliminacionItem = async () => {
+    if (!producto) return;
+
+    try {
+      setCargandoEliminacion(true);
+      const idStr = String(producto.id).padStart(3, "0");
+      const docRef = doc(db, "items", idStr);
+
+      await deleteDoc(docRef);
+      setShowConfirmDelete(false);
+
+      setToastConfig({
+        show: true,
+        type: "success",
+        subheading: "Base de Datos",
+        title: "¡Producto Eliminado!",
+        message: "El producto se eliminó correctamente."
+      });
+
+      if (onRefresh) onRefresh();
+
+      setTimeout(() => {
+        handleClose();
+      }, 1000);
+
+    } catch (error) {
+      console.error("Error al eliminar item:", error);
+      setShowConfirmDelete(false);
+      setToastConfig({
+        show: true,
+        type: "error",
+        subheading: "Error de Eliminación",
+        title: "Ocurrió un problema",
+        message: "No se pudo eliminar el producto."
+      });
+    } finally {
+      setCargandoEliminacion(false);
+    }
+  };
+
+  // Cálculos cliente
+  const subcat = (formData.subcategoria || "").toLowerCase();
+  const cat = (formData.categoria || "").toLowerCase();
+  const type = (formData.additionalType || "").toLowerCase();
+
+  const esSeleccionUnica = 
+    type === "single" || 
+    subcat.includes("pasta") || 
+    cat.includes("pasta");
+
+  const precioBase = sizeSeleccionado ? sizeSeleccionado.precio : (formData.precio || 0);
   const precioAdditional = additionalSeleccionados.reduce((total, adi) => total + (adi.precio || 0), 0);
   const precioUnitarioFinal = precioBase + precioAdditional;
   const precioTotal = precioUnitarioFinal * cantidad;
 
-  // Selección de Opciones
-  const handleSelectSize = (s) => {
-    setSizeSeleccionado((prev) => (prev?.id === s.id ? null : s));
-  };
-
-  const handleToggleAdditional = (extra) => {
-    setAdditionalSeleccionados((prev) => {
-      const yaSeleccionado = prev.some((item) => item.id === extra.id);
-      if (esSeleccionUnica) {
-        return yaSeleccionado ? [] : [extra];
-      }
-      return yaSeleccionado
-        ? prev.filter((item) => item.id !== extra.id)
-        : [...prev, extra];
-    });
-  };
-
-  const handleIncrementar = () => {
-    const maxStock = producto.stock ?? 999;
-    if (cantidad < maxStock) setCantidad((prev) => prev + 1);
-  };
-
-  const handleDecrementar = () => {
-    if (cantidad > 1) setCantidad((prev) => prev - 1);
-  };
-
-  const handleAgregarCarrito = () => {
-    if (producto.size?.length > 0 && !sizeSeleccionado) {
-      setToastConfig({
-        show: true,
-        type: "info",
-        subheading: "Atención",
-        title: "Falta seleccionar tamaño",
-        message: "Por favor elegí un tamaño antes de agregar al carrito."
-      });
-      return;
-    }
-
-    const esRequerido = producto.additionalRequired || esSeleccionUnica;
-    if (esRequerido && producto.additional?.length > 0 && additionalSeleccionados.length === 0) {
-      setToastConfig({
-        show: true,
-        type: "info",
-        subheading: "Atención",
-        title: "Falta seleccionar opción",
-        message: "Por favor elegí una salsa u opción adicional."
-      });
-      return;
-    }
-
-    const productoParaCarrito = {
-      ...producto,
-      precioUnitario: precioUnitarioFinal,
-      sizeSeleccionado: sizeSeleccionado || null,
-      additionalSeleccionados: additionalSeleccionados || []
-    };
-
-    addItem(productoParaCarrito, cantidad);
-    handleClose();
-
-    setToastConfig({
-      show: true,
-      type: "success",
-      subheading: "Producto Agregado",
-      title: "¡Agregado al carrito!",
-      message: (
-        <span>
-          <strong>{producto.titulo}</strong> ya se encuentra en tu pedido.
-        </span>
-      )
-    });
-  };
-
-  const handleFavorito = () => {
-    if (!user) {
-      setToastConfig({
-        show: true,
-        type: "info",
-        subheading: "Atención",
-        title: "Iniciá sesión",
-        message: "Debés iniciar sesión para agregar productos a tus favoritos."
-      });
-      return;
-    }
-
-    toggleFavorite(producto);
-
-    setToastConfig({
-      show: true,
-      type: "success",
-      subheading: "Favoritos",
-      title: isFav ? "Eliminado" : "¡Agregado!",
-      message: (
-        <span>
-          <strong>{producto.titulo}</strong> {isFav ? "se quitó de tus favoritos." : "se guardó en tus favoritos."}
-        </span>
-      )
-    });
-  };
+  const currentPreviewSrc = imagePreview || formData.imagen || DEFAULT_IMAGE;
 
   return (
     <>
-      <Modal show={show} onHide={handleClose} centered className="iqv-modal-custom">
+      <input
+        type="file"
+        ref={fileInputRef}
+        onChange={handleFileChange}
+        accept="image/*"
+        style={{ display: "none" }}
+      />
+
+      <Modal 
+        show={show} 
+        onHide={handleClose} 
+        centered 
+        keyboard={!cargandoGuardado && !cargandoEliminacion}
+        backdrop={cargandoGuardado || cargandoEliminacion ? "static" : true}
+        className="iqv-modal-custom"
+      >
         <Modal.Body className="p-0">
           <div className="iqv-card-container">
             
-            {/* Cabecera de Imagen y Botones Flotantes Superiores */}
+            {/* Cabecera / Imagen */}
             <div className="iqv-image-wrapper">
               <img
-                src={producto.imagen || producto.pictureUrl}
-                alt={formAdmin.titulo}
+                src={editando ? currentPreviewSrc : (producto?.imagen || producto?.pictureUrl)}
+                alt={formData.titulo || "Nuevo Producto"}
                 className="iqv-main-img"
               />
+
+              {editando && (
+                <>
+                  <div className="add-product-img-actions">
+                    <button
+                      type="button"
+                      className="add-product-upload-btn"
+                      onClick={handleTriggerFileInput}
+                      title="Subir desde dispositivo"
+                    >
+                      <Upload size={18} />
+                    </button>
+                    <button
+                      type="button"
+                      className="add-product-upload-btn secondary-action"
+                      onClick={() => setShowImageUrlInput(!showImageUrlInput)}
+                      title="Ingresar URL externa"
+                    >
+                      <ImageIcon size={18} />
+                    </button>
+                    {!isCreationMode && (
+                      <button
+                        type="button"
+                        className="add-product-upload-btn delete-action"
+                        onClick={() => setShowConfirmDelete(true)}
+                        title="Eliminar producto completo"
+                      >
+                        <Trash size={18} />
+                      </button>
+                    )}
+                  </div>
+
+
+                  {isUploading && (
+                    <div className="add-product-upload-progress">
+                      <div className="upload-progress-bar" style={{ width: `${uploadProgress}%` }} />
+                      <span>Subiendo {uploadProgress}%</span>
+                    </div>
+                  )}
+                </>
+              )}
               
-              {esAdmin && (
+              {esAdmin && !isCreationMode && (
                 <motion.button
                   whileTap={{ scale: 0.92 }}
                   type="button"
                   className={`iqv-floating-edit-btn ${editando ? "active" : ""}`}
                   onClick={() => setEditando(!editando)}
-                  title={editando ? "Cancelar edición" : "Editar información de producto"}
+                  title={editando ? "Cancelar edición" : "Editar producto"}
                 >
                   {editando ? <ArrowLeft size={20} /> : <PencilSquare size={20} />}
                 </motion.button>
@@ -322,27 +490,52 @@ const ItemQuickView = ({ show, handleClose, producto }) => {
               </button>
             </div>
 
-            {/* Cuerpo del Modal */}
-            <div className="iqv-body-content">
+            {/* Input URL flotante */}
+            {editando && showImageUrlInput && (
+              <div className="add-product-url-popover">
+                <input
+                  type="text"
+                  name="imagen"
+                  placeholder="Pegá la URL externa aquí..."
+                  value={formData.imagen || ""}
+                  onChange={handleChangeAdmin}
+                  className="add-product-input"
+                />
+              </div>
+            )}
 
+            {/* badge-discount */}
+
+            {formData.oferta && formData.descuentoPorcentaje > 0 && (
+              <div className="add-product-badge-discount">
+                <TagFill size={12} /> -{formData.descuentoPorcentaje}% OFF
+              </div>
+            )}
+
+            {/* Cuerpo */}
+            <div className="iqv-body-content">
               {esAdmin && editando ? (
                 <AdminEditForm
-                  formAdmin={formAdmin}
-                  handleInputChangeAdmin={handleInputChangeAdmin}
-                  handleSizeChangeAdmin={handleSizeChangeAdmin}
-                  handleAdditionalChangeAdmin={handleAdditionalChangeAdmin}
+                  formData={formData}
+                  handleChange={handleChangeAdmin}
+                  sizes={sizes}
+                  handleAddSize={handleAddSize}
+                  handleSizeChange={handleSizeChange}
+                  handleRemoveSize={handleRemoveSize}
+                  additionals={additionals}
+                  handleAddAdditional={handleAddAdditional}
+                  handleAdditionalChange={handleAdditionalChange}
+                  handleRemoveAdditional={handleRemoveAdditional}
                 />
               ) : (
                 <>
-                  {/* Fila de Título y Botón de Favoritos */}
                   <div className="iqv-header-title-row">
-                    <h2 className="iqv-product-title">{producto.titulo}</h2>
+                    <h2 className="iqv-product-title">{producto?.titulo}</h2>
                     <motion.button
                       whileTap={{ scale: 1.25 }}
                       type="button"
-                      onClick={handleFavorito}
+                      onClick={() => producto && toggleFavorite(producto)}
                       className="iqv-fav-btn"
-                      aria-label="Agregar a favoritos"
                     >
                       {isFav ? (
                         <HeartFill size={22} color="#EFBF04" />
@@ -353,33 +546,33 @@ const ItemQuickView = ({ show, handleClose, producto }) => {
                   </div>
 
                   <p className="iqv-product-description">
-                    {producto.descripcion || "Sin descripción disponible."}
+                    {producto?.descripcion || "Sin descripción disponible."}
                   </p>
 
-                  {/* Selector de Opciones */}
                   <ProductOptions
                     producto={producto}
                     sizeSeleccionado={sizeSeleccionado}
-                    handleSelectSize={handleSelectSize}
+                    handleSelectSize={(s) => setSizeSeleccionado(prev => prev?.id === s.id ? null : s)}
                     additionalSeleccionados={additionalSeleccionados}
-                    handleToggleAdditional={handleToggleAdditional}
+                    handleToggleAdditional={(extra) => {
+                      setAdditionalSeleccionados(prev => {
+                        const exists = prev.some(item => item.id === extra.id);
+                        if (esSeleccionUnica) return exists ? [] : [extra];
+                        return exists ? prev.filter(item => item.id !== extra.id) : [...prev, extra];
+                      });
+                    }}
                     esSeleccionUnica={esSeleccionUnica}
                   />
 
-                  {/* Fila de Cantidad y Precio Final */}
                   <div className="iqv-quantity-price-row">
                     <div className="iqv-qty-selector-wrapper">
                       <span className="iqv-label-text mb-0">Cantidad:</span>
                       <div className="iqv-qty-counter">
-                        <button type="button" onClick={handleDecrementar} disabled={cantidad <= 1}>
+                        <button type="button" onClick={() => setCantidad(c => Math.max(1, c - 1))} disabled={cantidad <= 1}>
                           <Dash size={20} />
                         </button>
                         <span className="iqv-qty-value">{cantidad}</span>
-                        <button
-                          type="button"
-                          onClick={handleIncrementar}
-                          disabled={cantidad >= (producto.stock ?? 999)}
-                        >
+                        <button type="button" onClick={() => setCantidad(c => c + 1)}>
                           <Plus size={20} />
                         </button>
                       </div>
@@ -392,28 +585,42 @@ const ItemQuickView = ({ show, handleClose, producto }) => {
                 </>
               )}
 
-              {/* Acciones Inferiores */}
+              {/* Botón Principal */}
               <div className="iqv-footer-actions mt-3">
                 {esAdmin && editando ? (
                   <button
                     type="button"
                     className="iqv-btn-primary-action iqv-btn-admin-save"
-                    onClick={handleConfirmarActualizacion}
-                    disabled={cargandoGuardado}
+                    onClick={handleConfirmarGuardado}
+                    disabled={cargandoGuardado || cargandoEliminacion}
                   >
                     <CheckLg size={22} />
                     <span>
-                      {cargandoGuardado ? "Guardando..." : "Confirmar actualización"}
+                      {cargandoGuardado
+                        ? "Guardando..."
+                        : isCreationMode
+                        ? "Crear Producto"
+                        : "Confirmar actualización"}
                     </span>
                   </button>
                 ) : (
                   <button
                     type="button"
                     className="iqv-btn-primary-action"
-                    onClick={handleAgregarCarrito}
-                    disabled={producto.disponible === false}
+                    onClick={() => {
+                      if (producto) {
+                        addItem({
+                          ...producto,
+                          precioUnitario: precioUnitarioFinal,
+                          sizeSeleccionado,
+                          additionalSeleccionados
+                        }, cantidad);
+                        handleClose();
+                      }
+                    }}
+                    disabled={producto?.disponible === false}
                   >
-                    {producto.disponible !== false ? <span>Agregar</span> : "No disponible"}
+                    {producto?.disponible !== false ? <span>Agregar</span> : "No disponible"}
                   </button>
                 )}
               </div>
@@ -423,6 +630,45 @@ const ItemQuickView = ({ show, handleClose, producto }) => {
         </Modal.Body>
       </Modal>
 
+      {/* Modal Confirmación Borrar */}
+      <Modal
+        show={showConfirmDelete}
+        onHide={() => !cargandoEliminacion && setShowConfirmDelete(false)}
+        centered
+        backdrop="static"
+        size="sm"
+      >
+        <Modal.Header closeButton={!cargandoEliminacion}>
+          <Modal.Title className="text-danger fs-6 fw-bold">
+            ¿Eliminar Producto?
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <p className="mb-0" style={{ fontSize: "0.9rem" }}>
+            ¿Estás seguro de que deseas eliminar <strong>"{formData.titulo}"</strong>? Esta acción no se puede deshacer.
+          </p>
+        </Modal.Body>
+        <Modal.Footer className="d-flex justify-content-end gap-2">
+          <button
+            type="button"
+            className="btn btn-secondary btn-sm"
+            onClick={() => setShowConfirmDelete(false)}
+            disabled={cargandoEliminacion}
+          >
+            Cancelar
+          </button>
+          <button
+            type="button"
+            className="btn btn-danger btn-sm d-flex align-items-center gap-1"
+            onClick={handleConfirmarEliminacionItem}
+            disabled={cargandoEliminacion}
+          >
+            {cargandoEliminacion ? "Eliminando..." : <><Trash size={14} /> Eliminar</>}
+          </button>
+        </Modal.Footer>
+      </Modal>
+
+      {/* Toast Feedback */}
       <ToastModal
         show={toastConfig.show}
         onHide={() => setToastConfig((prev) => ({ ...prev, show: false }))}

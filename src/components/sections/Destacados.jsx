@@ -27,7 +27,7 @@ const Destacados = ({ limit = 8 }) => {
 
         const consulta = query(
           itemsCollection,
-          where("oferta", "==", true)
+          where("recomendado", "==", true)
         );
 
         const resultado = await getDocs(consulta);

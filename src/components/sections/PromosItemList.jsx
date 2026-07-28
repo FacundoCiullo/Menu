@@ -1,76 +1,74 @@
-import { useRef, useState } from "react";
-import ItemQuickView from "../items/ItemQuickView";
-import "./style/PromosItemList.css";
+import "./style/Sections.css";
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
 
-// Agregamos `= []` como fallback por si 'productos' llega undefined
-const PromosItemList = ({ productos = [] }) => {
-  const [showModal, setShowModal] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState(null);
-  const scrollRef = useRef(null);
+import HorizontalItemList from "../items/HorizontalItemList";
+import Loading from "../ui/Loading";
 
-  const handleQuickView = (producto) => {
-    setSelectedProduct(producto);
-    setShowModal(true);
-  };
+import {
+  getFirestore,
+  collection,
+  getDocs,
+  query,
+  where,
+} from "firebase/firestore";
 
-  // Guardia de seguridad: si no hay productos o no es un array, mostramos un mensaje o nada
-  if (!productos || !Array.isArray(productos) || productos.length === 0) {
-    return (
-      <p className="text-center text-muted my-3">
-        No hay promociones disponibles en este momento.
-      </p>
-    );
+const PromosItemList = ({ limit = 8 }) => {
+  const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const obtenerDestacados = async () => {
+      try {
+        const db = getFirestore();
+
+        const itemsCollection = collection(db, "items");
+
+        const consulta = query(
+          itemsCollection,
+          where("oferta", "==", true)
+        );
+
+        const resultado = await getDocs(consulta);
+
+        const productos = resultado.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+
+        setItems(productos.slice(0, limit));
+      } catch (error) {
+        console.error("Error al obtener productos destacados:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    obtenerDestacados();
+  }, [limit]);
+
+  if (loading) {
+    return <Loading />;
   }
 
   return (
-    <>
-      <div className="promos-scroll-container" ref={scrollRef}>
-        {productos.map((producto) => {
-          const precioViejo =
-            producto.precioAnterior || producto.precioBase || producto.precio;
-          const precioNuevo = producto.precioOferta || producto.precio;
+    <motion.section
+      className=" container"
+      initial={{ opacity: 0, y: 40 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6 }}
+    >
+      <div className="d-flex destacados">
+        <h2 className="fw-bold m-0">Ofertas</h2>
 
-          return (
-            <div
-              key={producto.id}
-              className="promo-card-wrapper"
-              onClick={() => handleQuickView(producto)}
-              role="button"
-              tabIndex={0}
-            >
-              <div className="promo-card">
-                <img
-                  src={producto.imagen || producto.img}
-                  alt={producto.titulo || producto.nombre}
-                  className="promo-card-img"
-                />
-
-                <div className="promo-badge">OFERTA</div>
-
-                <div className="promo-card-overlay">
-                  <h3 className="promo-card-title">
-                    {producto.titulo || producto.nombre}
-                  </h3>
-
-                  <div className="promo-card-prices">
-                    {precioViejo && precioViejo !== precioNuevo && (
-                      <span className="price-old">${precioViejo}</span>
-                    )}
-                    <span className="price-new">${precioNuevo}</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          );
-        })}
+      <Link className="link-underline-dark " to="/Productos">
+            <p className="text-white">Ver más</p>
+        </Link>
       </div>
 
-      <ItemQuickView
-        show={showModal}
-        handleClose={() => setShowModal(false)}
-        producto={selectedProduct}
-      />
-    </>
+      <HorizontalItemList productos={items} />
+    </motion.section>
   );
 };
 

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "./style/item.css";
-import { HeartFill, Heart, PlusLg } from "react-bootstrap-icons";
+import { HeartFill, Heart, PlusLg, TagFill } from "react-bootstrap-icons";
 import { useFavorites } from "../../context/FavoritesContext";
 import { useAuth } from "../../context/AuthContext";
 
@@ -11,6 +11,10 @@ const Item = ({ producto, colorSeleccionado, handleQuickView }) => {
   const { user } = useAuth();
 
   const esFavorito = isFavorite(producto.id);
+
+  // Obtener el porcentaje de descuento directamente
+  const porcentaje = Number(producto.descuentoPorcentaje || 0);
+  const tieneOferta = Boolean(producto.oferta) && porcentaje > 0;
 
   const imagenFinal =
     colorSeleccionado &&
@@ -25,19 +29,23 @@ const Item = ({ producto, colorSeleccionado, handleQuickView }) => {
     toggleFavorite(producto);
   };
 
-  // Lógica para mostrar el precio correcto (mínimo si tiene tamaños/size)
-  const obtenerPrecioDisplay = () => {
+  // Lógica para calcular el precio base (mínimo si tiene tamaños/size)
+  const obtenerPrecioBase = () => {
     if (producto.size && producto.size.length > 0) {
       const precios = producto.size.map((s) => Number(s.precio)).filter((p) => !isNaN(p));
       if (precios.length > 0) {
-        const precioMinimo = Math.min(...precios);
-        return `$${precioMinimo.toLocaleString("es-AR")}`;
+        return Math.min(...precios);
       }
     }
-
-    const precioBase = Number(producto.precio || 0);
-    return `$${precioBase.toLocaleString("es-AR")}`;
+    return Number(producto.precio || 0);
   };
+
+  const precioBase = obtenerPrecioBase();
+  
+  // Calcular precio final con descuento si aplica
+  const precioFinal = tieneOferta 
+    ? precioBase * (1 - porcentaje / 100) 
+    : precioBase;
 
   return (
     <div
@@ -59,6 +67,13 @@ const Item = ({ producto, colorSeleccionado, handleQuickView }) => {
 
       {/* IMAGEN */}
       <div className="item-img-wrapper">
+        {/* BADGE DE DESCUENTO */}
+        {tieneOferta && (
+          <div className="item-product-badge-discount">
+            <TagFill size={12} /> -{porcentaje}% OFF
+          </div>
+        )}
+
         <img
           src={imagenFinal}
           alt={producto.titulo || producto.nombre}
@@ -80,7 +95,16 @@ const Item = ({ producto, colorSeleccionado, handleQuickView }) => {
         )}
 
         <div className="item-bottom">
-          <p className="item-precio">{obtenerPrecioDisplay()}</p>
+          <div className="item-precio-wrapper">
+            <p className="item-precio">
+              ${precioFinal.toLocaleString("es-AR")}
+            </p>
+            {tieneOferta && (
+              <span className="item-precio-anterior">
+                ${precioBase.toLocaleString("es-AR")}
+              </span>
+            )}
+          </div>
           
           {/* BOTÓN + ILUSTRATIVO */}
           <div className="item-add-btn" title="Ver detalle">

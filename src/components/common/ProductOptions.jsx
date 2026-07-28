@@ -4,12 +4,16 @@ const ProductOptions = ({
   producto,
   sizeSeleccionado,
   handleSelectSize,
-  additionalSeleccionados,
+  additionalSeleccionados = [],
   handleToggleAdditional,
   esSeleccionUnica,
 }) => {
-  const tieneSizes = producto.size?.length > 0;
-  const tieneAdditionals = producto.additional?.length > 0;
+  // Verificación segura utilizando optional chaining
+  const sizes = producto?.size ?? [];
+  const additionals = producto?.additional ?? [];
+
+  const tieneSizes = sizes.length > 0;
+  const tieneAdditionals = additionals.length > 0;
 
   if (!tieneSizes && !tieneAdditionals) return null;
 
@@ -27,17 +31,17 @@ const ProductOptions = ({
             )}
           </span>
           <div className="iqv-options-list">
-            {producto.size.map((s) => {
+            {sizes.map((s) => {
               const isSelected = sizeSeleccionado?.id === s.id;
               return (
                 <div
-                  key={s.id}
+                  key={s.id || s.nombre}
                   className={`iqv-option-card ${isSelected ? "active" : ""}`}
                   onClick={() => handleSelectSize(s)}
                 >
                   <span className="iqv-option-name">{s.nombre}</span>
                   <b className="iqv-option-price">
-                    ${s.precio.toLocaleString("es-AR")}
+                    ${(s.precio || 0).toLocaleString("es-AR")}
                   </b>
                 </div>
               );
@@ -54,19 +58,19 @@ const ProductOptions = ({
             {additionalSeleccionados.length > 0 && (
               <small className="iqv-selected-badge ms-2">
                 ({esSeleccionUnica
-                  ? additionalSeleccionados[0].nombre
+                  ? additionalSeleccionados[0]?.nombre
                   : `${additionalSeleccionados.length} selec.`})
               </small>
             )}
           </span>
           <div className="iqv-options-list">
-            {producto.additional.map((adi) => {
+            {additionals.map((adi) => {
               const estaSeleccionado = additionalSeleccionados.some(
                 (item) => item.id === adi.id
               );
               return (
                 <div
-                  key={adi.id}
+                  key={adi.id || adi.nombre}
                   className={`iqv-option-card ${estaSeleccionado ? "active" : ""}`}
                   onClick={() => handleToggleAdditional(adi)}
                 >

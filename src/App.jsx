@@ -21,7 +21,7 @@ import ItemDetailContainer from './components/items/ItemDetailContainer';
 import AdminLayout from "./Admin/components/AdminLayout";
 import DashboardHome from "./Admin/pages/DashboardHome";
 import AdminOrders from "./Admin/pages/AdminOrders";
-
+import AddProduct from "./Admin/pages/AddProduct";
 
 import CartContextProvider from './context/CartContext';
 import { FavoritesProvider } from "./context/FavoritesContext";
@@ -55,9 +55,9 @@ function App() {
                 <Route path="/admin" element={<AdminLayout />}>
                   <Route index element={<DashboardHome />} />
                   <Route path="ordenes" element={<AdminOrders />} />
-                  <Route path="productos" element={<DashboardHome />} />
+                  <Route path="productos" element={<Productos />} />
                   <Route path="usuarios" element={<div className="p-4">Sección Usuarios (Próximamente)</div>} />
-                  <Route path="mensajes" element={<div className="p-4">Sección Mensajes (Próximamente)</div>} />
+                  <Route path="mensajes" element={< AddProduct />} />
                   <Route path="analiticas" element={<div className="p-4">Sección Analíticas (Próximamente)</div>} />
                   <Route path="configuracion" element={<div className="p-4">Sección Configuración (Próximamente)</div>} />
                 </Route>
