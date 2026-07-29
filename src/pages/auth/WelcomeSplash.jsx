@@ -1,52 +1,63 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import LoginGoogle from '../../components/user/LoginGoogle';
 import "./style/WelcomeSplash.css";
 
 export default function WelcomeSplash() {
-  const [step, setStep] = useState('welcome');
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  // Leemos el paso actual directamente de la URL (por defecto es 'welcome')
+  const step = searchParams.get('step') || 'welcome';
+
+  const goToLogin = () => {
+    // Agrega 'step=login' al historial del navegador
+    setSearchParams({ step: 'login' });
+  };
+
+  const goToWelcome = () => {
+    // Si presiona el botón "Volver" en pantalla, retrocede en el historial
+    navigate(-1);
+  };
 
   const handleContinueWithoutLogin = () => {
-    navigate('/Home');
+    // Redirige al inicio y reemplaza el historial para que no vuelva al login si presiona atrás desde el Home
+    navigate('/Home', { replace: true });
   };
 
   return (
     <div className="splash-container">
       
       {/* ==========================================
-          PANTALLA 1: WELCOME + GIF + BOTÓN CONTINUE
+          PANTALLA 1: WELCOME
          ========================================== */}
       {step === 'welcome' && (
         <div className="splash-welcome-screen animate-fade-in">
           
-          {/* Encabezado */}
           <div className="splash-header">
-            <h1>Welcome</h1>
+            <h1>Bienvenido</h1>
           </div>
 
-          {/* Centro: GIF + Texto */}
-          <div className="splash-media-container">
-            <div className="splash-gif-wrapper">
+          <div className="splash-media-container splash-card">
+            <div className="splash-gif-wrapper ">
               <img
-                src="/img/fire-2.gif" // Ruta directa desde la carpeta public
+                src="/img/fire-2.gif"
                 alt="Fuego animado"
                 className="splash-gif"
               />
             </div>
 
             <div className="splash-caption">
-              <h2>FoodCart</h2>
-              <p className="subtitle">Special & Delicious Food</p>
-              <p className="question">What Special meal today?</p>
+              <h2>RestorApp</h2>
+              <p className="subtitle">Comida especial y deliciosa</p>
+              <p className="question">¿Qué plato especial hay hoy?</p>
             </div>
           </div>
 
-          {/* Botón Continue */}
           <div className="splash-actions">
             <span className="splash-actions-text">Continue</span>
             <button
-              onClick={() => setStep('login')}
+              onClick={goToLogin}
               className="btn-continue-circle"
               aria-label="Continue"
             >
@@ -60,20 +71,18 @@ export default function WelcomeSplash() {
       )}
 
       {/* ==========================================
-          PANTALLA 2: SIGN IN / LOGIN CON GOOGLE
+          PANTALLA 2: SIGN IN
          ========================================== */}
       {step === 'login' && (
         <div className="splash-login-screen animate-fade-in">
           
-          {/* Header con la forma de ola/curva en CSS */}
-          <div className="splash-login-header"></div>
+          <div className="splash-login-header "></div>
 
-          {/* Formulario / Login */}
-          <div className="splash-login-body">
+          <div className="splash-login-body ">
             <div>
               <h1>Sign in</h1>
 
-              <div className="google-login-container">
+              <div className="google-login-container ">
                 <LoginGoogle />
               </div>
             </div>
@@ -87,7 +96,7 @@ export default function WelcomeSplash() {
               </button>
 
               <button
-                onClick={() => setStep('welcome')}
+                onClick={goToWelcome}
                 className="btn-back"
               >
                 ← Volver a la bienvenida

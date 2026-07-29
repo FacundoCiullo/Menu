@@ -57,6 +57,7 @@ function App() {
 
                 {/* RUTA INICIAL: Muestra la pantalla de bienvenida y cambia a login al presionar 'Continue' */}
                 <Route path="/" element={<WelcomeSplash />} />
+                <Route path="/login" element={<WelcomeSplash />} />
                 {/* RUTAS DEL PANEL DE ADMINISTRACIÓN */}
                 <Route path="/admin" element={<AdminLayout />}>
                   <Route index element={<DashboardHome />} />

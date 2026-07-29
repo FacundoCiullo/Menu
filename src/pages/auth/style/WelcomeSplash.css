@@ -16,7 +16,7 @@
 .splash-container {
   min-height: 100vh;
   width: 100%;
-  background-color: var(--splash-bg);
+  background-color: var(--bg-app);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -59,7 +59,7 @@
 .splash-header h1 {
   font-size: 2.25rem;
   font-weight: 800;
-  color: var(--splash-text-dark);
+  color: var(--text-primary);
   margin: 0;
   letter-spacing: -0.03em;
 }
@@ -96,7 +96,7 @@
 .splash-caption h2 {
   font-size: 1.65rem;
   font-weight: 800;
-  color: var(--splash-text-dark);
+  color: var(--text-primary);
   margin: 0;
 }
 
@@ -109,7 +109,7 @@
 .splash-caption .question {
   font-size: 1.05rem;
   font-weight: 700;
-  color: var(--splash-text-dark);
+  color: var(--text-primary);
   margin-top: 0.75rem;
 }
 
@@ -125,14 +125,14 @@
 .splash-actions-text {
   font-size: 0.95rem;
   font-weight: 600;
-  color: var(--splash-text-muted);
+  color: var(--text-primary);
 }
 
 .btn-continue-circle {
   width: 54px;
   height: 54px;
   border-radius: 50%;
-  background-color: var(--splash-coral);
+  background-color: var(--splash-coral-dark);
   color: #ffffff;
   border: none;
   display: flex;
@@ -144,7 +144,7 @@
 }
 
 .btn-continue-circle:hover {
-  background-color: var(--splash-coral-dark);
+  background-color: var(--pr-gold-300);
   transform: scale(1.06);
 }
 
@@ -195,7 +195,7 @@
 .splash-login-body h1 {
   font-size: 2.25rem;
   font-weight: 800;
-  color: var(--splash-text-dark);
+  color: var(--text-primary);
   margin-bottom: 0.5rem;
   letter-spacing: -0.025em;
 }
@@ -234,7 +234,7 @@
 .btn-back {
   background: none;
   border: none;
-  color: var(--splash-text-muted);
+  color: var(--text-muted);
   font-size: 0.85rem;
   font-weight: 600;
   cursor: pointer;
@@ -246,4 +246,23 @@
 .btn-back:hover {
   color: var(--splash-text-dark);
   text-decoration: underline;
+}
+
+
+
+.splash-card{
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: auto;
+  color: var(--text-primary);
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  transition: transform var(--transition-fast), border-color var(--transition-base), box-shadow var(--transition-base);
+
 }

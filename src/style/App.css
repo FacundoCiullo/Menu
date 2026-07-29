@@ -93,10 +93,6 @@
   --color-warning: var(--pr-warning);
   --color-info: var(--pr-info);
 
-  --color-primary-ui: #FF7F7F; /* El color coral/rosado del diseño */
-  --color-dark-ui: #2D3748;    /* Gris muy oscuro para texto */
-  --color-mid-ui: #718096;     /* Gris medio para descripciones */
-  --color-white: #FFFFFF;
 }
 
 
