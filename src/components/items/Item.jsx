@@ -12,9 +12,9 @@ const Item = ({ producto, colorSeleccionado, handleQuickView }) => {
 
   const esFavorito = isFavorite(producto.id);
 
-  // Obtener el porcentaje de descuento directamente
+  // Datos de oferta e imagen
+  const tieneOferta = Boolean(producto.oferta);
   const porcentaje = Number(producto.descuentoPorcentaje || 0);
-  const tieneOferta = Boolean(producto.oferta) && porcentaje > 0;
 
   const imagenFinal =
     colorSeleccionado &&
@@ -29,7 +29,7 @@ const Item = ({ producto, colorSeleccionado, handleQuickView }) => {
     toggleFavorite(producto);
   };
 
-  // Lógica para calcular el precio base (mínimo si tiene tamaños/size)
+  // 1. Lógica para obtener el precio base actual (o el mínimo si tiene variantes/sizes)
   const obtenerPrecioBase = () => {
     if (producto.size && producto.size.length > 0) {
       const precios = producto.size.map((s) => Number(s.precio)).filter((p) => !isNaN(p));
@@ -41,11 +41,10 @@ const Item = ({ producto, colorSeleccionado, handleQuickView }) => {
   };
 
   const precioBase = obtenerPrecioBase();
-  
-  // Calcular precio final con descuento si aplica
-  const precioFinal = tieneOferta 
-    ? precioBase * (1 - porcentaje / 100) 
-    : precioBase;
+  const precioAnterior = Number(producto.precioAnterior || 0);
+
+  // La oferta es válida si está marcada como oferta y el precio anterior es mayor al actual
+  const mostrarOferta = tieneOferta && precioAnterior > precioBase;
 
   return (
     <div
@@ -68,7 +67,7 @@ const Item = ({ producto, colorSeleccionado, handleQuickView }) => {
       {/* IMAGEN */}
       <div className="item-img-wrapper">
         {/* BADGE DE DESCUENTO */}
-        {tieneOferta && (
+        {mostrarOferta && porcentaje > 0 && (
           <div className="item-product-badge-discount">
             <TagFill size={12} /> -{porcentaje}% OFF
           </div>
@@ -95,22 +94,28 @@ const Item = ({ producto, colorSeleccionado, handleQuickView }) => {
         )}
 
         <div className="item-bottom">
-          <div className="item-precio-wrapper">
-            <p className="item-precio">
-              ${precioFinal.toLocaleString("es-AR")}
-            </p>
-            {tieneOferta && (
+
+            
+            {mostrarOferta && (
               <span className="item-precio-anterior">
-                ${precioBase.toLocaleString("es-AR")}
+                ${precioAnterior.toLocaleString("es-AR")}
               </span>
             )}
-          </div>
-          
-          {/* BOTÓN + ILUSTRATIVO */}
-          <div className="item-add-btn" title="Ver detalle">
-            <PlusLg size={18} />
-          </div>
+
+            {/* Precio Nuevo (El que ingresás como precio principal) */}
+            <p className="item-precio">
+              ${precioBase.toLocaleString("es-AR")}
+            </p>
+
+            {/* Precio Viejo Tachado */}
+
+
         </div>
+          {/* BOTÓN + ILUSTRATIVO */}
+        <div className="item-add-btn" title="Ver detalle">
+          <PlusLg size={18} />
+        </div>
+
       </div>
     </div>
   );

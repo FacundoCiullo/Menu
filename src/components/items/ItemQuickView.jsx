@@ -30,8 +30,7 @@ import ProductOptions from "../common/ProductOptions";
 
 import "./style/itemQuickView.css";
 
-const DEFAULT_IMAGE =
-  "/img/edit-1.png";
+const DEFAULT_IMAGE = "/img/edit-1.png";
 
 const ItemQuickView = ({ show, handleClose, producto, onRefresh }) => {
   const isCreationMode = !producto; // Si no hay producto, es MODO CREACIÓN
@@ -168,13 +167,13 @@ const ItemQuickView = ({ show, handleClose, producto, onRefresh }) => {
     setShowConfirmDelete(false);
   }, [producto, show, isCreationMode]);
 
-  // Cálculo de Descuento
+  // Cálculo solo del badge de % OFF (Informativo, sin alterar los precios base puestos por el usuario)
   useEffect(() => {
     if (!editando) return;
     const pActual = Number(formData.precio);
     const pAnterior = Number(formData.precioAnterior);
 
-    if (formData.oferta && pAnterior > 0 && pActual > 0 && pAnterior > pActual) {
+    if (formData.oferta && pAnterior > pActual && pActual > 0) {
       const diff = pAnterior - pActual;
       const pct = Math.round((diff / pAnterior) * 100);
       setFormData((prev) => ({ ...prev, descuentoPorcentaje: pct }));
@@ -259,13 +258,13 @@ const ItemQuickView = ({ show, handleClose, producto, onRefresh }) => {
 
   // Guardar (Creación o Edición) en Firestore
   const handleConfirmarGuardado = async () => {
-    if (!formData.titulo || !formData.precio) {
+    if (!formData.titulo || (!formData.precio && sizes.length === 0)) {
       setToastConfig({
         show: true,
         type: "error",
         subheading: "Campo Requerido",
         title: "Faltan Datos",
-        message: "Ingresá al menos el Título y el Precio Base."
+        message: "Ingresá al menos el Título y el Precio Base o sus Variantes."
       });
       return;
     }
@@ -386,7 +385,9 @@ const ItemQuickView = ({ show, handleClose, producto, onRefresh }) => {
     }
   };
 
-  // Cálculos cliente
+  // -------------------------------------------------------------
+  // LÓGICA DE PRECIOS EXACTA
+  // -------------------------------------------------------------
   const subcat = (formData.subcategoria || "").toLowerCase();
   const cat = (formData.categoria || "").toLowerCase();
   const type = (formData.additionalType || "").toLowerCase();
@@ -396,10 +397,20 @@ const ItemQuickView = ({ show, handleClose, producto, onRefresh }) => {
     subcat.includes("pasta") || 
     cat.includes("pasta");
 
-  const precioBase = sizeSeleccionado ? sizeSeleccionado.precio : (formData.precio || 0);
-  const precioAdditional = additionalSeleccionados.reduce((total, adi) => total + (adi.precio || 0), 0);
-  const precioUnitarioFinal = precioBase + precioAdditional;
+  // Si hay variante seleccionada usa el precio de la variante. Sino, usa el precio actual del producto ($formData.precio).
+  const precioUnitarioBase = sizeSeleccionado ? Number(sizeSeleccionado.precio) : Number(formData.precio || 0);
+
+  // Precio anterior / tachado de referencia
+  const tieneOferta = Boolean(formData.oferta);
+  const precioAnteriorBase = tieneOferta ? Number(formData.precioAnterior || 0) : 0;
+
+  // Adicionales seleccionados
+  const precioAdditional = additionalSeleccionados.reduce((total, adi) => total + Number(adi.precio || 0), 0);
+
+  // Totales
+  const precioUnitarioFinal = precioUnitarioBase + precioAdditional;
   const precioTotal = precioUnitarioFinal * cantidad;
+  const precioAnteriorTotal = (precioAnteriorBase + precioAdditional) * cantidad;
 
   const currentPreviewSrc = imagePreview || formData.imagen || DEFAULT_IMAGE;
 
@@ -463,7 +474,6 @@ const ItemQuickView = ({ show, handleClose, producto, onRefresh }) => {
                     )}
                   </div>
 
-
                   {isUploading && (
                     <div className="add-product-upload-progress">
                       <div className="upload-progress-bar" style={{ width: `${uploadProgress}%` }} />
@@ -504,8 +514,7 @@ const ItemQuickView = ({ show, handleClose, producto, onRefresh }) => {
               </div>
             )}
 
-            {/* badge-discount */}
-
+            {/* Badge Discount */}
             {formData.oferta && formData.descuentoPorcentaje > 0 && (
               <div className="add-product-badge-discount">
                 <TagFill size={12} /> -{formData.descuentoPorcentaje}% OFF
@@ -578,8 +587,15 @@ const ItemQuickView = ({ show, handleClose, producto, onRefresh }) => {
                       </div>
                     </div>
 
-                    <div className="iqv-price-display">
-                      ${precioTotal.toLocaleString("es-AR")}
+                    <div className="iqv-price-display d-flex flex-column align-items-end">
+                      {tieneOferta && precioAnteriorBase > precioUnitarioBase && (
+                        <span className="iqv-price-last" >
+                          ${precioAnteriorTotal.toLocaleString("es-AR")}
+                        </span>
+                      )}
+                      <span className="fw-bold">
+                        ${precioTotal.toLocaleString("es-AR")}
+                      </span>
                     </div>
                   </div>
                 </>

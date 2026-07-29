@@ -17,6 +17,9 @@ import HistorialCompras from './components/user/HistorialCompras';
 import ItemListContainer from './components/items/ItemListContainer';
 import ItemDetailContainer from './components/items/ItemDetailContainer';
 
+// Importación de tu nuevo WelcomeSplash que incluye la Bienvenida + Sign In
+import WelcomeSplash from './pages/auth/WelcomeSplash';
+
 // Importaciones del Panel de Administración (Componentes y Páginas)
 import AdminLayout from "./Admin/components/AdminLayout";
 import DashboardHome from "./Admin/pages/DashboardHome";
@@ -51,7 +54,10 @@ function App() {
           <CartContextProvider>
             <BrowserRouter>
               <Routes>
-                {/* RUTAS DEL PANEL DE ADMINISTRACIÓN (LAYOUT Y RUTAS ANIDADAS) */}
+
+                {/* RUTA INICIAL: Muestra la pantalla de bienvenida y cambia a login al presionar 'Continue' */}
+                <Route path="/" element={<WelcomeSplash />} />
+                {/* RUTAS DEL PANEL DE ADMINISTRACIÓN */}
                 <Route path="/admin" element={<AdminLayout />}>
                   <Route index element={<DashboardHome />} />
                   <Route path="ordenes" element={<AdminOrders />} />

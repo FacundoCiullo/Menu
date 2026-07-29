@@ -214,7 +214,7 @@
 .add-product-fieldset {
   border: 1px solid #1a1b20;
   border-radius: 14px;
-  padding: 12px;
+  padding: 10px 5px;
   background-color: #111216;
   display: flex;
   flex-direction: column;

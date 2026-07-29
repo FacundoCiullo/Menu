@@ -53,7 +53,7 @@ const CategoriesCarousel = () => {
           <h2 className="fw-bold m-0">Categorías</h2>
 
           <Link className="link-underline-dark" to="/Productos">
-            <p className="text-white m-0">Ver más</p>
+            <p className="text-white">Ver más</p>
           </Link>
         </div>
       </motion.div>

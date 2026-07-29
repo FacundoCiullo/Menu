@@ -12,13 +12,15 @@
 .inicio-landing {
   padding-top: 1rem;
   background: var(--background);
+  margin-bottom: 4rem;
 }
 
 .destacados{
   color: var(--text);
   display: flex;
   justify-content: space-between;
-  align-items: stretch;
+  align-items: baseline;
+  padding-right: 10px;
 }
 
 /* ==========================================
@@ -92,6 +94,11 @@
     height: 8rem;
 }
 
+.inicio-landing {
+  padding-top: 0rem;
+  background: var(--background);
+  margin-bottom: 4rem;
+}
   .horizontal-scroll {
     gap: 12px;
     margin-top: 1rem;

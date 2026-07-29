@@ -16,7 +16,7 @@ const AdminEditForm = ({
   return (
     <div className="add-product-form" style={{ padding: 0 }}>
       {/* Título */}
-      <div className="add-product-field-group">
+      <div className="add-product-fieldset">
         <label className="add-product-label">Título del Producto</label>
         <input
           type="text"
@@ -30,7 +30,7 @@ const AdminEditForm = ({
       </div>
 
       {/* Descripción */}
-      <div className="add-product-field-group">
+      <div className="add-product-fieldset">
         <label className="add-product-label">Descripción</label>
         <textarea
           name="descripcion"
@@ -43,7 +43,7 @@ const AdminEditForm = ({
       </div>
 
       {/* Categoría & Subcategoría */}
-      <div className="add-product-field-group">
+      <div className="add-product-fieldset">
         <label className="add-product-label">Categoría & Subcategoría</label>
         <div className="add-product-row">
           <input
@@ -66,7 +66,7 @@ const AdminEditForm = ({
       </div>
 
       {/* Precio, Oferta y Precio Anterior */}
-      <div className="add-product-field-group py-2">
+      <div className="add-product-fieldset">
         <div className="price-header-labels">
           <label className="add-product-label">
             {formData.oferta ? "Precio Oferta ($)" : "Precio Base ($)"}

@@ -42,7 +42,7 @@
     border-radius: 20px;
     overflow: hidden;
     border: 1px solid var(--iqv-border);
-    max-width: 440px;
+    max-width: 700px;
     margin: 30px auto 60px;
     background-color: var(--iqv-bg-card);
     box-shadow: var(--iqv-shadow) 0px 15px 35px;
@@ -124,10 +124,10 @@
 
   /* Cuerpo de la Tarjeta */
   .iqv-body-content {
-    padding: 24px;
+    padding: 24px 12px;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 5px;
     background-color: var(--iqv-bg-card);
   }
 
@@ -172,7 +172,7 @@
   }
 
   /* =========================================================================
-      GRUPO DE OPCIONES Y TARJETAS SELECCIONABLES (GOLD TOUCH)
+    GRUPO DE OPCIONES Y TARJETAS SELECCIONABLES (GOLD TOUCH)
     ========================================================================= */
 
   .iqv-options-group {
@@ -248,15 +248,6 @@
       CANTIDAD Y PRECIOS
     ========================================================================= */
 
-  .iqv-quantity-price-row {
-    border-top: 1px solid var(--iqv-border);
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    margin-top: 12px;
-    padding-top: 14px;
-  }
-
   .iqv-qty-selector-wrapper {
     display: flex;
     align-items: flex-start;
@@ -308,12 +299,29 @@
     color: var(--iqv-text-primary);
   }
 
+  .iqv-quantity-price-row {
+    border-top: 1px solid var(--iqv-border);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-top: 12px;
+    padding-top: 14px;
+    padding: 0px 16px 0px 10px;
+  }
+
   .iqv-price-display {
     font-size: 28px;
     font-weight: 800;
     letter-spacing: -0.03em;
     color: var(--iqv-text-primary); 
     text-shadow: 0 0 12px rgba(212, 175, 55, 0.2);
+  }
+
+  .iqv-price-last{
+    display: flex;
+    font-size: 1.2rem;
+    font-weight: 600;
+    text-decoration: line-through;
   }
 
   /* =========================================================================

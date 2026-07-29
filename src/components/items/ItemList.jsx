@@ -112,37 +112,13 @@ const ItemList = ({ productos, onRefresh }) => {
                   onClick={handleAddNew}
                   role="button"
                   tabIndex={0}
-                  style={{
-                    minHeight: "100%",
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    border: "2px dashed #ffc107",
-                    borderRadius: "16px",
-                    background: "rgba(255, 193, 7, 0.05)",
-                    cursor: "pointer",
-                    padding: "2rem",
-                  }}
                 >
-                  <div
-                    style={{
-                      width: "60px",
-                      height: "60px",
-                      borderRadius: "50%",
-                      backgroundColor: "#ffc107",
-                      color: "#000",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      marginBottom: "12px",
-                    }}
-                  >
+                  <div className="add-icon-circle">
                     <PlusLg size={32} />
                   </div>
-                  <span style={{ color: "#ffc107", fontWeight: "bold" }}>
-                    Agregar Producto
-                  </span>
+                  
+                  <span> Agregar Producto </span>
+
                 </div>
               </motion.div>
             )}

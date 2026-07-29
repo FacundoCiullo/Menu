@@ -92,7 +92,13 @@
   --color-danger: var(--pr-danger);
   --color-warning: var(--pr-warning);
   --color-info: var(--pr-info);
+
+  --color-primary-ui: #FF7F7F; /* El color coral/rosado del diseño */
+  --color-dark-ui: #2D3748;    /* Gris muy oscuro para texto */
+  --color-mid-ui: #718096;     /* Gris medio para descripciones */
+  --color-white: #FFFFFF;
 }
+
 
 /* =========================================================================
     3) TEMAS ALTERNATIVOS (Ej: si querés volver al Naranja o cambiar en el futuro)
@@ -154,7 +160,6 @@ p {
 /* Contenedor */
 
 .container {
-
   margin-bottom: 3rem;
   background: var(--background);
 }
@@ -173,6 +178,13 @@ p {
   padding: rem 2rem;
 }
 
+
+/* Responsive Overrides */
+@media (max-width: 768px) {
+  .container{
+    margin-bottom: 1rem;
+  }
+}
 
 
 /* =========================================================
@@ -226,37 +238,6 @@ p {
   font-size: 0.95rem;
 }
 
-/* Social bar */
-
-
-
-/* =========================================================
-  🧩 3) HELPERS – clases utilitarias
-========================================================= */
-
-/* Contenedor */
-
-.container {
-
-  margin-bottom: 3rem;
-  background: var(--background);
-}
-
-.flex-center {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.shadow-soft {
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-}
-
-.section {
-  padding: rem 2rem;
-}
-
-
 
 /* =========================================================
   🔔 4) TOASTIFY CUSTOM
@@ -272,3 +253,11 @@ p {
 
 
 
+/* Una utilidad simple para animar la transición entre páginas si gustas */
+.page-fade-enter {
+  opacity: 0;
+}
+.page-fade-enter-active {
+  opacity: 1;
+  transition: opacity 300ms ease-in;
+}
