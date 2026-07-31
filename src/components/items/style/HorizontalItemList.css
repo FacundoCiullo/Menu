@@ -11,7 +11,7 @@
   scroll-snap-type: x mandatory;
   padding: 10px 15px 10px;
   scrollbar-width: none;
-  margin-top: 0px;
+
 }
 
 .horizontal-scroll::-webkit-scrollbar {
@@ -48,8 +48,8 @@
 @media (max-width: 768px) {
   .horizontal-scroll {
     gap: 14px;
-    padding-inline: 12px;
-    margin-top: 1rem;
+    padding-inline: 1px;
+
   }
 
   .slider-card-product {

@@ -9,8 +9,8 @@ const Inicio = () => {
   return (
     <div className="inicio-landing">
 
-      <section className="mt-5 container">
-        <img className="inicio-banner" src="/img/banner/banner-restaurant.png" alt="" />
+      <section className="">
+        <img className="inicio-banner" src="/img/banner-restaurant.png" alt="" />
       </section>
 
       <CategoriesCarousel />

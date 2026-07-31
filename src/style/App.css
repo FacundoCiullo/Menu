@@ -126,7 +126,7 @@ body, .App {
 
 main {
   background: var(--bg-main);
-  padding-top: 2rem;
+  margin-top: -3rem;
   padding-bottom: 2rem;
   min-height: 100vh;
 }
@@ -158,6 +158,8 @@ p {
 .container {
   margin-bottom: 3rem;
   background: var(--background);
+  padding-right: calc(var(--bs-gutter-x) * .6);
+  padding-left: calc(var(--bs-gutter-x) * .6);
 }
 
 .flex-center {
@@ -168,10 +170,6 @@ p {
 
 .shadow-soft {
   box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-}
-
-.section {
-  padding: rem 2rem;
 }
 
 

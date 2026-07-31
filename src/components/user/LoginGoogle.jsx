@@ -1,93 +1,31 @@
-import React from "react";
-import { auth, googleProvider } from '../../firebase';
-import { signInWithPopup, signOut } from "firebase/auth";
-import { useAuthState } from "react-firebase-hooks/auth";
-import { Button } from "react-bootstrap";
-import { BoxArrowRight } from "react-bootstrap-icons";
+import React from 'react';
+import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
+import { auth } from '../../firebase';
+import { FcGoogle } from 'react-icons/fc';
 
-const LoginGoogle = () => {
-  const [user] = useAuthState(auth);
-
-  // 🔐 Iniciar sesión con Google
-  const handleLogin = async () => {
+export default function LoginGoogle({ customText = "Iniciar sesión con Google" }) {
+  
+  const handleGoogleLogin = async () => {
     try {
-      await signInWithPopup(auth, googleProvider);
+      const provider = new GoogleAuthProvider();
+      // Forzar que pida la cuenta si se desea cambiar
+      provider.setCustomParameters({ prompt: 'select_account' });
+      
+      const result = await signInWithPopup(auth, provider);
+      console.log("Sesión iniciada con éxito:", result.user);
     } catch (error) {
       console.error("Error al iniciar sesión con Google:", error);
     }
   };
 
-  // 🚪 Cerrar sesión
-  const handleLogout = async () => {
-    try {
-      await signOut(auth);
-    } catch (error) {
-      console.error("Error al cerrar sesión:", error);
-    }
-  };
-
-  // 👤 Si el usuario ya está logueado
-  if (user) {
-    return (
-      <div className="text-center mt-3">
-        <img
-          src={user.photoURL}
-          alt="usuario"
-          referrerPolicy="no-referrer"
-          style={{
-            width: "40px",
-            height: "40px",
-            borderRadius: "50%",
-            marginRight: "10px",
-            verticalAlign: "middle",
-          }}
-        />
-        <span style={{ color: "var(--text)", marginRight: "10px" }}>
-          {user.displayName}
-        </span>
-        <Button
-          variant="outline-dark"
-          size="sm"
-          onClick={handleLogout}
-          style={{
-            borderRadius: "8px",
-            transition: "all 0.2s ease",
-          }}
-          onMouseOver={(e) =>
-            (e.currentTarget.style.backgroundColor = "var(--clr-gray-dark)")
-          }
-          onMouseOut={(e) =>
-            (e.currentTarget.style.backgroundColor = "transparent")
-          }
-        >
-          <BoxArrowRight className="me-1" /> Cerrar sesión
-        </Button>
-      </div>
-    );
-  }
-
-  // 🔘 Si no hay usuario logueado
   return (
-    <div className="text-center mt-3">
-      <Button
-        variant="light"
-        onClick={handleLogin}
-        className="shadow-sm d-flex align-items-center justify-content-center mx-auto"
-        style={{
-          borderRadius: "8px",
-          border: "1px solid #ccc",
-          padding: "2px 8px",
-          width: "fit-content",
-          transition: "all 0.2s ease",
-        }}
-        onMouseOver={(e) => (e.currentTarget.style.transform = "translateY(-2px)")}
-        onMouseOut={(e) => (e.currentTarget.style.transform = "translateY(0)")}
-      >
-
-        Iniciar sesión
-      </Button>
-    </div>
+    <button
+      onClick={handleGoogleLogin}
+      className="btn-google-custom"
+      type="button"
+    >
+      <FcGoogle style={{ fontSize: '1.2rem', marginRight: '0.5rem' }} />
+      <span>{customText}</span>
+    </button>
   );
-};
-
-export default LoginGoogle;
+}

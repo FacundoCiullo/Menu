@@ -1,8 +1,7 @@
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import { AiOutlineArrowLeft } from "react-icons/ai";
+import { Link, useLocation } from "react-router-dom";
 import { BsHeart, BsHeartFill } from "react-icons/bs";
 import { RiShoppingCart2Line, RiShoppingCart2Fill} from "react-icons/ri";
-import { SiFoodpanda, SiHomeassistantcommunitystore } from "react-icons/si";
+import {  SiHomeassistantcommunitystore } from "react-icons/si";
 import { BsPlusCircle, BsPlusCircleFill  } from "react-icons/bs";
 import { FaUserCircle } from "react-icons/fa";
 import { useAuthState } from "react-firebase-hooks/auth";
@@ -14,7 +13,6 @@ import "./style/MobileNavbar.css";
 
 const MobileNavbar = () => {
   const location = useLocation();
-  const navigate = useNavigate();
   const path = location.pathname;
 
   const [user] = useAuthState(auth);
@@ -23,48 +21,8 @@ const MobileNavbar = () => {
   const { cartTotal } = useContext(CartContext);
   const totalCarrito = cartTotal();
 
-  // Títulos automáticos según la ruta
-  const titles = {
-    "/Home": "Inicio",
-    "/favoritos": "Favoritos",
-    "/Productos": "Menú",
-    "/cart": "Carrito",
-    "/admin": "Administrador",
-    "/historial": "Historial",
-  };
-
-  const pageTitle = titles[path] || "Mi Tienda";
-
   return (
     <>
-      {/* 🔼 MOBILE TOP HEADER */}
-      <header className="mobile-header d-md-none">
-        <button className="back-btn" onClick={() => navigate(-1)} aria-label="Volver atrás">
-          <AiOutlineArrowLeft size={22} />
-        </button>
-
-        <h2 className="header-title">{pageTitle}</h2>
-
-        <button
-          className="mobile-avatar-btn "
-          onClick={() => setShowSidebar(!showSidebar)}
-          aria-label="Abrir menú de usuario"
-          type="button"
-        >
-          {user ? (
-            <img
-              src={user.photoURL}
-              className="mobile-avatar"
-              alt="Avatar del usuario"
-              referrerPolicy="no-referrer"
-            />
-          ) : (
-            <FaUserCircle size={30} />
-          )}
-        </button>
-      </header>
-
-
       {/* 🔽 MOBILE NAVBAR (ABAJO) */}
       <nav className="mobile-nav d-md-none" aria-label="Navegación principal mobile">
         <Link 
@@ -85,7 +43,7 @@ const MobileNavbar = () => {
         to="/Productos" 
         className={`nav-center-btn ${path === "/Productos" ? "active" : ""}`}  
         aria-label="Productos">
-          {path === "/Productos"? <BsPlusCircleFill size={28} /> : <BsPlusCircle size={24} />}
+          {path === "/Productos"? <BsPlusCircleFill size={38} /> : <BsPlusCircle size={36} />}
         </Link>
 
         <div className="cart-icon-wrapper" >
@@ -102,12 +60,23 @@ const MobileNavbar = () => {
           </Link>
         </div>
 
-          <Link 
-          to="/Historial" 
-          className={`nav-center-btn ${path === "/Historial" ? "active" : ""}`} 
-          aria-label="Historial">
-            {path === "/Historial" ? <SiFoodpanda size={28} /> : <SiFoodpanda size={24} />}
-          </Link>
+        <button
+          className="mobile-avatar-btn "
+          onClick={() => setShowSidebar(!showSidebar)}
+          aria-label="Abrir menú de usuario"
+          type="button"
+        >
+          {user ? (
+            <img
+              src={user.photoURL}
+              className="mobile-avatar"
+              alt="Avatar del usuario"
+              referrerPolicy="no-referrer"
+            />
+          ) : (
+            <FaUserCircle size={46} />
+          )}
+        </button>
 
       </nav>
 

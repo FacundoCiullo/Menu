@@ -10,7 +10,7 @@
 }
 
 .inicio-landing {
-  padding-top: 1rem;
+  padding-top: 3rem;
   background: var(--background);
   margin-bottom: 4rem;
 }
@@ -91,17 +91,15 @@
 
 @media (max-width: 768px) {
 .inicio-banner{
-    height: 8rem;
+    height: 140px;
+        border-radius: 0px;
 }
-
 .inicio-landing {
-  padding-top: 0rem;
   background: var(--background);
   margin-bottom: 4rem;
 }
   .horizontal-scroll {
     gap: 12px;
-    margin-top: 1rem;
   }
 
   .slider-card {
@@ -115,6 +113,6 @@
 
   .category-title {
     font-size: 0.78rem;
-    margin-top: 6px;
+
   }
 }

@@ -16,24 +16,30 @@ import {
   Upload,
   Image as ImageIcon,
   Trash,
-  TagFill
+  TagFill,
 } from "react-bootstrap-icons";
 
+// CONEXION CON FIREBASE
 import { db, storage } from "../../firebase"; 
 import { doc, updateDoc, deleteDoc, collection, addDoc } from "firebase/firestore";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 
-// Sub-componentes
+// SUB-COMPONENTES
 import ToastModal from "../common/ToastModal";
 import AdminEditForm from "../common/AdminEditForm";
 import ProductOptions from "../common/ProductOptions";
 
+// ESTILOS
 import "./style/itemQuickView.css";
+
+// IMAGENES
+import sinTaccIcon from "../../assets/sin-tacc.png"; 
+import veganoIcon from "../../assets/vegan_circle.png";
 
 const DEFAULT_IMAGE = "/img/edit-1.png";
 
 const ItemQuickView = ({ show, handleClose, producto, onRefresh }) => {
-  const isCreationMode = !producto; // Si no hay producto, es MODO CREACIÓN
+  const isCreationMode = !producto;
 
   const [cantidad, setCantidad] = useState(1);
   const [sizeSeleccionado, setSizeSeleccionado] = useState(null);
@@ -42,10 +48,9 @@ const ItemQuickView = ({ show, handleClose, producto, onRefresh }) => {
   const [cargandoGuardado, setCargandoGuardado] = useState(false);
   const [cargandoEliminacion, setCargandoEliminacion] = useState(false);
 
-  // Modal de confirmación para borrar
   const [showConfirmDelete, setShowConfirmDelete] = useState(false);
 
-  // Estados Formulario Admin
+  // Formulario Admin
   const [formData, setFormData] = useState({});
   const [sizes, setSizes] = useState([]);
   const [additionals, setAdditionals] = useState([]);
@@ -78,7 +83,6 @@ const ItemQuickView = ({ show, handleClose, producto, onRefresh }) => {
 
   const isFav = producto ? isFavorite(producto.id) : false;
 
-  // Manejo del botón atrás del navegador
   useEffect(() => {
     if (!show) return;
 
@@ -102,12 +106,10 @@ const ItemQuickView = ({ show, handleClose, producto, onRefresh }) => {
     };
   }, [show, handleClose, isCreationMode]);
 
-  // Inicialización de datos (Creación vs Edición)
   useEffect(() => {
     if (!show) return;
 
     if (isCreationMode) {
-      // Plantilla Limpia para Nuevo Producto
       setFormData({
         titulo: "",
         descripcion: "",
@@ -115,6 +117,7 @@ const ItemQuickView = ({ show, handleClose, producto, onRefresh }) => {
         subcategoria: "",
         precio: "",
         precioAnterior: "",
+        stock: 0,
         descuentoPorcentaje: 0,
         oferta: false,
         recomendado: false,
@@ -129,12 +132,13 @@ const ItemQuickView = ({ show, handleClose, producto, onRefresh }) => {
       });
       setSizes([]);
       setAdditionals([]);
-      setEditando(true); // En modo creación entra directamente editando
+      setEditando(true);
     } else {
-      // Cargar Datos Existentes
       setSizeSeleccionado(producto.size?.length > 0 ? producto.size[0] : null);
       setAdditionalSeleccionados([]);
       setCantidad(1);
+
+      const stockReal = producto.stock !== undefined && producto.stock !== null ? Number(producto.stock) : 0;
 
       setFormData({
         titulo: producto.titulo || producto.nombre || "",
@@ -143,6 +147,7 @@ const ItemQuickView = ({ show, handleClose, producto, onRefresh }) => {
         subcategoria: producto.subcategoria || "",
         precio: producto.precio || 0,
         precioAnterior: producto.precioAnterior || 0,
+        stock: stockReal,
         descuentoPorcentaje: producto.descuentoPorcentaje || 0,
         oferta: Boolean(producto.oferta),
         recomendado: Boolean(producto.recomendado),
@@ -167,7 +172,6 @@ const ItemQuickView = ({ show, handleClose, producto, onRefresh }) => {
     setShowConfirmDelete(false);
   }, [producto, show, isCreationMode]);
 
-  // Cálculo solo del badge de % OFF (Informativo, sin alterar los precios base puestos por el usuario)
   useEffect(() => {
     if (!editando) return;
     const pActual = Number(formData.precio);
@@ -182,13 +186,22 @@ const ItemQuickView = ({ show, handleClose, producto, onRefresh }) => {
     }
   }, [formData.precio, formData.precioAnterior, formData.oferta, editando]);
 
-  // Handlers
   const handleChangeAdmin = (e) => {
     const { name, value, type, checked } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: type === "checkbox" ? checked : value,
-    }));
+    const val = type === "checkbox" ? checked : value;
+
+    setFormData((prev) => {
+      const updated = { ...prev, [name]: val };
+      
+      // ✅ Si se edita el stock a mayor que 0, se habilita 'disponible' automáticamente
+      if (name === "stock") {
+        const nuevoStock = Number(val);
+        if (nuevoStock > 0) {
+          updated.disponible = true;
+        }
+      }
+      return updated;
+    });
   };
 
   const handleTriggerFileInput = () => {
@@ -237,26 +250,28 @@ const ItemQuickView = ({ show, handleClose, producto, onRefresh }) => {
     });
   };
 
-  // Tamaños y Adicionales
-  const handleAddSize = () => setSizes((prev) => [...prev, { id: "", nombre: "", precio: 0 }]);
+  const handleAddSize = () => setSizes((prev) => [...prev, { id: "", nombre: "", precio: 0, precioAnterior: 0 }]);
+  
   const handleSizeChange = (index, field, value) => {
     const updated = [...sizes];
-    updated[index][field] = field === "precio" ? Number(value) : value;
+    updated[index][field] = field.includes("precio") ? Number(value) : value;
     if (field === "nombre") updated[index].id = value.toLowerCase().trim().replace(/\s+/g, "_");
     setSizes(updated);
   };
+
   const handleRemoveSize = (index) => setSizes((prev) => prev.filter((_, i) => i !== index));
 
   const handleAddAdditional = () => setAdditionals((prev) => [...prev, { id: "", nombre: "", precio: 0 }]);
+  
   const handleAdditionalChange = (index, field, value) => {
     const updated = [...additionals];
     updated[index][field] = field === "precio" ? Number(value) : value;
     if (field === "nombre") updated[index].id = value.toLowerCase().trim().replace(/\s+/g, "_");
     setAdditionals(updated);
   };
+
   const handleRemoveAdditional = (index) => setAdditionals((prev) => prev.filter((_, i) => i !== index));
 
-  // Guardar (Creación o Edición) en Firestore
   const handleConfirmarGuardado = async () => {
     if (!formData.titulo || (!formData.precio && sizes.length === 0)) {
       setToastConfig({
@@ -288,18 +303,22 @@ const ItemQuickView = ({ show, handleClose, producto, onRefresh }) => {
         }
       }
 
+      const stockNum = Number(formData.stock ?? 0);
+
       const datosAEnviar = {
         ...formData,
         imagen: finalImageUrl || DEFAULT_IMAGE,
         precio: Number(formData.precio) || 0,
         precioAnterior: formData.oferta ? Number(formData.precioAnterior) || 0 : 0,
+        stock: stockNum,
+        // ✅ Corregido: Si stock > 0 reactiva el producto automáticamente
+        disponible: stockNum > 0 ? true : formData.disponible,
         descuentoPorcentaje: formData.oferta ? formData.descuentoPorcentaje : 0,
         size: sizes,
         additional: additionals
       };
 
       if (isCreationMode) {
-        // MODO CREACIÓN
         await addDoc(collection(db, "items"), datosAEnviar);
         setToastConfig({
           show: true,
@@ -309,7 +328,6 @@ const ItemQuickView = ({ show, handleClose, producto, onRefresh }) => {
           message: "El nuevo producto fue guardado correctamente."
         });
       } else {
-        // MODO EDICIÓN
         const idStr = String(producto.id).padStart(3, "0");
         const docRef = doc(db, "items", idStr);
         await updateDoc(docRef, datosAEnviar);
@@ -344,7 +362,6 @@ const ItemQuickView = ({ show, handleClose, producto, onRefresh }) => {
     }
   };
 
-  // Eliminar Producto
   const handleConfirmarEliminacionItem = async () => {
     if (!producto) return;
 
@@ -385,9 +402,7 @@ const ItemQuickView = ({ show, handleClose, producto, onRefresh }) => {
     }
   };
 
-  // -------------------------------------------------------------
-  // LÓGICA DE PRECIOS EXACTA
-  // -------------------------------------------------------------
+  // Lógica de Precios
   const subcat = (formData.subcategoria || "").toLowerCase();
   const cat = (formData.categoria || "").toLowerCase();
   const type = (formData.additionalType || "").toLowerCase();
@@ -397,22 +412,30 @@ const ItemQuickView = ({ show, handleClose, producto, onRefresh }) => {
     subcat.includes("pasta") || 
     cat.includes("pasta");
 
-  // Si hay variante seleccionada usa el precio de la variante. Sino, usa el precio actual del producto ($formData.precio).
   const precioUnitarioBase = sizeSeleccionado ? Number(sizeSeleccionado.precio) : Number(formData.precio || 0);
-
-  // Precio anterior / tachado de referencia
   const tieneOferta = Boolean(formData.oferta);
-  const precioAnteriorBase = tieneOferta ? Number(formData.precioAnterior || 0) : 0;
-
-  // Adicionales seleccionados
   const precioAdditional = additionalSeleccionados.reduce((total, adi) => total + Number(adi.precio || 0), 0);
 
-  // Totales
   const precioUnitarioFinal = precioUnitarioBase + precioAdditional;
   const precioTotal = precioUnitarioFinal * cantidad;
-  const precioAnteriorTotal = (precioAnteriorBase + precioAdditional) * cantidad;
+
+  const precioAnteriorUnitario = sizeSeleccionado?.precioAnterior > 0
+    ? Number(sizeSeleccionado.precioAnterior)
+    : Number(formData.precioAnterior || 0);
+
+  const precioAnteriorTotal = (precioAnteriorUnitario + precioAdditional) * cantidad;
+
+  let descuentoBadgePct = formData.descuentoPorcentaje;
+  if (precioAnteriorUnitario > precioUnitarioBase && precioAnteriorUnitario > 0) {
+    descuentoBadgePct = Math.round(((precioAnteriorUnitario - precioUnitarioBase) / precioAnteriorUnitario) * 100);
+  }
 
   const currentPreviewSrc = imagePreview || formData.imagen || DEFAULT_IMAGE;
+  const imagenFinal = editando ? currentPreviewSrc : (producto?.imagen || producto?.pictureUrl || DEFAULT_IMAGE);
+  
+  // ✅ Corregido: Evalúa stock directamente sin quedar bloqueado por la bandera previa
+  const stockActual = formData.stock !== undefined ? Number(formData.stock) : (producto?.stock !== undefined ? Number(producto.stock) : 0);
+  const sinStock = stockActual <= 0;
 
   return (
     <>
@@ -435,13 +458,36 @@ const ItemQuickView = ({ show, handleClose, producto, onRefresh }) => {
         <Modal.Body className="p-0">
           <div className="iqv-card-container">
             
-            {/* Cabecera / Imagen */}
             <div className="iqv-image-wrapper">
               <img
-                src={editando ? currentPreviewSrc : (producto?.imagen || producto?.pictureUrl)}
-                alt={formData.titulo || "Nuevo Producto"}
+                src={imagenFinal}
+                alt={formData.titulo || producto?.titulo || producto?.nombre || "Producto"}
                 className="iqv-main-img"
               />
+
+              {/* ✅ BADGE DE AGOTADO */}
+              {sinStock && !editando && (
+                <span className="badge-agotado">Agotado</span>
+              )}
+
+              <div className="iqv-dietary-badges-container">
+                {producto?.sinTacc && (
+                  <img 
+                    src={sinTaccIcon} 
+                    alt="Sin TACC" 
+                    title="Apto Sin TACC"
+                    className="iqv-dietary-badge" 
+                  />
+                )}
+                {producto?.vegano && (
+                  <img 
+                    src={veganoIcon} 
+                    alt="Apto Vegano" 
+                    title="Apto Vegano"
+                    className="iqv-dietary-badge" 
+                  />
+                )}
+              </div>
 
               {editando && (
                 <>
@@ -500,7 +546,6 @@ const ItemQuickView = ({ show, handleClose, producto, onRefresh }) => {
               </button>
             </div>
 
-            {/* Input URL flotante */}
             {editando && showImageUrlInput && (
               <div className="add-product-url-popover">
                 <input
@@ -514,14 +559,13 @@ const ItemQuickView = ({ show, handleClose, producto, onRefresh }) => {
               </div>
             )}
 
-            {/* Badge Discount */}
-            {formData.oferta && formData.descuentoPorcentaje > 0 && (
+            {/* BADGE DE DESCUENTO */}
+            {formData.oferta && descuentoBadgePct > 0 && (
               <div className="add-product-badge-discount">
-                <TagFill size={12} /> -{formData.descuentoPorcentaje}% OFF
+                <TagFill size={24} /> -{descuentoBadgePct}% OFF
               </div>
             )}
 
-            {/* Cuerpo */}
             <div className="iqv-body-content">
               {esAdmin && editando ? (
                 <AdminEditForm
@@ -538,8 +582,11 @@ const ItemQuickView = ({ show, handleClose, producto, onRefresh }) => {
                 />
               ) : (
                 <>
-                  <div className="iqv-header-title-row">
-                    <h2 className="iqv-product-title">{producto?.titulo}</h2>
+                  <div className="iqv-header-title-row d-flex align-items-center justify-content-between">
+                    <div className="d-flex align-items-center gap-2 flex-wrap">
+                      <h2 className="iqv-product-title mb-0">{producto?.titulo}</h2>
+                    </div>
+
                     <motion.button
                       whileTap={{ scale: 1.25 }}
                       type="button"
@@ -553,7 +600,7 @@ const ItemQuickView = ({ show, handleClose, producto, onRefresh }) => {
                       )}
                     </motion.button>
                   </div>
-
+                  
                   <p className="iqv-product-description">
                     {producto?.descripcion || "Sin descripción disponible."}
                   </p>
@@ -577,23 +624,23 @@ const ItemQuickView = ({ show, handleClose, producto, onRefresh }) => {
                     <div className="iqv-qty-selector-wrapper">
                       <span className="iqv-label-text mb-0">Cantidad:</span>
                       <div className="iqv-qty-counter">
-                        <button type="button" onClick={() => setCantidad(c => Math.max(1, c - 1))} disabled={cantidad <= 1}>
+                        <button type="button" onClick={() => setCantidad(c => Math.max(1, c - 1))} disabled={cantidad <= 1 || sinStock}>
                           <Dash size={20} />
                         </button>
                         <span className="iqv-qty-value">{cantidad}</span>
-                        <button type="button" onClick={() => setCantidad(c => c + 1)}>
+                        <button type="button" onClick={() => setCantidad(c => c + 1)} disabled={sinStock}>
                           <Plus size={20} />
                         </button>
                       </div>
                     </div>
 
                     <div className="iqv-price-display d-flex flex-column align-items-end">
-                      {tieneOferta && precioAnteriorBase > precioUnitarioBase && (
-                        <span className="iqv-price-last" >
+                      {tieneOferta && precioAnteriorTotal > precioTotal && (
+                        <span className="iqv-price-last text-decoration-line-through">
                           ${precioAnteriorTotal.toLocaleString("es-AR")}
                         </span>
                       )}
-                      <span className="fw-bold">
+                      <span className="fw-bold fs-4">
                         ${precioTotal.toLocaleString("es-AR")}
                       </span>
                     </div>
@@ -601,12 +648,11 @@ const ItemQuickView = ({ show, handleClose, producto, onRefresh }) => {
                 </>
               )}
 
-              {/* Botón Principal */}
               <div className="iqv-footer-actions mt-3">
                 {esAdmin && editando ? (
                   <button
                     type="button"
-                    className="iqv-btn-primary-action iqv-btn-admin-save"
+                    className="iqv-btn-primary-action iqv-btn-admin-save text-light"
                     onClick={handleConfirmarGuardado}
                     disabled={cargandoGuardado || cargandoEliminacion}
                   >
@@ -622,9 +668,9 @@ const ItemQuickView = ({ show, handleClose, producto, onRefresh }) => {
                 ) : (
                   <button
                     type="button"
-                    className="iqv-btn-primary-action"
+                    className="iqv-btn-primary-action iqv-btn-admin-save text-light"
                     onClick={() => {
-                      if (producto) {
+                      if (producto && !sinStock) {
                         addItem({
                           ...producto,
                           precioUnitario: precioUnitarioFinal,
@@ -634,9 +680,9 @@ const ItemQuickView = ({ show, handleClose, producto, onRefresh }) => {
                         handleClose();
                       }
                     }}
-                    disabled={producto?.disponible === false}
+                    disabled={sinStock}
                   >
-                    {producto?.disponible !== false ? <span>Agregar</span> : "No disponible"}
+                    {!sinStock ? <span>+ Agregar</span> : "Sin Stock"}
                   </button>
                 )}
               </div>
@@ -646,7 +692,6 @@ const ItemQuickView = ({ show, handleClose, producto, onRefresh }) => {
         </Modal.Body>
       </Modal>
 
-      {/* Modal Confirmación Borrar */}
       <Modal
         show={showConfirmDelete}
         onHide={() => !cargandoEliminacion && setShowConfirmDelete(false)}
@@ -684,7 +729,6 @@ const ItemQuickView = ({ show, handleClose, producto, onRefresh }) => {
         </Modal.Footer>
       </Modal>
 
-      {/* Toast Feedback */}
       <ToastModal
         show={toastConfig.show}
         onHide={() => setToastConfig((prev) => ({ ...prev, show: false }))}

@@ -1,14 +1,70 @@
 import React from "react";
 import { TagFill } from "react-bootstrap-icons";
 
+const DynamicFieldsSection = ({
+  title,
+  items = [],
+  onAdd,
+  onChange,
+  onRemove,
+  placeholderName,
+  placeholderPrice,
+  addLabel,
+  esOferta = false,
+}) => (
+  <fieldset className="add-product-fieldset">
+    <legend className="add-product-legend">{title}</legend>
+    {items.map((item, index) => (
+      <div key={item.id || index} className="add-product-dynamic-row">
+        <input
+          type="text"
+          placeholder={placeholderName}
+          value={item.nombre || ""}
+          onChange={(e) => onChange(index, "nombre", e.target.value)}
+          className="add-product-input"
+        />
+        <input
+          type="number"
+          placeholder={placeholderPrice}
+          value={item.precio ?? ""}
+          onChange={(e) => onChange(index, "precio", e.target.value)}
+          className="add-product-input cell-price"
+        />
+        
+        {esOferta && (
+          <input
+            type="number"
+            placeholder="Precio Viejo"
+            value={item.precioAnterior ?? ""}
+            onChange={(e) => onChange(index, "precioAnterior", e.target.value)}
+            className="add-product-input cell-price old-price-input"
+          />
+        )}
+
+        <button
+          type="button"
+          onClick={() => onRemove(index)}
+          className="add-product-btn-remove"
+          aria-label="Eliminar fila"
+        >
+          ✕
+        </button>
+      </div>
+    ))}
+    <button type="button" onClick={onAdd} className="add-product-btn-add">
+      {addLabel}
+    </button>
+  </fieldset>
+);
+
 const AdminEditForm = ({
-  formData,
+  formData = {},
   handleChange,
-  sizes,
+  sizes = [],
   handleAddSize,
   handleSizeChange,
   handleRemoveSize,
-  additionals,
+  additionals = [],
   handleAddAdditional,
   handleAdditionalChange,
   handleRemoveAdditional,
@@ -22,7 +78,7 @@ const AdminEditForm = ({
           type="text"
           name="titulo"
           placeholder="ej: Pizza Fugazzeta"
-          value={formData.titulo || ""}
+          value={formData?.titulo || ""}
           onChange={handleChange}
           required
           className="add-product-input"
@@ -35,7 +91,7 @@ const AdminEditForm = ({
         <textarea
           name="descripcion"
           placeholder="Mozzarella y abundante cebolla caramelizada."
-          value={formData.descripcion || ""}
+          value={formData?.descripcion || ""}
           onChange={handleChange}
           rows={2}
           className="add-product-textarea"
@@ -50,7 +106,7 @@ const AdminEditForm = ({
             type="text"
             name="categoria"
             placeholder="Categoría (ej: Comidas)"
-            value={formData.categoria || ""}
+            value={formData?.categoria || ""}
             onChange={handleChange}
             className="add-product-input"
           />
@@ -58,27 +114,27 @@ const AdminEditForm = ({
             type="text"
             name="subcategoria"
             placeholder="Subcategoría (ej: Pizzas)"
-            value={formData.subcategoria || ""}
+            value={formData?.subcategoria || ""}
             onChange={handleChange}
             className="add-product-input"
           />
         </div>
       </div>
 
-      {/* Precio, Oferta y Precio Anterior */}
+      {/* Precio, Oferta y Stock */}
       <div className="add-product-fieldset">
         <div className="price-header-labels">
           <label className="add-product-label">
-            {formData.oferta ? "Precio Oferta ($)" : "Precio Base ($)"}
+            {formData?.oferta ? "Precio Oferta Base ($)" : "Precio Base ($)"}
           </label>
-          {formData.oferta && (
+          {formData?.oferta && (
             <label className="add-product-label old-price-label">Precio Anterior ($)</label>
           )}
           <label className="add-product-checkbox-label highlight-offer">
             <input
               type="checkbox"
               name="oferta"
-              checked={Boolean(formData.oferta)}
+              checked={Boolean(formData?.oferta)}
               onChange={handleChange}
             />
             <span>En Oferta</span>
@@ -89,113 +145,93 @@ const AdminEditForm = ({
             type="number"
             name="precio"
             placeholder="Precio Actual"
-            value={formData.precio ?? ""}
+            value={formData?.precio ?? ""}
             onChange={handleChange}
             required
             className="add-product-input cell-price"
           />
-          {formData.oferta && (
+          {formData?.oferta && (
             <input
               type="number"
               name="precioAnterior"
               placeholder="Precio Viejo"
-              value={formData.precioAnterior ?? ""}
+              value={formData?.precioAnterior ?? ""}
               onChange={handleChange}
               className="add-product-input cell-price old-price-input"
             />
           )}
         </div>
-        {formData.oferta && formData.descuentoPorcentaje > 0 && (
+        {formData?.oferta && (formData?.descuentoPorcentaje || 0) > 0 && (
           <span className="discount-summary-tag">
-            <TagFill size={10} /> Aplica un <strong>{formData.descuentoPorcentaje}%</strong> de descuento sobre el precio original.
+            <TagFill size={10} /> Aplica un <strong>{formData.descuentoPorcentaje}%</strong> de descuento sobre el precio base.
           </span>
         )}
       </div>
 
-      {/* Atributos y Etiquetas */}
+      {/* Stock Unidades */}
+
+      <div className="add-product-fieldset">
+        <div className="stock-header-labels">
+          <label className="add-product-label">Stock Unidades</label>
+          <input
+            type="number"
+            name="stock"
+            placeholder="Stock (ej: 10)"
+            value={formData?.stock ?? ""}
+            onChange={handleChange}
+            min="0"
+            className="add-product-input-stock"
+          />
+        </div>
+      </div>
+
+      {/* Atributos */}
       <fieldset className="add-product-fieldset">
         <legend className="add-product-legend">Atributos y Etiquetas</legend>
         <div className="add-product-grid-checks">
-          <label className="add-product-checkbox-label">
-            <input type="checkbox" name="recomendado" checked={Boolean(formData.recomendado)} onChange={handleChange} />
-            Recomendado
-          </label>
-          <label className="add-product-checkbox-label">
-            <input type="checkbox" name="vegetariano" checked={Boolean(formData.vegetariano)} onChange={handleChange} />
-            Vegetariano
-          </label>
-          <label className="add-product-checkbox-label">
-            <input type="checkbox" name="vegano" checked={Boolean(formData.vegano)} onChange={handleChange} />
-            Vegano
-          </label>
-          <label className="add-product-checkbox-label">
-            <input type="checkbox" name="sinTacc" checked={Boolean(formData.sinTacc)} onChange={handleChange} />
-            Sin TACC
-          </label>
-          <label className="add-product-checkbox-label">
-            <input type="checkbox" name="picante" checked={Boolean(formData.picante)} onChange={handleChange} />
-            Picante
-          </label>
+          {[
+            { name: "recomendado", label: "Recomendado" },
+            { name: "vegano", label: "Vegano" },
+            { name: "sinTacc", label: "Sin TACC" },
+            { name: "picante", label: "Picante" }
+          ].map(({ name, label }) => (
+            <label key={name} className="add-product-checkbox-label">
+              <input
+                type="checkbox"
+                name={name}
+                checked={Boolean(formData?.[name])}
+                onChange={handleChange}
+              />
+              {label}
+            </label>
+          ))}
         </div>
       </fieldset>
 
-      {/* Tamaños (Variantes) */}
-      <fieldset className="add-product-fieldset">
-        <legend className="add-product-legend">Tamaños (Variantes)</legend>
-        {sizes.map((s, index) => (
-          <div key={index} className="add-product-dynamic-row">
-            <input
-              type="text"
-              placeholder="Nombre (ej: Individual / Grande)"
-              value={s.nombre || ""}
-              onChange={(e) => handleSizeChange(index, "nombre", e.target.value)}
-              className="add-product-input"
-            />
-            <input
-              type="number"
-              placeholder="Precio"
-              value={s.precio ?? ""}
-              onChange={(e) => handleSizeChange(index, "precio", e.target.value)}
-              className="add-product-input"
-            />
-            <button type="button" onClick={() => handleRemoveSize(index)} className="add-product-btn-remove">
-              ✕
-            </button>
-          </div>
-        ))}
-        <button type="button" onClick={handleAddSize} className="add-product-btn-add">
-          + Agregar Tamaño
-        </button>
-      </fieldset>
+      {/* Tamaños */}
+      <DynamicFieldsSection
+        title="Tamaños (Variantes)"
+        items={sizes}
+        onAdd={handleAddSize}
+        onChange={handleSizeChange}
+        onRemove={handleRemoveSize}
+        placeholderName="Nombre (ej: Individual / Grande)"
+        placeholderPrice="Precio Actual"
+        addLabel="+ Agregar Tamaño"
+        esOferta={Boolean(formData?.oferta)}
+      />
 
-      {/* Adicionales y Extras */}
-      <fieldset className="add-product-fieldset">
-        <legend className="add-product-legend">Adicionales y Extras</legend>
-        {additionals.map((add, index) => (
-          <div key={index} className="add-product-dynamic-row">
-            <input
-              type="text"
-              placeholder="Nombre Extra (ej: Queso Extra)"
-              value={add.nombre || ""}
-              onChange={(e) => handleAdditionalChange(index, "nombre", e.target.value)}
-              className="add-product-input"
-            />
-            <input
-              type="number"
-              placeholder="Precio Extra"
-              value={add.precio ?? ""}
-              onChange={(e) => handleAdditionalChange(index, "precio", e.target.value)}
-              className="add-product-input"
-            />
-            <button type="button" onClick={() => handleRemoveAdditional(index)} className="add-product-btn-remove">
-              ✕
-            </button>
-          </div>
-        ))}
-        <button type="button" onClick={handleAddAdditional} className="add-product-btn-add">
-          + Agregar Adicional
-        </button>
-      </fieldset>
+      {/* Adicionales */}
+      <DynamicFieldsSection
+        title="Adicionales y Extras"
+        items={additionals}
+        onAdd={handleAddAdditional}
+        onChange={handleAdditionalChange}
+        onRemove={handleRemoveAdditional}
+        placeholderName="Nombre Extra (ej: Queso Extra)"
+        placeholderPrice="Precio Extra"
+        addLabel="+ Agregar Adicional"
+      />
     </div>
   );
 };

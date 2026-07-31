@@ -1,5 +1,19 @@
 import React from "react";
 
+// Sub-componente interno para cada opción
+const OptionCard = ({ title, priceText, isSelected, onClick }) => (
+  <div
+    role="button"
+    tabIndex={0}
+    className={`iqv-option-card ${isSelected ? "active" : ""}`}
+    onClick={onClick}
+    onKeyDown={(e) => e.key === "Enter" && onClick()}
+  >
+    <span className="iqv-option-name">{title}</span>
+    <b className="iqv-option-price">{priceText}</b>
+  </div>
+);
+
 const ProductOptions = ({
   producto,
   sizeSeleccionado,
@@ -8,7 +22,6 @@ const ProductOptions = ({
   handleToggleAdditional,
   esSeleccionUnica,
 }) => {
-  // Verificación segura utilizando optional chaining
   const sizes = producto?.size ?? [];
   const additionals = producto?.additional ?? [];
 
@@ -16,6 +29,15 @@ const ProductOptions = ({
   const tieneAdditionals = additionals.length > 0;
 
   if (!tieneSizes && !tieneAdditionals) return null;
+
+  // Helper de comparación por id o nombre
+  const isItemSelected = (list, item) => {
+    return list.some((selected) =>
+      selected.id && item.id
+        ? selected.id === item.id
+        : selected.nombre === item.nombre
+    );
+  };
 
   return (
     <>
@@ -31,26 +53,30 @@ const ProductOptions = ({
             )}
           </span>
           <div className="iqv-options-list">
-            {sizes.map((s) => {
-              const isSelected = sizeSeleccionado?.id === s.id;
+            {sizes.map((s, index) => {
+              const isSelected = sizeSeleccionado
+                ? sizeSeleccionado.id && s.id
+                  ? sizeSeleccionado.id === s.id
+                  : sizeSeleccionado.nombre === s.nombre
+                : false;
+
+              const precioFormateado = `$${Number(s.precio || 0).toLocaleString("es-AR")}`;
+
               return (
-                <div
-                  key={s.id || s.nombre}
-                  className={`iqv-option-card ${isSelected ? "active" : ""}`}
+                <OptionCard
+                  key={s.id || `${s.nombre}-${index}`}
+                  title={s.nombre}
+                  priceText={precioFormateado}
+                  isSelected={isSelected}
                   onClick={() => handleSelectSize(s)}
-                >
-                  <span className="iqv-option-name">{s.nombre}</span>
-                  <b className="iqv-option-price">
-                    ${(s.precio || 0).toLocaleString("es-AR")}
-                  </b>
-                </div>
+                />
               );
             })}
           </div>
         </div>
       )}
 
-      {/* SECCIÓN ADICIONALES / SALSAS */}
+      {/* SECCIÓN ADICIONALES */}
       {tieneAdditionals && (
         <div className="iqv-options-group mt-3">
           <span className="iqv-group-title">
@@ -64,23 +90,21 @@ const ProductOptions = ({
             )}
           </span>
           <div className="iqv-options-list">
-            {additionals.map((adi) => {
-              const estaSeleccionado = additionalSeleccionados.some(
-                (item) => item.id === adi.id
-              );
+            {additionals.map((adi, index) => {
+              const estaSeleccionado = isItemSelected(additionalSeleccionados, adi);
+              const precioFormateado =
+                Number(adi.precio) > 0
+                  ? `+ $${Number(adi.precio).toLocaleString("es-AR")}`
+                  : "Sin cargo";
+
               return (
-                <div
-                  key={adi.id || adi.nombre}
-                  className={`iqv-option-card ${estaSeleccionado ? "active" : ""}`}
+                <OptionCard
+                  key={adi.id || `${adi.nombre}-${index}`}
+                  title={adi.nombre}
+                  priceText={precioFormateado}
+                  isSelected={estaSeleccionado}
                   onClick={() => handleToggleAdditional(adi)}
-                >
-                  <span className="iqv-option-name">{adi.nombre}</span>
-                  <b className="iqv-option-price">
-                    {adi.precio > 0
-                      ? `+ $${adi.precio.toLocaleString("es-AR")}`
-                      : "Sin cargo"}
-                  </b>
-                </div>
+                />
               );
             })}
           </div>

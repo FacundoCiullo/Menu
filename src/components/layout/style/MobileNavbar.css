@@ -84,6 +84,9 @@
 /* Enlaces e items generales de la barra */
 .mobile-nav a,
 .mobile-avatar-btn {
+    width: 48px;
+  height: 48px;
+  border-radius: 50%;
   text-decoration: none;
   color: var(--text-secondary);
   font-size: 0.72rem;

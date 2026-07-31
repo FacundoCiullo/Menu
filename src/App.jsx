@@ -7,7 +7,6 @@ import Productos from './pages/Productos';
 import Favorites from './pages/Favorites';
 
 import NavBar from './components/layout/NavBar';
-import Footer from './components/layout/Footer';
 
 import Cart from './components/user/Cart';
 import Checkout from './components/user/Checkout';
@@ -41,7 +40,6 @@ const LayoutPublico = () => (
     <main>
       <Outlet />
     </main>
-    <Footer />
     <MobileNavbar />
   </>
 );
