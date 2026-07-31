@@ -166,8 +166,8 @@
   min-width: 20px;
   height: 20px;
   padding: 0 5px;
-  background: var(--accent-gradient);
-  color: var(--text-inverse);
+  background: var(--pr-danger);
+  color: var(--text-primary);
   font-size: 0.75rem;
   font-weight: 700;
   line-height: 18px;

@@ -64,7 +64,7 @@
     position: absolute;
     top: 18px;
     left: 18px;
-    background: var(--pr-gray-300);
+    background: var(--pr-danger);
     color: #fff;
     font-weight: 800;
     font-size: 18px;
@@ -157,17 +157,34 @@
     border-radius: 25px;
   }
 
+      /* Badge de Porcentaje de Descuento en la Foto */
+  .add-product-badge-discount {
+    position: absolute;
+    top: 18px;
+    left: 18px;
+    background: var(--pr-danger);
+    color: #fff;
+    font-weight: 800;
+    font-size: 18px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    box-shadow: 0 4px 10px rgba(230, 57, 70, 0.4);
+  }
+
   /* ICONOS AGOTADO */
   .badge-agotado {
     position: absolute;
-    top: 12vh;
-    left: 18vh;
+    left: 14px;
+    top: 58px;
     background-color: #3a3a3a; /* Rojo destacado */
     border: 1px solid #ffffff;
     color: var(--pr-white);
-    padding: 0px 8px 3px 8px;
+    padding: 4px 10px;
     border-radius: 25px;
-    font-size: 1.5rem;
+    font-size: 1rem;
     font-weight: 500;
     text-transform: uppercase;
     letter-spacing: 0.03em;
@@ -455,6 +472,7 @@
   .add-product-label {
     padding-left: 0.5rem;
     display: flex;
+    align-items: center;
     font-size: 13px;
     font-weight: 600;
     color: #a1a1aa;

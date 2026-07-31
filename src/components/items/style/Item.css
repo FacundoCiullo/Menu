@@ -72,12 +72,12 @@
   /* ICONOS AGOTADO */
   .item-badge-agotado{
     position: absolute;
-    top: 4rem;
-    left: 3.2rem;
+    top: 48px;
+    left: 8px;
     background-color: #3a3a3a; /* Rojo destacado */
     color: var(--pr-white);
-    padding: 3px 8px;
-    border-radius: var(--radius-xs);
+    padding: 4px 10px;
+    border-radius: 25px;
     font-size: 0.75rem;
     font-weight: 500;
     text-transform: uppercase;
@@ -90,7 +90,7 @@
     position: absolute;
     top: 8px;
     left: 8px;
-    background-color: var(--pr-gray-300); /* Rojo destacado */
+    background-color: var(--pr-danger); /* Rojo destacado */
     color: #ffffff;
     font-size: 0.75rem;
     font-weight: 800;
@@ -279,7 +279,7 @@
   /* ICONOS AGOTADO */
   .item-badge-agotado {
     position: absolute;
-    left: 3.8rem;
+
   }
     /* Badge de Descuento */
     .item-product-badge-discount {

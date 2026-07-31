@@ -125,10 +125,10 @@ const AdminEditForm = ({
       <div className="add-product-fieldset">
         <div className="price-header-labels">
           <label className="add-product-label">
-            {formData?.oferta ? "Precio Oferta Base ($)" : "Precio Base ($)"}
+            {formData?.oferta ? "Precio Oferta Base" : "Precio Base"}
           </label>
           {formData?.oferta && (
-            <label className="add-product-label old-price-label">Precio Anterior ($)</label>
+            <label className="add-product-label old-price-label">Precio Anterior</label>
           )}
           <label className="add-product-checkbox-label highlight-offer">
             <input
@@ -137,7 +137,7 @@ const AdminEditForm = ({
               checked={Boolean(formData?.oferta)}
               onChange={handleChange}
             />
-            <span>En Oferta</span>
+            <span>Oferta</span>
           </label>
         </div>
         <div className="add-product-row">
