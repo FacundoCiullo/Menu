@@ -67,7 +67,7 @@ const WidgetOrdenes = ({ ordenes = [], loading, onUpdateStatus }) => {
 
       {/* Barra de Filtros */}
       <div className="mb-3 border-bottom pb-2">
-        <Nav variant="pills" className="gap-1 align-items-center justify-content-center flex-row flex-nowrap">
+        <Nav className="gap-1 align-items-center justify-content-center flex-row flex-nowrap">
           <Button
             size="sm"
             variant={filtroActivo === "todos" ? "dark" : "outline-secondary"}
@@ -120,62 +120,74 @@ const WidgetOrdenes = ({ ordenes = [], loading, onUpdateStatus }) => {
 
               return (
                 <div key={orden.id} className="orden-card mb-3">
-                  
-                  {/* Estructura Grid Principal de la Tarjeta */}
-                  <div className="orden-grid-layout">
+                  <Accordion.Item eventKey={orden.id} className="orden-accordion-item border-0 bg-transparent">
                     
-                    {/* Columna Izquierda: Fecha, Cliente, Teléfono e Email */}
-                    <div className="grid-col-left">
-                      <div className="orden-fecha-hora">
-                        <span className="fecha">{formatFecha(orden.createdAt || orden.date)}</span>
-                        <span className="hora">{formatHora(orden.createdAt || orden.date)}</span>
-                        <div className="orden-id">
-                          id: #{orden.id ? orden.id.slice(-6) : "------"}
+                    {/* Estructura Grid Principal de la Tarjeta */}
+                    <div className="orden-grid-layout">
+                      
+                      {/* Columna Izquierda: Fecha, ID, Cliente, Teléfono, Email y Label Productos */}
+                      <div className="grid-col-left">
+                        <div className="orden-fecha-hora">
+                          <span className="fecha">{formatFecha(orden.createdAt || orden.date)}</span>
+                          <span className="hora">{formatHora(orden.createdAt || orden.date)}</span>
+                          <div className="orden-id">
+                            id: #{orden.id ? orden.id.slice(-6) : "------"}
+                          </div>
                         </div>
-                      </div>
-                      <div className="cliente-info">
-                        <span className="cliente-nombre">{orden.buyer?.name || "Cliente"}</span>
-                        {orden.buyer?.phone && (
-                          <span className="cliente-telefono">({orden.buyer.phone})</span>
-                        )}
-                      </div>
-                      <div className="cliente-email">
-                        {orden.buyer?.email || "Sin email"}
-                      </div>
-                    </div>
 
-                    {/* Columna Central: Label y Pills de Estado */}
-                    <div className="grid-col-center">
-                      <div className="orden-estado-label">ESTADO DE LA ORDEN</div>
-                      <div className="orden-status-selector">
-                        {estados.map((e) => {
-                          const isSelected = estadoActual === e.id;
-                          return (
-                            <button
-                              key={e.id}
-                              type="button"
-                              className={`pill-status ${isSelected ? `active-${e.id}` : ""}`}
-                              onClick={() => handleCambiarEstado(orden.id, e.id)}
-                            >
-                              {e.label}
-                            </button>
-                          );
-                        })}
-                      </div>
-                    </div>
-                                          <div className="orden-accordion-trigger">
-                        <Accordion.Item eventKey={orden.id} className="orden-accordion-item">
-                          <Accordion.Header />
-                        </Accordion.Item>
-                      </div>
+                        <div className="cliente-info">
+                          <span className="cliente-nombre">{orden.buyer?.name || "Cliente"}</span>
+                          {orden.buyer?.phone && (
+                            <span className="cliente-telefono">({orden.buyer.phone})</span>
+                          )}
+                        </div>
 
-                                      {/* Cuerpo desplegable del Acordeón (Detalle de Ítems) */}
-                  <Accordion.Item eventKey={orden.id} className="border-0 bg-transparent">
-                    <Accordion.Body className="p-0">
-                      <div className="orden-items-container">
+                        <div className="cliente-email">
+                          {orden.buyer?.email || "Sin email"}
+                        </div>
+
+                        {/* Título/Label de Productos */}
                         <div className="orden-items-title">
                           PRODUCTOS ({orden.items?.length || 0})
                         </div>
+                      </div>
+
+                      {/* Columna Central: Estado y Botón de Acordeón */}
+                      <div className="grid-col-center">
+                        <div className="orden-estado-label">ESTADO DE LA ORDEN</div>
+                        <div className="orden-status-selector">
+                          {estados.map((e) => {
+                            const isSelected = estadoActual === e.id;
+                            return (
+                              <button
+                                key={e.id}
+                                type="button"
+                                className={`pill-status ${isSelected ? `active-${e.id}` : ""}`}
+                                onClick={() => handleCambiarEstado(orden.id, e.id)}
+                              >
+                                {e.label}
+                              </button>
+                            );
+                          })}
+                        </div>
+
+                        {/* Flecha desplegable (Header Bootstrap Accordion) */}
+                        <div className="orden-accordion-trigger">
+                          <Accordion.Header />
+                        </div>
+                      </div>
+
+                      {/* Columna Derecha: Total de la orden */}
+                      <div className="grid-col-right">
+                        <div className="orden-total">
+                          ${Number(orden.total || 0).toLocaleString("es-AR")}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Cuerpo desplegable del Acordeón (Detalle de Ítems) */}
+                    <Accordion.Body className="p-0">
+                      <div className="orden-items-container">
                         <ul className="orden-items-list">
                           {orden.items?.map((it, idx) => {
                             const nombreTamaño = it.sizeSeleccionado?.nombre || it.size;
@@ -211,14 +223,6 @@ const WidgetOrdenes = ({ ordenes = [], loading, onUpdateStatus }) => {
                       </div>
                     </Accordion.Body>
                   </Accordion.Item>
-
-                    {/* Columna Derecha: ID, Total y Disparador de Acordeón */}
-                    <div className="grid-col-right">
-                      <div className="orden-total">
-                        ${Number(orden.total || 0).toLocaleString("es-AR")}
-                      </div>
-                    </div>
-                  </div>
                 </div>
               );
             })}

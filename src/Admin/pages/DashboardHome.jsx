@@ -1,4 +1,3 @@
-
 // Estilos (sube un nivel a Admin y entra a styles)
 import "../styles/DashboardHome.css";
 
@@ -20,6 +19,9 @@ const DashboardHome = () => {
   const [productosMenu, setProductosMenu] = useState([]);
   const [loading, setLoading] = useState(true);
   const [fechaFiltro, setFechaFiltro] = useState(new Date());
+
+  // Estado para la pestaña activa de la caja ('dia', 'semana', 'mes')
+  const [pestanaCaja, setPestanaCaja] = useState("dia");
 
   // 1. Escuchar las Órdenes en tiempo real
   useEffect(() => {
@@ -65,21 +67,59 @@ const DashboardHome = () => {
     return () => unsubscribeProd();
   }, []);
 
-  const esMismoDia = (fechaOrden, fechaSeleccionada) => {
-    if (!fechaOrden || !fechaSeleccionada) return false;
-    const d1 = fechaOrden.toDate ? fechaOrden.toDate() : new Date(fechaOrden);
-    const d2 = new Date(fechaSeleccionada);
+  // Helper para normalizar timestamps de Firestore o JS Date
+  const obtenerFechaDate = (fechaRaw) => {
+    if (!fechaRaw) return null;
+    return fechaRaw?.toDate ? fechaRaw.toDate() : new Date(fechaRaw);
+  };
+
+  // ==========================================
+  // FILTRADOS DINÁMICOS BASADOS EN LA FECHA SELECCIONADA
+  // ==========================================
+
+  // 1. Órdenes del DÍA Seleccionado
+  const ordenesDelDia = ordenes.filter((orden) => {
+    const d1 = obtenerFechaDate(orden.createdAt || orden.date);
+    const d2 = new Date(fechaFiltro);
+    if (!d1 || isNaN(d1.getTime())) return false;
 
     return (
       d1.getFullYear() === d2.getFullYear() &&
       d1.getMonth() === d2.getMonth() &&
       d1.getDate() === d2.getDate()
     );
-  };
+  });
 
-  const ordenesDelDia = ordenes.filter((orden) =>
-    esMismoDia(orden.date, fechaFiltro)
-  );
+  // 2. Órdenes de la SEMANA del día seleccionado (Lunes a Domingo)
+  const ordenesDeLaSemana = ordenes.filter((orden) => {
+    const d1 = obtenerFechaDate(orden.createdAt || orden.date);
+    if (!d1 || isNaN(d1.getTime())) return false;
+
+    const refDate = new Date(fechaFiltro);
+    const dayOfWeek = refDate.getDay() === 0 ? 6 : refDate.getDay() - 1; // Ajuste Lunes = 0
+    
+    const inicioSemana = new Date(refDate);
+    inicioSemana.setDate(refDate.getDate() - dayOfWeek);
+    inicioSemana.setHours(0, 0, 0, 0);
+
+    const finSemana = new Date(inicioSemana);
+    finSemana.setDate(inicioSemana.getDate() + 6);
+    finSemana.setHours(23, 59, 59, 999);
+
+    return d1 >= inicioSemana && d1 <= finSemana;
+  });
+
+  // 3. Órdenes del MES del día seleccionado
+  const ordenesDelMes = ordenes.filter((orden) => {
+    const d1 = obtenerFechaDate(orden.createdAt || orden.date);
+    const d2 = new Date(fechaFiltro);
+    if (!d1 || isNaN(d1.getTime())) return false;
+
+    return (
+      d1.getFullYear() === d2.getFullYear() &&
+      d1.getMonth() === d2.getMonth()
+    );
+  });
 
   return (
     <div className="dashboard-container">
@@ -110,7 +150,7 @@ const DashboardHome = () => {
           </Accordion>
         </div>
 
-        {/* CASILLA 2: CAJA */}
+        {/* CASILLA 2: CAJA (Actualiza sus montos según el período seleccionado) */}
         <div className="grid-item widget-2">
           <Accordion defaultActiveKey="0" flush>
             <Accordion.Item eventKey="0">
@@ -119,6 +159,11 @@ const DashboardHome = () => {
                 <WidgetCaja
                   todasLasOrdenes={ordenes}
                   ordenesDelDia={ordenesDelDia}
+                  ordenesDeLaSemana={ordenesDeLaSemana}
+                  ordenesDelMes={ordenesDelMes}
+                  fechaSeleccionada={fechaFiltro}
+                  pestana={pestanaCaja}
+                  setPestana={setPestanaCaja}
                   loading={loading}
                 />
               </Accordion.Body>
@@ -150,11 +195,10 @@ const DashboardHome = () => {
           </Accordion>
         </div>
 
-        {/* CASILLA 5: ÓRDENES EN TIEMPO REAL */}
+        {/* CASILLA 5: ÓRDENES EN TIEMPO REAL (Muestra SIEMPRE las órdenes del día) */}
         <div className="grid-item widget-5">
           <Accordion defaultActiveKey="0" flush>
             <Accordion.Item eventKey="0">
-              
               <Accordion.Body className="p-0 pt-2">
                 <WidgetOrdenes
                   ordenes={ordenesDelDia}
@@ -211,8 +255,6 @@ const DashboardHome = () => {
                 </Accordion.Item>
               </Accordion>
             </div>
-
-
 
           </div>
 

@@ -1,8 +1,16 @@
-import React, { useState } from "react";
+import React from "react";
 import { Spinner, Nav } from "react-bootstrap";
 
-const WidgetCaja = ({ todasLasOrdenes = [], ordenesDelDia = [], loading = false }) => {
-  const [pestana, setPestana] = useState("dia"); // 'dia', 'semana', 'mes'
+const WidgetCaja = ({ 
+  todasLasOrdenes = [], 
+  ordenesDelDia = [], 
+  ordenesDeLaSemana = [], 
+  ordenesDelMes = [], 
+  fechaSeleccionada = new Date(),
+  pestana = "dia",
+  setPestana,
+  loading = false 
+}) => {
 
   if (loading) {
     return (
@@ -12,32 +20,18 @@ const WidgetCaja = ({ todasLasOrdenes = [], ordenesDelDia = [], loading = false 
     );
   }
 
-  // 1. Elegimos qué lista de órdenes usar según la pestaña
+  // Selección de la lista de órdenes a procesar según la pestaña compartida
   let ordenesAProcesar = [];
 
   if (pestana === "dia") {
-    // Usa exactamente el mismo array que le funciona a 'Órdenes Recientes' y 'Top 5'
     ordenesAProcesar = ordenesDelDia;
-  } else {
-    // Para semana/mes usamos todasLasOrdenes y un filtro básico
-    const hoy = new Date();
-    ordenesAProcesar = todasLasOrdenes.filter((orden) => {
-      if (!orden.date) return false;
-      const f = orden.date.toDate ? orden.date.toDate() : new Date(orden.date);
-
-      if (pestana === "semana") {
-        const haceSieteDias = new Date();
-        haceSieteDias.setDate(hoy.getDate() - 7);
-        return f >= haceSieteDias;
-      }
-      if (pestana === "mes") {
-        return f.getMonth() === hoy.getMonth() && f.getFullYear() === hoy.getFullYear();
-      }
-      return true;
-    });
+  } else if (pestana === "semana") {
+    ordenesAProcesar = ordenesDeLaSemana;
+  } else if (pestana === "mes") {
+    ordenesAProcesar = ordenesDelMes;
   }
 
-  // 2. Sumamos totales y clasificamos (EFECTIVO POR DEFAULT)
+  // Sumamos totales y clasificamos
   let totalCaja = 0;
   let efectivo = 0;
   let digital = 0;
@@ -48,7 +42,6 @@ const WidgetCaja = ({ todasLasOrdenes = [], ordenesDelDia = [], loading = false 
 
     const metodo = String(orden.paymentMethod || orden.metodoPago || "").toLowerCase();
 
-    // Si dice explícitamente MP / Digital / Tarjeta / Transferencia va a Digital, sino TODO A EFECTIVO
     if (
       metodo.includes("mp") ||
       metodo.includes("digital") ||
@@ -57,9 +50,12 @@ const WidgetCaja = ({ todasLasOrdenes = [], ordenesDelDia = [], loading = false 
     ) {
       digital += monto;
     } else {
-      efectivo += monto; // Default
+      efectivo += monto;
     }
   });
+
+  const fechaObj = new Date(fechaSeleccionada);
+  const nombreMes = fechaObj.toLocaleDateString("es-AR", { month: "long", year: "numeric" });
 
   return (
     <div className="widget-caja-container">
@@ -67,7 +63,7 @@ const WidgetCaja = ({ todasLasOrdenes = [], ordenesDelDia = [], loading = false 
       <Nav
         variant="pills"
         activeKey={pestana}
-        onSelect={(selectedKey) => setPestana(selectedKey)}
+        onSelect={(selectedKey) => setPestana && setPestana(selectedKey)}
         className="nav-justified mb-2 bg-light p-1 rounded"
         style={{ fontSize: "0.78rem" }}
       >
@@ -91,9 +87,9 @@ const WidgetCaja = ({ todasLasOrdenes = [], ordenesDelDia = [], loading = false 
       {/* TOTAL ACUMULADO */}
       <div className="text-center my-2">
         <span className="text-muted small d-block">
-          {pestana === "dia" && "Ingresos del Día"}
-          {pestana === "semana" && "Últimos 7 días"}
-          {pestana === "mes" && "Acumulado del Mes"}
+          {pestana === "dia" && `Ingresos del Día (${fechaObj.toLocaleDateString("es-AR")})`}
+          {pestana === "semana" && "Semana de la fecha seleccionada"}
+          {pestana === "mes" && `Acumulado de ${nombreMes}`}
         </span>
         <h2 className="fw-bold text-success m-0">
           ${totalCaja.toLocaleString("es-AR")}
@@ -103,7 +99,7 @@ const WidgetCaja = ({ todasLasOrdenes = [], ordenesDelDia = [], loading = false 
         </small>
       </div>
 
-      {/* DESGLOSE EFECTIVO (DEFAULT) Y DIGITAL */}
+      {/* DESGLOSE EFECTIVO Y DIGITAL */}
       <div className="pt-2 border-top d-flex justify-content-between align-items-center gap-2">
         <div className="bg-light p-2 rounded flex-fill text-center">
           <span className="d-block text-muted" style={{ fontSize: "0.7rem" }}>

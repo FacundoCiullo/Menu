@@ -57,7 +57,7 @@
 /* Tarjetas contenedoras */
 .grid-item {
   background: #ffffff;
-  border-radius: 16px;
+  border-radius: 8px;
   padding: 12px 18px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
   border: 1px solid #eef0f3;
@@ -202,13 +202,6 @@
   }
 }
 
-  .widget-1, 
-  .widget-2, 
-  .widget-3,
-  .widget-4{
-    margin-top: 10px;
-  }
-
 
 /* 4. DISPOSITIVOS MÓVILES (max-width: 576px)
   Una sola columna limpia para scroll fluido
@@ -223,16 +216,7 @@
     gap: 12px;
   }
 
-  /* Todos los widgets pasan a ocupar el 100% (span 1 de 1 columna) */
-  .widget-1,  
-  .widget-3,
-  .widget-4{
-    margin-top: 10px;
-  }
 
-  .widget-2{
-    margin-top: 0px;
-  }
 
   .widget-1,
   .widget-2,
@@ -257,7 +241,6 @@
   /* Ajuste de tipografía e iconos en móviles */
   .grid-item {
     padding: 12px;
-    border-radius: 12px;
   }
 
   .grid-item .accordion-button {
