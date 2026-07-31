@@ -13,7 +13,7 @@
 
 /* Tarjeta Principal */
 .orden-card {
-  border: 1px solid #e5e7eb;
+  border: 1px solid #6c6c6c;
   background-color: #ffffff;
   border-radius: 12px;
   padding: 1rem 1.25rem;
@@ -23,8 +23,8 @@
 /* Layout Principal en Grid de 3 Columnas */
 .orden-grid-layout {
   display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  align-items: center;
+  grid-template-columns: 2fr 1fr 0.1fr;
+  align-items: end;
   gap: 1rem;
 }
 
@@ -39,6 +39,7 @@
   font-size: 0.8rem;
   color: #6b7280;
   display: flex;
+  justify-content: space-between;
   gap: 0.4rem;
   margin-bottom: 0.2rem;
 }
@@ -153,7 +154,7 @@
 /* Disparador de Acordeón en Flecha Ubicada Abajo del Precio */
 .orden-accordion-trigger {
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
   margin-top: 1rem;
 }
 
@@ -181,7 +182,7 @@
 .orden-items-container {
   background-color: #f9fafb;
   border-radius: 10px;
-  padding: 0.75rem 1rem;
+
   margin-top: 0.75rem;
 }
 
@@ -295,12 +296,11 @@
 
   /* La columna derecha (ID, Precio, Flecha) pasa a distribuirse horizontalmente al final */
   .grid-col-right {
-    align-items: flex-start;
+    align-items: center;
     flex-direction: row;
-    justify-content: space-between;
+    justify-content: flex-end;
     width: 100%;
     border-top: 1px dashed #e5e7eb;
-    padding-top: 0.5rem;
   }
 
   .orden-accordion-trigger {
@@ -309,7 +309,6 @@
 
   /* Ajuste de los productos en pantallas pequeñas */
   .orden-item-row {
-    flex-direction: column;
     align-items: flex-start;
     gap: 0.3rem;
   }

@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import "./style/item.css";
-
 import { HeartFill, Heart, PlusLg, TagFill } from "react-bootstrap-icons";
 import { useFavorites } from "../../context/FavoritesContext";
 import { useAuth } from "../../context/AuthContext";
@@ -92,7 +91,7 @@ const Item = ({ producto, handleQuickView }) => {
           className="item-img"
         />
         {esAgotado && (
-          <span className="item-badge-agotado">Agotado</span>
+          <span className="item-badge-agotado"> Agotado</span>
         )}
       </div>
 

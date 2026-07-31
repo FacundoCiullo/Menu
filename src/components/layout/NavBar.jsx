@@ -16,7 +16,7 @@ const NavBar = () => {
 
   return (
     <>
-      <Navbar expand="lg" fixed="top" className="navbar-custom shadow-sm px-4 py-2">
+      <Navbar expand="lg" fixed="bottom" className="navbar-custom shadow-sm px-4 py-2">
         <div className="d-flex align-items-center navbar-custom2 w-100 ">
 
           {/* Logo */}
@@ -27,7 +27,6 @@ const NavBar = () => {
           {/* Links Desktop */}
           <Nav className="d-none d-lg-flex align-items-center gap-4">
             <Nav.Link as={Link} to="/Productos" className="nav-underline">Menú</Nav.Link>
-            <Nav.Link as={Link} to="/Contactos" className="nav-underline">Contactos</Nav.Link>
           </Nav>
 
           {/* Área de usuario y Carrito */}

@@ -22,14 +22,14 @@
   min-height: 70vh;
   max-height: 100% !important;
   overflow-y: hidden !important; /* Desactiva el scroll vertical */
-  background: var(--bg-surface);
+  background: var(--bg-card);
   border: 1px solid var(--border-subtle);
   justify-content: space-between;
   z-index: 1000;
   display: flex;
   flex-direction: column;
   padding: 24px 18px;
-  box-shadow: var(--shadow-gold), -8px 0 24px rgba(0, 0, 0, 0.8);
+  box-shadow: var(--bg-card), -8px 0 24px rgba(0, 0, 0, 0.8);
   border-radius: 25px 0 0 25px;
   font-family: var(--font-main);
   scrollbar-width: none;
@@ -134,7 +134,7 @@
 
 .sidebar-item svg {
   font-size: 1.15rem;
-  color: var(--accent-primary);
+  color: var(--text-primary);
 }
 
 .sidebar-item:hover {
@@ -161,13 +161,13 @@
   justify-content: center;
   margin-top: 8px;
   background: var(--accent-gradient);
-  color: var(--text-inverse) !important;
+  color: var(--text-primary) !important;
   font-weight: 700;
   border-radius: var(--radius-pill);
 }
 
 .update-btn svg {
-  color: var(--text-inverse) !important;
+  color: var(--text-primary) !important;
 }
 
 .update-btn:hover {

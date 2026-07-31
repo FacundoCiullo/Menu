@@ -129,6 +129,9 @@ const WidgetOrdenes = ({ ordenes = [], loading, onUpdateStatus }) => {
                       <div className="orden-fecha-hora">
                         <span className="fecha">{formatFecha(orden.createdAt || orden.date)}</span>
                         <span className="hora">{formatHora(orden.createdAt || orden.date)}</span>
+                        <div className="orden-id">
+                          id: #{orden.id ? orden.id.slice(-6) : "------"}
+                        </div>
                       </div>
                       <div className="cliente-info">
                         <span className="cliente-nombre">{orden.buyer?.name || "Cliente"}</span>
@@ -160,25 +163,13 @@ const WidgetOrdenes = ({ ordenes = [], loading, onUpdateStatus }) => {
                         })}
                       </div>
                     </div>
-
-                    {/* Columna Derecha: ID, Total y Disparador de Acordeón */}
-                    <div className="grid-col-right">
-                      <div className="orden-id">
-                        id: #{orden.id ? orden.id.slice(-6) : "------"}
-                      </div>
-                      <div className="orden-total">
-                        ${Number(orden.total || 0).toLocaleString("es-AR")}
-                      </div>
-                      <div className="orden-accordion-trigger">
+                                          <div className="orden-accordion-trigger">
                         <Accordion.Item eventKey={orden.id} className="orden-accordion-item">
                           <Accordion.Header />
                         </Accordion.Item>
                       </div>
-                    </div>
 
-                  </div>
-
-                  {/* Cuerpo desplegable del Acordeón (Detalle de Ítems) */}
+                                      {/* Cuerpo desplegable del Acordeón (Detalle de Ítems) */}
                   <Accordion.Item eventKey={orden.id} className="border-0 bg-transparent">
                     <Accordion.Body className="p-0">
                       <div className="orden-items-container">
@@ -221,6 +212,13 @@ const WidgetOrdenes = ({ ordenes = [], loading, onUpdateStatus }) => {
                     </Accordion.Body>
                   </Accordion.Item>
 
+                    {/* Columna Derecha: ID, Total y Disparador de Acordeón */}
+                    <div className="grid-col-right">
+                      <div className="orden-total">
+                        ${Number(orden.total || 0).toLocaleString("es-AR")}
+                      </div>
+                    </div>
+                  </div>
                 </div>
               );
             })}

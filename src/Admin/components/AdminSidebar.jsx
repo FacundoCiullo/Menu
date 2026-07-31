@@ -44,7 +44,7 @@ const AdminSidebar = () => {
     { label: "Productos", icon: <Folder />, path: "/admin/productos" }, // Todo en minúsculas
     { label: "Agregar Producto", icon: <Envelope />, path: "/admin/mensajes" }, // Coincide con tu route
     { label: "Usuarios", icon: <Person />, path: "/admin/usuarios" },
-    { label: "Configuración", icon: <Gear />, path: "/admin/configuracion" },
+    { label: "Configuración", icon: <Gear />, path: "/home" },
   ];
 
   return (
