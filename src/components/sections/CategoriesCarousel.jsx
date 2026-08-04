@@ -5,27 +5,27 @@ import { motion } from "framer-motion";
 
 const cardsData = [
   {
-    backgroundImage: 'url("/img/banners/banner-hamburguesas.png")',
+    backgroundImage: 'url("https://img.icons8.com/stickers/100/hamburger.png")',
     title: "Hamburguesas",
   },
   {
-    backgroundImage: 'url("/img/banners/banner-pizzas.png")',
+    backgroundImage: 'url("https://img.icons8.com/stickers/100/pizza.png")',
     title: "Pizzas",
   },
   {
-    backgroundImage: 'url("/img/banners/banner-entradas.png")',
+    backgroundImage: 'url("https://img.icons8.com/stickers/100/french-fries.png")',
     title: "Entradas",
   },
   {
-    backgroundImage: 'url("/img/banners/banner-pastas.png")',
+    backgroundImage: 'url("https://img.icons8.com/stickers/100/spaghetti.png")',
     title: "Pastas",
   },
   {
-    backgroundImage: 'url("/img/banners/banner-postres.png")',
+    backgroundImage: 'url("https://img.icons8.com/stickers/100/cake.png")',
     title: "Postres",
   },
   {
-    backgroundImage: 'url("/img/banners/banner-bebidas.png")',
+    backgroundImage: 'url("https://img.icons8.com/stickers/100/bar.png")',
     title: "Bebidas",
   },
 ];

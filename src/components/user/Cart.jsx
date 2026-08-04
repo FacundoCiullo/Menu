@@ -59,12 +59,11 @@ const Cart = () => {
         <header className="cart-header">
           <div>
             <h1>Productos seleccionados</h1>
-            <span className="cart-badge-count">{cartTotal()} {cartTotal() === 1 ? 'ítem' : 'ítems'}</span>
           </div>
           <div className="cart-actions">
             <Link to="/Productos" className="continue-shopping">
               <ArrowLeft size={16} />
-              <span>Seguir comprando</span>
+              <span>Volver</span>
             </Link>
             <button className="clear-cart" onClick={clear}>
               Vaciar carrito

@@ -15,7 +15,7 @@ import { signInWithPopup, signOut } from "firebase/auth";
 import { useAuthState } from "react-firebase-hooks/auth";
 
 import productos from "../../json/productos.json";
-import { collection, setDoc, doc } from "firebase/firestore";
+import { collection, writeBatch, doc } from "firebase/firestore";
 
 import "./style/layout.css";
 
@@ -37,17 +37,72 @@ const Sidebar = ({ show, onClose }) => {
 
   const handleActualizarProductos = async () => {
     try {
+      const batch = writeBatch(db);
       const productosRef = collection(db, "items");
 
-      for (const producto of productos) {
-        await setDoc(doc(productosRef, String(producto.id)), producto);
-      }
+      productos.forEach((producto) => {
+        // Asegurar que el ID sea string
+        const docId = String(producto.id || producto.docId);
+        const itemRef = doc(productosRef, docId);
+
+        // Estructuración y limpieza de datos provenientes del JSON
+        const productoFormateado = {
+          titulo: producto.titulo || "",
+          descripcion: producto.descripcion || "",
+          categoria: producto.categoria || "",
+          subcategoria: producto.subcategoria || "",
+          imagen: producto.imagen || "/img/edit-1.png",
+
+          // Precios y Stock
+          precio: Number(producto.precio) || 0,
+          precioAnterior: producto.oferta ? Number(producto.precioAnterior) || 0 : 0,
+          descuentoPorcentaje: producto.oferta ? Number(producto.descuentoPorcentaje) || 0 : 0,
+          stock: Number(producto.stock ?? 999),
+
+          // Flags y atributos booleanos
+          oferta: Boolean(producto.oferta),
+          nuevo: Boolean(producto.nuevo),
+          masVendido: Boolean(producto.masVendido),
+          recomendado: Boolean(producto.recomendado),
+          vegetariano: Boolean(producto.vegetariano),
+          vegano: Boolean(producto.vegano),
+          sinTacc: Boolean(producto.sinTacc),
+          picante: Boolean(producto.picante),
+          disponible: producto.disponible !== undefined ? Boolean(producto.disponible) : true,
+
+          // Tamaños / Variantes si existen en el JSON
+          ...(Array.isArray(producto.size) && producto.size.length > 0 && {
+            size: producto.size.map((s) => ({
+              id: s.id || s.nombre?.toLowerCase().trim().replace(/\s+/g, "_") || "",
+              nombre: s.nombre || "",
+              precio: Number(s.precio) || 0,
+            })),
+          }),
+
+          // Adicionales si existen en el JSON
+          ...(Array.isArray(producto.additional) && producto.additional.length > 0 && {
+            additional: producto.additional.map((a) => ({
+              id: a.id || a.nombre?.toLowerCase().trim().replace(/\s+/g, "_") || "",
+              nombre: a.nombre || "",
+              precio: Number(a.precio) || 0,
+            })),
+            additionalType: producto.additionalType || "multiple",
+            additionalRequired: Boolean(producto.additionalRequired),
+          }),
+        };
+
+        // { merge: true } es fundamental para actualizar sin borrar campos existentes en Firestore
+        batch.set(itemRef, productoFormateado, { merge: true });
+      });
+
+      // Ejecutar la actualización masiva de una sola vez
+      await batch.commit();
 
       alert("Productos actualizados correctamente en Firestore ✔️");
       onClose();
     } catch (error) {
       console.error("Error al actualizar productos:", error);
-      alert("Hubo un error al actualizar los productos ❌");
+      alert("Hubo un error al actualizar los productos ❌: " + error.message);
     }
   };
 

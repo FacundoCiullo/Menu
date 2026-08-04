@@ -76,10 +76,34 @@
     box-shadow: 0 4px 10px rgba(230, 57, 70, 0.4);
   }
 
+    .iqv-floating-close {
+    position: absolute;
+    top: 12px;
+    right: 14px;
+    background: rgba(15, 15, 18, 0.65);
+    backdrop-filter: blur(8px);
+    border: 1px solid var(--iqv-border);
+    color: var(--iqv-text-primary);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 10;
+    transition: all 0.2s ease;
+  }
+
+  .iqv-floating-close:hover {
+    background: rgba(22, 22, 26, 0.95);
+    border-color: var(--iqv-text-secondary);
+  }
+
   .iqv-floating-edit-btn {
     position: absolute;
-    top: 70px;
-    right: 16px;
+    top: 60px;
+    right: 14px;
     background: #f39c12;
     border: none;
     color: #ffffff;
@@ -101,29 +125,7 @@
     color: var(--iqv-text-primary);
   }
 
-  .iqv-floating-close {
-    position: absolute;
-    top: 16px;
-    right: 16px;
-    background: rgba(15, 15, 18, 0.65);
-    backdrop-filter: blur(8px);
-    border: 1px solid var(--iqv-border);
-    color: var(--iqv-text-primary);
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    z-index: 10;
-    transition: all 0.2s ease;
-  }
 
-  .iqv-floating-close:hover {
-    background: rgba(22, 22, 26, 0.95);
-    border-color: var(--iqv-text-secondary);
-  }
 
   .iqv-fav-btn {
     background: transparent;

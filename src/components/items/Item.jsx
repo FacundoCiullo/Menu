@@ -58,7 +58,7 @@ const Item = ({ producto, handleQuickView }) => {
         {/* BADGE DE DESCUENTO */}
         {mostrarOferta && porcentaje > 0 && (
           <div className="item-product-badge-discount">
-            <TagFill size={18} /> -{porcentaje}% OFF
+            <TagFill size={14} /> -{porcentaje}% OFF
           </div>
         )}
 
@@ -101,9 +101,6 @@ const Item = ({ producto, handleQuickView }) => {
           {producto?.titulo || producto?.nombre}
         </h6>
 
-        {producto?.descripcion && (
-          <h5 className="item-descripcion">{producto.descripcion}</h5>
-        )}
 
         <div className="item-bottom">
           {mostrarOferta && (

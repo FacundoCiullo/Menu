@@ -57,12 +57,12 @@
 
 /* Círculo de la foto con borde estilo Instagram */
 .slider-image {
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
+  width: 86px;
+  height: 86px;
+
   background-size: cover;
   background-position: center;
-  border: 2px solid var(--text, #ffffff);
+
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
   transition: transform 0.2s ease;
 }
@@ -107,8 +107,8 @@
   }
 
   .slider-image {
-    width: 86px;
-    height: 86px;
+    width: 64px;
+    height: 64px;
   }
 
   .category-title {

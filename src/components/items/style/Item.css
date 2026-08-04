@@ -73,7 +73,7 @@
   /* ICONOS AGOTADO */
   .item-badge-agotado{
     position: absolute;
-    top: 48px;
+    top: 38px;
     left: 8px;
     background-color: #3a3a3a; /* Rojo destacado */
     color: var(--pr-white);
@@ -106,15 +106,15 @@
   .item-fav {
     position: absolute;
     padding: 7px 6px 4px;
-    top: 4px;
-    right: 6px;
+    top: 6px;
+    right: 8px;
     z-index: 2;
+    width: 32px;
+    height: 32px;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 32px;
-    height: 32px;
     border-radius: 50%;
     background: rgba(15, 15, 18, 0.624);
     backdrop-filter: blur(4px);
@@ -136,8 +136,8 @@
   /* ICON DIETAS */
   .item-dietary-badges {
     position: absolute;
-    bottom: 8px;
-    left: 8px;
+    bottom: 6px;
+    left: 6px;
     display: flex;
     align-items: center;
     gap: 3px;
@@ -277,15 +277,16 @@
       margin: 10px 0;
       border-radius: var(--radius-md);
     }
-  /* ICONOS AGOTADO */
-  .item-badge-agotado {
-    position: absolute;
-
-  }
+    /* ICONOS AGOTADO */
+    .item-badge-agotado {
+      position: absolute;
+      top: 36px;
+      left: 8px;
+    }
     /* Badge de Descuento */
     .item-product-badge-discount {
       position: absolute;
-      top: 14px;
+      top: 8px;
       left: 8px;
     }
 
@@ -296,8 +297,8 @@
     
     /* Favorito */
     .item-fav {
-      top: 10px;
-      right: 10px;
+      top: 8px;
+      right: 8px;
       border-radius: 50%;
       backdrop-filter: blur(4px);
     }
@@ -305,11 +306,7 @@
     /* BOTÓN MÁS (+) ILUSTRATIVO CON HOVER */
     .item-add-btn {
       position: absolute;
-      bottom: 8px;
-      right: 10px;
     }
-
-    
 
     /* DENTRO DE CARDS */
 

@@ -3,6 +3,7 @@
   ========================================================= */
   .cart-page {
     min-height: 85vh;
+    margin-top: 20px;
     padding: 40px 20px;
     background-color: var(--iqv-bg-main, #0f0f11);
     color: var(--iqv-text-primary, #ffffff);
@@ -13,7 +14,7 @@
     max-width: 1100px;
     margin: 0 auto;
     position: relative;
-    background: var(--iqv-bg-card, #1a1a1e);
+    background: var(--iqv-bg-card);
     border: 1px solid var(--iqv-border, #2a2a30);
     border-radius: 28px;
     padding: 30px 25px;
@@ -25,10 +26,9 @@
   ========================================================= */
   .cart-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
-    margin-top: 12px;
-    margin-bottom: 30px;
+    padding: 12px;
     flex-wrap: wrap;
     gap: 15px;
   }
@@ -149,16 +149,6 @@
     border-left: 1px solid var(--iqv-border, #2a2a30);
   }
 
-  /* Ajuste específico para que las muescas internas de la lista no corten la pantalla en desktop */
-  @media (min-width: 851px) {
-    .cart-items .ticket-notch.left {
-      left: -25px;
-    }
-    .cart-items .ticket-notch.right {
-      right: -25px;
-    }
-    
-  }
 
   /* =========================================================
     TARJETA DE PRODUCTO
@@ -166,22 +156,15 @@
   .cart-items {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 2px;
   }
 
   .cart-card {
     display: flex;
     gap: 20px;
-    background: var(--iqv-bg-card, #1a1a1e);
-    border-radius: 18px;
     padding: 0px 8px 0px 8px;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
   }
 
-  .cart-card:hover {
-    border-color: var(--iqv-border-hover, #3f3f46);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
-  }
 
   /* Imagen */
   .cart-image img {
@@ -269,7 +252,7 @@
   .cart-controls-row {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-start;
     margin-top: auto;
     padding-top: 15px;
   }
@@ -383,7 +366,7 @@
     height: 48px;
     margin-top: 20px;
     border: none;
-    border-radius: 25px;
+    border-radius: 8px;
     background: var(--accent-gradient, linear-gradient(135deg, #ff8c00, #e63946));
     color: #ffffff;
     font-size: 1rem;
@@ -453,17 +436,35 @@
     transform: translateY(-2px);
   }
 
+
+  
+  /* Ajuste específico para que las muescas internas de la lista no corten la pantalla en desktop */
+  @media (min-width: 576px) {
+
+    .cart-items .ticket-notch.left {
+      left: -25px;
+    }
+    .cart-items .ticket-notch.right {
+      right: -25px;
+    }
+    .ticket-divider-container {
+    margin: 2px 0;
+    }
+
+  }
+
   /* =========================================================
     RESPONSIVE ADAPTATIONS (MOBILE ORIGINAL EXACTO)
   ========================================================= */
   @media (max-width: 850px) {
     .cart-grid-layout {
       grid-template-columns: 1fr;
-      gap: 15px;
+      gap: 2px;
     }
 
     .cart-summary {
       position: static;
+      padding: 6px;
     }
   }
 
@@ -527,5 +528,14 @@
 
     .cart-summary {
       margin-bottom: 1rem;
+    }
+
+    .quantity-number {
+      font-size: 0.8rem;
+    }
+
+    .qty-button {
+      width: 16px;
+      height: 16px;
     }
   }

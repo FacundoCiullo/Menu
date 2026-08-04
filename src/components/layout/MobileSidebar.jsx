@@ -4,7 +4,7 @@ import { FaShoppingCart, FaHeart, FaHistory, FaUserCog, FaGoogle, FaSync } from 
 import { FiLogOut } from "react-icons/fi";
 import { auth, googleProvider, db } from "../../firebase";
 import { signInWithPopup, signOut } from "firebase/auth";
-import { collection, setDoc, doc } from "firebase/firestore";
+import { collection,writeBatch, doc } from "firebase/firestore";
 import productos from "../../json/productos.json";
 import "./style/MobileSidebar.css";
 
@@ -30,19 +30,75 @@ const MobileSidebar = ({ showSidebar, setShowSidebar, user }) => {
     }
   };
 
-  const handleActualizarProductos = async () => {
-    try {
-      const productosRef = collection(db, "items");
-      for (const producto of productos) {
-        await setDoc(doc(productosRef, String(producto.id)), producto);
-      }
-      alert("Productos actualizados correctamente ✔️");
-      setShowSidebar(false);
-    } catch (error) {
-      console.error("Error actualizando productos:", error);
-      alert("Error al actualizar productos ❌");
-    }
-  };
+const handleActualizarProductos = async () => {
+  try {
+    const batch = writeBatch(db);
+    const productosRef = collection(db, "items");
+
+    productos.forEach((producto) => {
+      // Garantizar que la clave sea String para el ID de documento
+      const docId = String(producto.id || producto.docId);
+      const itemRef = doc(productosRef, docId);
+
+      // Normalización y estructuración completa de campos
+      const productoFormateado = {
+        titulo: producto.titulo || "",
+        descripcion: producto.descripcion || "",
+        categoria: producto.categoria || "",
+        subcategoria: producto.subcategoria || "",
+        imagen: producto.imagen || "/img/edit-1.png",
+        
+        // Precios y Stock
+        precio: Number(producto.precio) || 0,
+        precioAnterior: producto.oferta ? (Number(producto.precioAnterior) || 0) : 0,
+        descuentoPorcentaje: producto.oferta ? (Number(producto.descuentoPorcentaje) || 0) : 0,
+        stock: Number(producto.stock ?? 999),
+
+        // Flags y estados
+        oferta: Boolean(producto.oferta),
+        nuevo: Boolean(producto.nuevo),
+        masVendido: Boolean(producto.masVendido),
+        recomendado: Boolean(producto.recomendado),
+        vegetariano: Boolean(producto.vegetariano),
+        vegano: Boolean(producto.vegano),
+        sinTacc: Boolean(producto.sinTacc),
+        picante: Boolean(producto.picante),
+        disponible: producto.disponible !== undefined ? Boolean(producto.disponible) : true,
+
+        // Estructuras complejas: Variantes y Adicionales
+        ...(Array.isArray(producto.size) && producto.size.length > 0 && {
+          size: producto.size.map(s => ({
+            id: s.id || s.nombre?.toLowerCase().trim().replace(/\s+/g, "_") || "",
+            nombre: s.nombre || "",
+            precio: Number(s.precio) || 0
+          }))
+        }),
+
+        ...(Array.isArray(producto.additional) && producto.additional.length > 0 && {
+          additional: producto.additional.map(a => ({
+            id: a.id || a.nombre?.toLowerCase().trim().replace(/\s+/g, "_") || "",
+            nombre: a.nombre || "",
+            precio: Number(a.precio) || 0
+          })),
+          additionalType: producto.additionalType || "multiple",
+          additionalRequired: Boolean(producto.additionalRequired)
+        })
+      };
+
+      // Usa merge: true para no borrar campos adicionales existentes en Firestore
+      batch.set(itemRef, productoFormateado, { merge: true });
+    });
+
+    // Ejecuta todas las actualizaciones en una sola transacción batch
+    await batch.commit();
+
+    alert("¡Todos los productos y sus atributos se actualizaron correctamente! ✔️");
+    setShowSidebar(false);
+  } catch (error) {
+    console.error("Error al actualizar la colección de productos:", error);
+    alert("Error al actualizar productos ❌: " + error.message);
+  }
+};
 
   return (
     <AnimatePresence>

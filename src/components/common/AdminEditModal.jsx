@@ -145,8 +145,8 @@ const AdminEditModal = ({ show, handleClose, producto, onRefresh }) => {
         ...formData,
         precio: Number(formData.precio || 0),
         precioAnterior: formData.oferta ? Number(formData.precioAnterior || 0) : null,
-        stock: nuevoStock, // 👈 AGREGADO: Guarda el stock numérico
-        disponible: nuevoStock > 0 ? true : formData.disponible, // 👈 AGREGADO: Asegura disponibilidad si stock > 0
+        stock: nuevoStock, // Guarda el stock numérico
+        disponible: nuevoStock > 0 ? true : formData.disponible, // Asegura disponibilidad si stock > 0
         size: sizes
           .filter((s) => s.nombre.trim() !== "")
           .map((s) => ({ ...s, precio: Number(s.precio || 0) })),
