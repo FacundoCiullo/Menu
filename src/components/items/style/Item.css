@@ -36,7 +36,7 @@
   /* Grilla general de productos */
   .items-container {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
     gap: 12px;
     padding-bottom: 2rem;
   }
@@ -78,7 +78,7 @@
     background-color: #3a3a3a; /* Rojo destacado */
     color: var(--pr-white);
     padding: 4px 10px;
-    border-radius: 25px;
+    border-radius: 0px 50px 50px 50px;
     font-size: 0.75rem;
     font-weight: 500;
     text-transform: uppercase;
@@ -96,7 +96,7 @@
     font-size: 0.75rem;
     font-weight: 800;
     padding: 4px 10px;
-    border-radius: 20px;
+    border-radius: 50px 50px 50px 0px;
     display: flex;
     align-items: center;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
@@ -148,8 +148,8 @@
     border-radius: 25px;
   }
     .item-dietary-icon {
-    width: 40px;
-    height: 40px;
+    width: 36px;
+    height: 36px;
     object-fit: contain;
     filter: drop-shadow(0px 1px 3px rgb(0, 0, 0));
   }
@@ -297,7 +297,7 @@
     
     /* Favorito */
     .item-fav {
-      top: 8px;
+      top: 6px;
       right: 8px;
       border-radius: 50%;
       backdrop-filter: blur(4px);

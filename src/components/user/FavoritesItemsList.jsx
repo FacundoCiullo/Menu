@@ -38,7 +38,7 @@ const FavoritesList = () => {
       <h2 className="text-center my-4 fw-bold "> </h2>
 
       <motion.div
-        className="items-container"
+        className="items-container container"
         variants={containerVariants}
         initial="hidden"
         animate="show"

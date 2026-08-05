@@ -1,16 +1,9 @@
 import React from "react";
 
-// Sub-componente interno para cada opción
-const OptionCard = ({ title, priceText, isSelected, onClick }) => (
-  <div
-    role="button"
-    tabIndex={0}
-    className={`iqv-option-card ${isSelected ? "active" : ""}`}
-    onClick={onClick}
-    onKeyDown={(e) => e.key === "Enter" && onClick()}
-  >
-    <span className="iqv-option-name">{title}</span>
-    <b className="iqv-option-price">{priceText}</b>
+// Sub-componente Toggle/Switch tipo iOS/Android
+const SwitchToggle = ({ isChecked }) => (
+  <div className={`iqv-switch ${isChecked ? "checked" : ""}`}>
+    <div className="iqv-switch-thumb" />
   </div>
 );
 
@@ -21,6 +14,12 @@ const ProductOptions = ({
   additionalSeleccionados = [],
   handleToggleAdditional,
   esSeleccionUnica,
+  // Props de cantidad y precios originales
+  cantidad = 1,
+  handleIncrement,
+  handleDecrement,
+  precioFinal,
+  precioAnterior, // Muestra el precio viejo tachado
 }) => {
   const sizes = producto?.size ?? [];
   const additionals = producto?.additional ?? [];
@@ -40,10 +39,10 @@ const ProductOptions = ({
   };
 
   return (
-    <>
-      {/* SECCIÓN TAMAÑOS */}
+    <div className="iqv-customization-card">
+      {/* SECCIÓN TAMAÑOS CON TÍTULO Y BADGE ORIGINAL */}
       {tieneSizes && (
-        <div className="iqv-options-group mt-2">
+        <div className="iqv-options-group">
           <span className="iqv-group-title">
             Tamaño:
             {sizeSeleccionado && (
@@ -52,7 +51,7 @@ const ProductOptions = ({
               </small>
             )}
           </span>
-          <div className="iqv-options-list">
+          <div className="iqv-sizes-pills">
             {sizes.map((s, index) => {
               const isSelected = sizeSeleccionado
                 ? sizeSeleccionado.id && s.id
@@ -60,25 +59,24 @@ const ProductOptions = ({
                   : sizeSeleccionado.nombre === s.nombre
                 : false;
 
-              const precioFormateado = `$${Number(s.precio || 0).toLocaleString("es-AR")}`;
-
               return (
-                <OptionCard
+                <button
                   key={s.id || `${s.nombre}-${index}`}
-                  title={s.nombre}
-                  priceText={precioFormateado}
-                  isSelected={isSelected}
+                  type="button"
+                  className={`iqv-size-pill ${isSelected ? "active" : ""}`}
                   onClick={() => handleSelectSize(s)}
-                />
+                >
+                  {s.nombre}
+                </button>
               );
             })}
           </div>
         </div>
       )}
 
-      {/* SECCIÓN ADICIONALES */}
+      {/* SECCIÓN ADICIONALES / EXTRAS / SALSAS CON TÍTULOS Y BADGE ORIGINAL */}
       {tieneAdditionals && (
-        <div className="iqv-options-group mt-3">
+        <div className="iqv-options-group">
           <span className="iqv-group-title">
             {esSeleccionUnica ? "Elección:" : "Adicionales extras:"}
             {additionalSeleccionados.length > 0 && (
@@ -89,28 +87,37 @@ const ProductOptions = ({
               </small>
             )}
           </span>
-          <div className="iqv-options-list">
+
+          <div className="iqv-additionals-list">
             {additionals.map((adi, index) => {
               const estaSeleccionado = isItemSelected(additionalSeleccionados, adi);
               const precioFormateado =
                 Number(adi.precio) > 0
-                  ? `+ $${Number(adi.precio).toLocaleString("es-AR")}`
+                  ? `+$${Number(adi.precio).toLocaleString("es-AR")}`
                   : "Sin cargo";
 
               return (
-                <OptionCard
+                <div
                   key={adi.id || `${adi.nombre}-${index}`}
-                  title={adi.nombre}
-                  priceText={precioFormateado}
-                  isSelected={estaSeleccionado}
+                  className="iqv-additional-row"
                   onClick={() => handleToggleAdditional(adi)}
-                />
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => e.key === "Enter" && handleToggleAdditional(adi)}
+                >
+                  <span className="iqv-additional-name">{adi.nombre}</span>
+
+                  <div className="iqv-additional-right">
+                    <span className="iqv-additional-price">{precioFormateado}</span>
+                    <SwitchToggle isChecked={estaSeleccionado} />
+                  </div>
+                </div>
               );
             })}
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 };
 

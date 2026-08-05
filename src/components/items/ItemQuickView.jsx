@@ -11,7 +11,6 @@ import {
   Dash, 
   X, 
   PencilSquare, 
-  CheckLg, 
   ArrowLeft,
   Upload,
   Image as ImageIcon,
@@ -491,6 +490,9 @@ const ItemQuickView = ({ show, handleClose, producto, onRefresh }) => {
 
               {editando && (
                 <>
+                <button type="button" className="iqv-floating-close py-2" onClick={handleClose} aria-label="Cerrar">
+                  <X size={32} />
+                </button>
                   <div className="add-product-img-actions">
                     <button
                       type="button"
@@ -541,9 +543,7 @@ const ItemQuickView = ({ show, handleClose, producto, onRefresh }) => {
                 </motion.button>
               )}
 
-              <button type="button" className="iqv-floating-close" onClick={handleClose} aria-label="Cerrar">
-                <X size={26} />
-              </button>
+
             </div>
 
             {editando && showImageUrlInput && (
@@ -566,7 +566,7 @@ const ItemQuickView = ({ show, handleClose, producto, onRefresh }) => {
               </div>
             )}
 
-            <div className="iqv-body-content">
+<div className="iqv-body-content">
               {esAdmin && editando ? (
                 <AdminEditForm
                   formData={formData}
@@ -591,12 +591,12 @@ const ItemQuickView = ({ show, handleClose, producto, onRefresh }) => {
                       whileTap={{ scale: 1.25 }}
                       type="button"
                       onClick={() => producto && toggleFavorite(producto)}
-                      className="iqv-fav-btn"
+                      className="iqv-floating-close"
                     >
                       {isFav ? (
-                        <HeartFill size={22} color="#EFBF04" />
+                        <HeartFill size={30} color="var(--pr-danger)" />
                       ) : (
-                        <Heart size={22} color="var(--iqv-text-secondary, #a1a1aa)" />
+                        <Heart size={30} color="var(--iqv-text-secondary, #a1a1aa)" />
                       )}
                     </motion.button>
                   </div>
@@ -619,36 +619,33 @@ const ItemQuickView = ({ show, handleClose, producto, onRefresh }) => {
                     }}
                     esSeleccionUnica={esSeleccionUnica}
                   />
-
-                  <div className="iqv-quantity-price-row">
-                    <div className="iqv-qty-selector-wrapper">
-                      <span className="iqv-label-text mb-0">Cantidad:</span>
-                      <div className="iqv-qty-counter">
-                        <button type="button" onClick={() => setCantidad(c => Math.max(1, c - 1))} disabled={cantidad <= 1 || sinStock}>
-                          <Dash size={20} />
-                        </button>
-                        <span className="iqv-qty-value">{cantidad}</span>
-                        <button type="button" onClick={() => setCantidad(c => c + 1)} disabled={sinStock}>
-                          <Plus size={20} />
-                        </button>
-                      </div>
-                    </div>
-
-                    <div className="iqv-price-display d-flex flex-column align-items-end">
-                      {tieneOferta && precioAnteriorTotal > precioTotal && (
-                        <span className="iqv-price-last text-decoration-line-through">
-                          ${precioAnteriorTotal.toLocaleString("es-AR")}
-                        </span>
-                      )}
-                      <span className="fw-bold fs-4">
-                        ${precioTotal.toLocaleString("es-AR")}
-                      </span>
-                    </div>
-                  </div>
                 </>
               )}
 
-              <div className="iqv-footer-actions mt-3">
+              {/* FILA DE ACCIONES: CANTIDAD + BOTÓN UNIFICADO DE PRECIO/AGREGAR */}
+              <div className="iqv-footer-actions align-items-end mt-3">
+                {/* SELECTOR DE CANTIDAD */}
+                <div className="iqv-qty-selector-wrapper">
+                  <div className="iqv-qty-counter">
+                    <button 
+                      type="button" 
+                      onClick={() => setCantidad(c => Math.max(1, c - 1))} 
+                      disabled={cantidad <= 1 || sinStock}
+                    >
+                      <Dash size={18} />
+                    </button>
+                    <span className="iqv-qty-value">{cantidad}</span>
+                    <button 
+                      type="button" 
+                      onClick={() => setCantidad(c => c + 1)} 
+                      disabled={sinStock}
+                    >
+                      <Plus size={18} />
+                    </button>
+                  </div>
+                </div>
+
+                {/* BOTÓN CON ACCIÓN Y PRECIOS DENTRO */}
                 {esAdmin && editando ? (
                   <button
                     type="button"
@@ -656,19 +653,18 @@ const ItemQuickView = ({ show, handleClose, producto, onRefresh }) => {
                     onClick={handleConfirmarGuardado}
                     disabled={cargandoGuardado || cargandoEliminacion}
                   >
-                    <CheckLg size={22} />
                     <span>
                       {cargandoGuardado
                         ? "Guardando..."
                         : isCreationMode
                         ? "Crear Producto"
-                        : "Confirmar actualización"}
+                        : "Actualizar"}
                     </span>
                   </button>
                 ) : (
                   <button
                     type="button"
-                    className="iqv-btn-primary-action iqv-btn-admin-save text-light"
+                    className="iqv-btn-primary-action text-light"
                     onClick={() => {
                       if (producto && !sinStock) {
                         addItem({
@@ -682,7 +678,27 @@ const ItemQuickView = ({ show, handleClose, producto, onRefresh }) => {
                     }}
                     disabled={sinStock}
                   >
-                    {!sinStock ? <span>+ Agregar</span> : "Sin Stock"}
+                    {!sinStock ? (
+                      <>
+                        <span className="iqv-btn-add-label">Agregar</span>
+
+                        {/* BARRA VERTICAL SEPARADORA */}
+                        <span className="iqv-btn-divider" />
+
+                        <div className="iqv-btn-price-wrapper">
+                          {tieneOferta && precioAnteriorTotal > precioTotal && (
+                            <span className="iqv-price-last">
+                              ${precioAnteriorTotal.toLocaleString("es-AR")}
+                            </span>
+                          )}
+                          <span className="iqv-price-display">
+                            ${precioTotal.toLocaleString("es-AR")}
+                          </span>
+                        </div>
+                      </>
+                    ) : (
+                      <span>Sin Stock</span>
+                    )}
                   </button>
                 )}
               </div>

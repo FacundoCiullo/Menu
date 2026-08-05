@@ -28,12 +28,14 @@
     border-radius: 20px;
     overflow: hidden;
     border: 1px solid var(--iqv-border);
+        width: 90%;
     max-width: 700px;
     margin: 30px auto 60px;
     background-color: var(--iqv-bg-card);
     box-shadow: var(--iqv-shadow) 0px 15px 35px;
     transition: background-color 0.3s ease, border-color 0.3s ease;
   }
+
 
   .iqv-card-container {
     display: flex;
@@ -80,6 +82,7 @@
     position: absolute;
     top: 12px;
     right: 14px;
+    padding: 3px 0px 0px;
     background: rgba(15, 15, 18, 0.65);
     backdrop-filter: blur(8px);
     border: 1px solid var(--iqv-border);
@@ -130,6 +133,9 @@
   .iqv-fav-btn {
     background: transparent;
     border: none;
+    position: absolute;
+    top: 80px;
+    right: 14px;
     padding: 7px 6px 4px;
     display: flex;
     align-items: center;
@@ -206,7 +212,7 @@
     padding: 24px 12px;
     display: flex;
     flex-direction: column;
-    gap: 5px;
+    gap: 0px;
     background-color: var(--iqv-bg-card);
   }
 
@@ -234,119 +240,185 @@
     line-height: 1.5;
   }
 
-  /* =========================================================================
-    GRUPO DE OPCIONES Y TARJETAS SELECCIONABLES (GOLD TOUCH)
-    ========================================================================= */
+    /* =========================================================================
+      GRUPO DE OPCIONES Y TARJETAS SELECCIONABLES (GOLD TOUCH)
+      ========================================================================= */
+
+  /* Tarjeta Principal Glassmorphism */
+  .iqv-customization-card {
+    padding: 4px 0;
+    color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin-bottom: 10px;
+  }
 
   .iqv-options-group {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 10px;
   }
 
+  /* Títulos originales con insignia de selección */
   .iqv-group-title {
     font-size: 14px;
     font-weight: 600;
-    color: var(--iqv-text-primary);
+    color: #ffffff;
     display: flex;
-    align-items: center;
+    align-items: flex-end;
   }
 
   .iqv-selected-badge {
-    color: var(--iqv-primary-accent);
+    color: #ff7a00;
     font-weight: 600;
-    font-size: 13px;
+    font-size: 10px;
+    margin-left: 6px;
   }
 
-  .iqv-options-list {
+  /* Selector horizontal de tamaños */
+  .iqv-sizes-pills {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .iqv-size-pill {
+    background: rgba(255, 255, 255, 0.08);
+    border: none;
+    color: #a1a1a6;
+    padding: 5px 10px;
+    border-radius: 50px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .iqv-size-pill:hover {
+    background: rgba(255, 255, 255, 0.15);
+    color: #ffffff;
+  }
+
+  .iqv-size-pill.active {
+    background: linear-gradient(135deg, #ff7a00, #e65c00);
+    color: #ffffff;
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(230, 92, 0, 0.35);
+  }
+
+  /* Lista de Adicionales con Switch Toggle */
+  .iqv-additionals-list {
     display: flex;
     flex-direction: column;
-    gap: 8px;
-    max-height: 220px;
-    overflow-y: auto;
+    gap: 10px;
   }
 
-  .iqv-option-card {
+  .iqv-additional-row {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 8px 18px;
-    border: 1px solid var(--iqv-border-input);
-    border-radius: 25px;
-    background-color: var(--iqv-bg-surface);
     cursor: pointer;
-    transition: all 0.2s ease;
     user-select: none;
   }
 
-  .iqv-option-card:hover {
-    background-color: var(--iqv-bg-hover);
-    border-color: rgba(212, 175, 55, 0.4);
-  }
-
-  .iqv-option-card.active {
-    border-color: var(--iqv-primary-accent);
-    background-color: var(--iqv-primary-accent-bg);
-    box-shadow: 0 0 10px rgba(212, 175, 55, 0.15);
-  }
-
-  .iqv-option-name {
+  .iqv-additional-name {
     font-size: 14px;
+    color: #e5e5e7;
     font-weight: 500;
-    color: var(--iqv-text-primary);
   }
 
-  .iqv-option-price {
-    font-size: 14px;
-    color: var(--iqv-text-primary);
+  .iqv-additional-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
   }
 
-  .iqv-option-card.active .iqv-option-name,
-  .iqv-option-card.active .iqv-option-price {
-    color: var(--iqv-primary-accent);
-    font-weight: 700;
+  .iqv-additional-price {
+    font-size: 13px;
+    font-weight: 600;
+    color: #a1a1a6;
+  }
+
+  /* Switches de selección */
+  .iqv-switch {
+    width: 44px;
+    height: 24px;
+    background-color: #3a3a3c;
+    border-radius: 12px;
+    padding: 2px;
+    transition: background-color 0.25s ease;
+    display: flex;
+    align-items: center;
+  }
+
+  .iqv-switch.checked {
+    background-color: #ff7a00;
+  }
+
+  .iqv-switch-thumb {
+    width: 20px;
+    height: 20px;
+    background-color: #ffffff;
+    border-radius: 50%;
+    transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.3, 1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  }
+
+  .iqv-switch.checked .iqv-switch-thumb {
+    transform: translateX(20px);
   }
 
   /* =========================================================================
-      CANTIDAD Y PRECIOS
+    CANTIDAD Y PRECIOS (NUEVO DISEÑO CON BOTÓN UNIFICADO)
     ========================================================================= */
+
+  .iqv-footer-actions {
+    display: flex;
+    align-items: flex-end;
+    gap: 12px;
+    margin-top: 12px;
+    width: 100%;
+  }
 
   .iqv-qty-selector-wrapper {
     display: flex;
-    align-items: flex-start;
     flex-direction: column;
-    gap: 8px;
+    gap: 4px;
   }
 
   .iqv-label-text {
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 600;
-    color: var(--iqv-text-primary);
+    color: var(--iqv-text-primary, #ffffff);
   }
 
   .iqv-qty-counter {
     display: flex;
     align-items: center;
-    border: 1px solid var(--iqv-border-input);
-    border-radius: 20px;
+    height: 40px;
+    border: 1px solid var(--iqv-border-input, rgba(255, 255, 255, 0.15));
+    border-radius: 25px;
     overflow: hidden;
-    background-color: var(--iqv-bg-surface);
+    background-color: var(--iqv-bg-surface, rgba(255, 255, 255, 0.05));
+    padding: 0 4px;
   }
 
   .iqv-qty-counter button {
     border: none;
     background: transparent;
-    padding: 6px 12px;
+    padding: 0 6px;
+    height: 100%;
     cursor: pointer;
-    color: var(--iqv-text-primary);
+    color: var(--iqv-text-primary, #ffffff);
     display: flex;
     align-items: center;
+    justify-content: center;
     transition: background-color 0.2s, color 0.2s;
   }
 
   .iqv-qty-counter button:hover:not(:disabled) {
-    background-color: var(--iqv-bg-hover);
-    color: var(--iqv-primary-accent);
+    color: var(--iqv-primary-accent, #ff7a00);
   }
 
   .iqv-qty-counter button:disabled {
@@ -357,81 +429,80 @@
   .iqv-qty-value {
     font-size: 15px;
     font-weight: 700;
-    min-width: 28px;
+    min-width: 24px;
     text-align: center;
-    color: var(--iqv-text-primary);
+    color: var(--iqv-text-primary, #ffffff);
   }
 
-  .iqv-quantity-price-row {
-    border-top: 1px solid var(--iqv-border);
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    margin-top: 12px;
-    padding-top: 14px;
-    padding: 0px 16px 0px 10px;
-  }
-
-  .iqv-price-display {
-    font-size: 28px;
-    font-weight: 800;
-    letter-spacing: -0.03em;
-    color: var(--iqv-text-primary); 
-    text-shadow: 0 0 12px rgba(212, 175, 55, 0.2);
-  }
-
-  .iqv-price-last{
-    display: flex;
-    font-size: 1.2rem;
-    font-weight: 600;
-    text-decoration: line-through;
-  }
-
-  /* =========================================================================
-    -------------------------------ACCIONES Y EDICIÓN ADMIN
-    ========================================================================= */
-
-  .iqv-footer-actions {
-    display: flex;
-    gap: 10px;
-    margin-top: 12px;
-  }
-
+  /* Botón Unificado + Agregar con Precio Integrado */
   .iqv-btn-primary-action {
     flex: 1;
-    height: 50px;
-      background: var(--accent-gradient, linear-gradient(135deg, #ff8c00, #e63946));
-      color: #ffffff;
-    font-weight: 700;
-    font-size: 15px;
-    letter-spacing: 0.02em;
-    border-radius: 30px;
+    height: 48px;
+    background: linear-gradient(135deg, #ff7a00, #f9902f);
+    color: #ffffff;
+    border-radius: 25px;
     border: none;
     display: flex;
     align-items: center;
     justify-content: center;
+    padding: 0 20px;
     cursor: pointer;
     transition: all 0.2s ease;
+    box-shadow: 0 4px 15px rgba(255, 122, 0, 0.25);
   }
 
-  .iqv-btn-primary-action:hover {
+  .iqv-btn-primary-action:hover:not(:disabled) {
     opacity: 0.95;
     transform: translateY(-1px);
-    box-shadow: var(--iqv-gold-glow);
+    box-shadow: 0 6px 20px rgba(255, 122, 0, 0.35);
   }
 
   .iqv-btn-primary-action:disabled {
-    background: var(--iqv-bg-surface);
-    border: 1px solid var(--iqv-border);
-    color: var(--iqv-text-secondary);
+    background: var(--iqv-bg-surface, rgba(255, 255, 255, 0.1));
+    border: 1px solid var(--iqv-border, rgba(255, 255, 255, 0.1));
+    color: var(--iqv-text-secondary, #a1a1a6);
+    justify-content: center;
     box-shadow: none;
     cursor: not-allowed;
     opacity: 0.6;
   }
 
+  .iqv-btn-add-label {
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+  }
+
+  .iqv-btn-price-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    line-height: 1.1;
+  }
+
+  .iqv-price-last {
+    font-size: 12px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.85);
+    text-decoration: line-through;
+  }
+
+  .iqv-price-display {
+    font-size: 16px;
+    font-weight: 800;
+    color: #ffffff;
+  }
+
+  /* Barra vertical separadora dentro del botón */
+  .iqv-btn-divider {
+    width: 1px;
+    height: 22px;
+    background-color: rgba(255, 255, 255, 0.4); /* O usa #ffffff directo para blanco sólido */
+    margin: 0 12px;
+    flex-shrink: 0;
+  }
+
   .iqv-btn-admin-save {
-    background: var(--accent-gradient, linear-gradient(135deg, #ff8c00, #e63946));
-    color: #0f0f12;
     font-weight: 800;
   }
 

@@ -59,10 +59,10 @@
 .slider-image {
   width: 86px;
   height: 86px;
-
+  border-radius: 50%;
+  background-color: burlywood;
   background-size: cover;
   background-position: center;
-
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
   transition: transform 0.2s ease;
 }

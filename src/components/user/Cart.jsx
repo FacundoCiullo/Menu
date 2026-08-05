@@ -74,9 +74,9 @@ const Cart = () => {
         <div className="cart-grid-layout">
           {/* LÍNEA TROQUELADA CABECERA DEL TICKET */}
           <div className="ticket-divider-container">
-            <div className="ticket-notch left"></div>
+
             <div className="ticket-divider-line"></div>
-            <div className="ticket-notch right"></div>
+
           </div>
 
           {/* LISTA DE PRODUCTOS */}
@@ -173,9 +173,7 @@ const Cart = () => {
                     {/* LÍNEA TROQUELADA ENTRE PRODUCTOS */}
                     {index < cart.length - 1 && (
                       <div className="ticket-divider-container">
-                        <div className="ticket-notch left"></div>
                         <div className="ticket-divider-line"></div>
-                        <div className="ticket-notch right"></div>
                       </div>
                     )}
                   </React.Fragment>

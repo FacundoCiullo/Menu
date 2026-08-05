@@ -47,7 +47,7 @@ const Item = ({ producto, handleQuickView }) => {
       {/* FAVORITO */}
       <span className="item-fav" onClick={handleFavorito} title="Favorito">
         {esFavorito ? (
-          <HeartFill size={20} color="#ffcc00" />
+          <HeartFill size={20} color="var(--pr-danger)" />
         ) : (
           <Heart size={20} color="var(--iqv-text-primary, #ffffff)" />
         )}
