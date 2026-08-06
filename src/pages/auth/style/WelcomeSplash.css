@@ -40,7 +40,7 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    padding: 3rem 1.75rem 2rem;
+    padding: 0rem 1.75rem 2rem;
     max-width: 440px;
     margin: 0 auto;
     width: 100%;
@@ -63,101 +63,33 @@
     margin: 1.5rem 0;
   }
 
-  .splash-card {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-around;
-    width: 100%;
-    padding: 3rem 1.5rem 0;
-    color: #ffffff;
-  
-    /* Configuración del GIF de fondo */
-    background-image: url("/public/img/fondo-1.jpg");
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: cover;
-    
-    border-radius: 20px;
-    box-sizing: border-box;
-    overflow: hidden; /* Evita que el contenido o capas se salgan de los bordes redondeados */
-  }
+.splash-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  width: 100%;
+  padding: 0rem 1.5rem 0;
+  color: #ffffff;
+  border-radius: 20px;
+  box-sizing: border-box;
+  overflow: hidden; /* Mantiene los bordes redondeados con el video */
+}
 
-  .splash-gif-wrapper {
-    width: 180px;
-    height: 180px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 1.5rem;
-  }
+/* Estilo para el video de fondo */
+.bg-video {
+  position: relative;
+  top: 0;
+  left: 0;
+  border-radius: 200px;
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Equivale a background-size: cover */
+  z-index: 1;
+}
 
-  .splash-gif {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-  }
-
-  .splash-caption {
-    text-align: center;
-  }
-
-  .splash-caption h2 {
-    font-size: 1.75rem;
-    font-weight: 800;
-    color: #ffffff;
-    margin: 0;
-  }
-
-  .splash-caption .subtitle {
-    font-size: 0.9rem;
-    color: #94a3b8;
-    margin-top: 0.35rem;
-    margin-bottom: 0;
-  }
-
-  .splash-caption .question {
-    font-size: 1.05rem;
-    font-weight: 600;
-    color: #f8fafc;
-    margin-top: 1rem;
-    margin-bottom: 0;
-  }
-
-  .splash-actions {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    gap: 0.85rem;
-    padding-top: 1rem;
-  }
-
-  .splash-actions-text {
-    font-size: 1rem;
-    font-weight: 600;
-    color: #ffffff;
-  }
-
-  .btn-continue-circle {
-    width: 56px;
-    height: 56px;
-    border-radius: 50%;
-    background-color: var(--pr-gold-300);
-    color: #ffffff;
-    border: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 0.5px 5px var(--pr-gold-500);
-    cursor: pointer;
-    transition: transform 0.2s ease, background-color 0.2s ease;
-  }
-
-  .btn-continue-circle:hover {
-    transform: scale(1.05);
-    background-color: var(--pr-gold-500);
-  }
 
   .icon-arrow {
     width: 24px;
@@ -204,6 +136,9 @@
     justify-content: center;
     margin: auto 0;
     width: 100%;
+    background-color: rgba(53, 53, 53, 0);
+    padding: 6rem 1rem;
+    border-radius: 25px;
   }
 
   .splash-login-avatar-container {
@@ -312,7 +247,7 @@
   }
 
   .btn-logout-custom {
-    background: transparent;
+    background: #000000a9;
     border: 1.5px solid rgba(239, 68, 68, 0.4);
     color: #ef4444;
     padding: 0.6rem 1.2rem;
@@ -352,3 +287,52 @@
     color: #ffffff;
     text-decoration: underline;
   }
+
+
+
+
+
+  /* Contenedor del loader inferior */
+.splash-loader-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  max-width: 300px;
+  margin-top: 1.5rem;
+}
+
+.splash-loader-text {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+/* Pista de la barra */
+.splash-progress-track {
+  width: 100%;
+  height: 6px;
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+/* Relleno con animación sincrona de 4 segundos */
+.splash-progress-fill {
+  height: 100%;
+  width: 0%;
+  background-color: #ff9d00; /* Color verde o el primario de tu paleta */
+  border-radius: 10px;
+  animation: loadProgress 3s linear forwards;
+}
+
+@keyframes loadProgress {
+  0% {
+    width: 0%;
+  }
+  100% {
+    width: 100%;
+  }
+}

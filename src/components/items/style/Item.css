@@ -55,7 +55,7 @@
     color: var(--text-primary);
     background: var(--bg-card);
     border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-md);
+    border-radius: 0px 15px 15px 15px;
     overflow: hidden;
     box-shadow: var(--shadow-sm);
     cursor: pointer;
@@ -70,7 +70,24 @@
 
     /* ICONOS FLOTANTES */
 
-  /* ICONOS AGOTADO */
+  /* ICONOS de DESCUENTO */
+  .item-product-badge-discount {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    background-color: var(--pr-danger); /* Rojo destacado */
+    color: #ffffff;
+    font-size: 0.75rem;
+    font-weight: 800;
+    padding: 4px 10px;
+    border-radius: 0px 50px 50px 0px;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    z-index: 2;
+  }
+
+    /* ICONOS AGOTADO */
   .item-badge-agotado{
     position: absolute;
     top: 38px;
@@ -85,23 +102,7 @@
     letter-spacing: 0.03em;
     z-index: 2;
   }
-
-  /* ICONOS de DESCUENTO */
-  .item-product-badge-discount {
-    position: absolute;
-    top: 8px;
-    left: 8px;
-    background-color: var(--pr-danger); /* Rojo destacado */
-    color: #ffffff;
-    font-size: 0.75rem;
-    font-weight: 800;
-    padding: 4px 10px;
-    border-radius: 50px 50px 50px 0px;
-    display: flex;
-    align-items: center;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-    z-index: 2;
-  }
+  
    /* ICONOS FAVORITO */
   .item-fav {
     position: absolute;

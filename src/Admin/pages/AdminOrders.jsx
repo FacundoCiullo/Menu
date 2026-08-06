@@ -2,30 +2,34 @@ import React, { useEffect, useState } from "react";
 import { db } from "../../firebase";
 import { collection, query, orderBy, onSnapshot, doc, updateDoc } from "firebase/firestore";
 import { Spinner, Badge, Button, Accordion, Nav } from "react-bootstrap";
+import { FaLocationDot, FaCreditCard } from "react-icons/fa6";
 
 // Widgets
 import WidgetCaja from "../widgets/WidgetCaja";
 import WidgetCalendario from "../widgets/WidgetCalendario";
 
-// Estilos del Widget (Estilos compartidos del listado)
+// Estilos compartidos del Widget
 import "../styles/WidgetOrdenes.css";
-// Estilos propios del Maquetado de Admin
-
 
 const AdminOrders = () => {
   const [ordenes, setOrdenes] = useState([]);
   const [cargando, setCargando] = useState(true);
   const [estadosLocales, setEstadosLocales] = useState({});
-  const [activeKey, setActiveKey] = useState(null);
 
   // Filtros
   const [filtroEstado, setFiltroEstado] = useState("todos");
   const [fechaFiltro, setFechaFiltro] = useState(new Date());
-  
+
   // Estado de la pestaña de la caja ('dia', 'semana', 'mes')
   const [pestanaCaja, setPestanaCaja] = useState("dia");
 
-  // Escuchar órdenes en tiempo real desde Firestore
+  // Helper para convertir cualquier formato de fecha de Firestore / JS a objeto Date
+  const obtenerFechaDate = (fechaRaw) => {
+    if (!fechaRaw) return null;
+    return fechaRaw?.toDate ? fechaRaw.toDate() : new Date(fechaRaw);
+  };
+
+  // Escuchar órdenes en tiempo real desde Firestore y ordenar por fecha/hora descendente
   useEffect(() => {
     const q = query(collection(db, "orders"), orderBy("date", "desc"));
 
@@ -36,7 +40,19 @@ const AdminOrders = () => {
           id: doc.id,
           ...doc.data(),
         }));
-        setOrdenes(data);
+
+        // Ordenar localmente por timestamp descendente (más reciente arriba)
+        const ordenadas = data.sort((a, b) => {
+          const fechaA = obtenerFechaDate(a.createdAt || a.date);
+          const fechaB = obtenerFechaDate(b.createdAt || b.date);
+
+          const timeA = fechaA && !isNaN(fechaA.getTime()) ? fechaA.getTime() : 0;
+          const timeB = fechaB && !isNaN(fechaB.getTime()) ? fechaB.getTime() : 0;
+
+          return timeB - timeA;
+        });
+
+        setOrdenes(ordenadas);
         setCargando(false);
       },
       (error) => {
@@ -65,7 +81,7 @@ const AdminOrders = () => {
     if (!dateInput) return "00:00";
     const date = dateInput?.toDate ? dateInput.toDate() : new Date(dateInput);
     return isNaN(date.getTime())
-      ? ""
+      ? "00:00"
       : date.toLocaleTimeString("es-AR", {
           hour: "2-digit",
           minute: "2-digit",
@@ -89,13 +105,11 @@ const AdminOrders = () => {
     }
   };
 
+  // Normalización de estado (Soporte "pendiente" -> "pedido")
   const getEstadoActual = (orden) => {
-    return estadosLocales[orden.id] || orden.status || "pedido";
-  };
-
-  const obtenerFechaDate = (fechaRaw) => {
-    if (!fechaRaw) return null;
-    return fechaRaw?.toDate ? fechaRaw.toDate() : new Date(fechaRaw);
+    const estadoBD = orden.status || orden.estado;
+    const estadoResuelto = estadosLocales[orden.id] || estadoBD || "pedido";
+    return estadoResuelto === "pendiente" ? "pedido" : estadoResuelto;
   };
 
   // ==========================================
@@ -120,7 +134,7 @@ const AdminOrders = () => {
 
     const refDate = new Date(fechaFiltro);
     const dayOfWeek = refDate.getDay() === 0 ? 6 : refDate.getDay() - 1;
-    
+
     const inicioSemana = new Date(refDate);
     inicioSemana.setDate(refDate.getDate() - dayOfWeek);
     inicioSemana.setHours(0, 0, 0, 0);
@@ -144,10 +158,12 @@ const AdminOrders = () => {
   });
 
   // SELECCIÓN DEL PERÍODO ACTIVO
-  const ordenesDelPeriodo = 
-    pestanaCaja === "semana" ? ordenesDeLaSemana :
-    pestanaCaja === "mes" ? ordenesDelMes : 
-    ordenesDelDia;
+  const ordenesDelPeriodo =
+    pestanaCaja === "semana"
+      ? ordenesDeLaSemana
+      : pestanaCaja === "mes"
+      ? ordenesDelMes
+      : ordenesDelDia;
 
   const ordenesFiltradas = ordenesDelPeriodo.filter((orden) => {
     return filtroEstado === "todos" || getEstadoActual(orden) === filtroEstado;
@@ -157,12 +173,9 @@ const AdminOrders = () => {
     return ordenesDelPeriodo.filter((o) => getEstadoActual(o) === est).length;
   };
 
-  const toggleAccordion = (id) => {
-    setActiveKey(activeKey === id ? null : id);
-  };
-
   return (
     <div className="admin-orders-container">
+      {/* Header Admin */}
       <header className="admin-orders-header d-flex justify-content-between align-items-center mb-3">
         <div>
           <h1 className="text-white fw-bold m-0">Historial & Control de Pedidos</h1>
@@ -174,7 +187,6 @@ const AdminOrders = () => {
       </header>
 
       <div className="admin-orders-two-columns">
-        
         {/* COLUMNA IZQUIERDA: Calendario + Resumen Caja */}
         <div className="columna-izquierda d-flex flex-column gap-3">
           <div className="grid-item widget-1">
@@ -216,10 +228,9 @@ const AdminOrders = () => {
         {/* COLUMNA DERECHA: Listado Idéntico al Widget */}
         <div className="columna-derecha">
           <div className="grid-item widget-5 p-3 rounded bg-white shadow-sm">
-            
-            {/* Filtros superiores */}
+            {/* Barra de Filtros */}
             <div className="d-flex flex-wrap gap-2 align-items-center justify-content-between mb-3 border-bottom pb-2">
-              <Nav className="gap-2 align-items-center flex-row flex-wrap">
+              <Nav className="gap-1 align-items-center justify-content-center flex-row flex-nowrap">
                 <Button
                   size="sm"
                   variant={filtroEstado === "todos" ? "dark" : "outline-secondary"}
@@ -259,7 +270,7 @@ const AdminOrders = () => {
               </span>
             </div>
 
-            {/* LISTADO IDÉNTICO AL WIDGET */}
+            {/* Listado de Órdenes */}
             {cargando ? (
               <div className="text-center my-5">
                 <Spinner animation="border" variant="dark" />
@@ -270,42 +281,72 @@ const AdminOrders = () => {
                 <p className="text-muted m-0">No hay órdenes registradas para este período y estado.</p>
               </div>
             ) : (
-              <div className="widget-ordenes-container custom-scroll overflow-auto pe-1" style={{ maxHeight: "75vh" }}>
-                <Accordion activeKey={activeKey} onSelect={(k) => setActiveKey(k)} className="orden-accordion">
+              <div className="custom-scroll overflow-auto pe-1" style={{ maxHeight: "75vh" }}>
+                <Accordion className="orden-accordion">
                   {ordenesFiltradas.map((orden) => {
                     const estadoActual = getEstadoActual(orden);
-                    const totalOrden = Number(orden.total || 0);
+
+                    // Método de pago resuelto
+                    const metodoPago =
+                      orden.buyer?.paymentMethod ||
+                      orden.comprador?.paymentMethod ||
+                      orden.paymentMethod ||
+                      orden.metodoPago ||
+                      orden.medioPago ||
+                      "Efectivo";
 
                     return (
                       <div key={orden.id} className="orden-card mb-3">
-                        <Accordion.Item eventKey={orden.id} className="orden-accordion-item">
+                        <Accordion.Item eventKey={orden.id} className="orden-accordion-item border-0 bg-transparent">
                           
+                          {/* Estructura Grid Principal de la Tarjeta */}
                           <div className="orden-grid-layout">
-                            {/* COLUMNA IZQUIERDA */}
+                            
+                            {/* Columna Izquierda */}
                             <div className="grid-col-left">
                               <div className="orden-fecha-hora">
                                 <span className="fecha">{formatFecha(orden.createdAt || orden.date)}</span>
                                 <span className="hora">{formatHora(orden.createdAt || orden.date)}</span>
-                                <div className="orden-id-label">
-                                  id: <span className="id-val">#{orden.id ? orden.id.slice(-6) : "------"}</span>
+                                <div className="orden-id">
+                                  id: #{orden.id ? orden.id.slice(-6) : "------"}
                                 </div>
                               </div>
 
+                              <div className="cliente-info">
+                                <span className="cliente-nombre">{orden.buyer?.name || "Cliente"}</span>
 
-                              <div className="cliente-info mt-1">
-                                <span className="cliente-nombre fw-bold">{orden.buyer?.name || "Cliente N/A"}</span>
-                                {orden.buyer?.phone && <span className="cliente-telefono text-muted ms-1">({orden.buyer.phone})</span>}
-                                {orden.buyer?.email && <div className="cliente-email text-muted small">{orden.buyer.email}</div>}
+                                <div className="cliente-email">
+                                  {orden.buyer?.email || "Sin email"}
+                                </div>
+
+                                {/* Teléfono y Dirección alineados al lado */}
+                                <div className="d-flex align-items-center gap-2 flex-wrap text-muted small mt-1">
+                                  {orden.buyer?.phone && (
+                                    <span className="cliente-telefono fw-semibold">({orden.buyer.phone})</span>
+                                  )}
+
+                                  <span className="cliente-direccion">
+                                    <FaLocationDot className="me-1" />
+                                    {orden.buyer?.address || (orden.buyer?.deliveryType === 'takeaway' ? 'Retiro por local' : 'Sin dirección')}
+                                  </span>
+                                </div>
+
+                                {/* Método de pago debajo */}
+                                <div className="cliente-metodo-pago text-muted small mt-1">
+                                  <FaCreditCard className="me-1 text-secondary" />
+                                  <strong>Pago:</strong> <span className="text-capitalize">{metodoPago}</span>
+                                </div>
                               </div>
 
-                              <div className="productos-resumen mt-2">
-                                <span className="label-prod">PRODUCTOS ({orden.items?.length || 0})</span>
+                              {/* Título/Label de Productos */}
+                              <div className="orden-items-title mt-2">
+                                PRODUCTOS ({orden.items?.length || 0})
                               </div>
                             </div>
 
-                            {/* COLUMNA CENTRO: BOTONES DE ESTADO */}
+                            {/* Columna Central: Estado y Botón de Acordeón */}
                             <div className="grid-col-center">
-                              <span className="estado-label">ESTADO DE LA ORDEN</span>
+                              <div className="orden-estado-label">ESTADO DE LA ORDEN</div>
                               <div className="orden-status-selector">
                                 {estados.map((e) => {
                                   const isSelected = estadoActual === e.id;
@@ -313,11 +354,8 @@ const AdminOrders = () => {
                                     <button
                                       key={e.id}
                                       type="button"
-                                      className={`status-btn ${isSelected ? "active " + e.id : ""}`}
-                                      onClick={(evt) => {
-                                        evt.stopPropagation();
-                                        handleCambiarEstado(orden.id, e.id);
-                                      }}
+                                      className={`pill-status ${isSelected ? `active-${e.id}` : ""}`}
+                                      onClick={() => handleCambiarEstado(orden.id, e.id)}
                                     >
                                       {e.label}
                                     </button>
@@ -325,48 +363,66 @@ const AdminOrders = () => {
                                 })}
                               </div>
 
-                              {/* Flecha desplegable central */}
-                              <div className="desplegar-btn-wrapper text-center mt-2" onClick={() => toggleAccordion(orden.id)}>
-                                <i className={`bi bi-chevron-${activeKey === orden.id ? "up" : "down"} toggle-icon`}></i>
+                              {/* Trigger Desplegable Bootstrap */}
+                              <div className="orden-accordion-trigger">
+                                <Accordion.Header />
                               </div>
                             </div>
 
-                            {/* COLUMNA DERECHA: TOTAL VERDE */}
+                            {/* Columna Derecha: Total */}
                             <div className="grid-col-right">
-                              <div className="orden-total">${totalOrden.toLocaleString("es-AR")}</div>
+                              <div className="orden-total">
+                                ${Number(orden.total || 0).toLocaleString("es-AR")}
+                              </div>
                             </div>
                           </div>
 
-                          {/* DESPLIEGUE DE PRODUCTOS */}
-                          <Accordion.Body className="p-0 pt-2">
+                          {/* Cuerpo desplegable del Acordeón (Detalle de Ítems) */}
+                          <Accordion.Body className="p-0">
                             <div className="orden-items-container">
-                              <ul className="list-unstyled m-0">
+                              <ul className="orden-items-list">
                                 {orden.items?.map((it, idx) => {
-                                  const precioUnitario = Number(it.price || it.precioUnitario || 0);
-                                  const subtotal = precioUnitario * it.quantity;
-                                  const nombreTamano = it.sizeSeleccionado?.nombre || it.size;
-                                  const extrasLista = it.additionalSeleccionados
-                                    ? it.additionalSeleccionados.map((a) => a.nombre).join(", ")
-                                    : Array.isArray(it.extras)
-                                    ? it.extras.join(", ")
-                                    : null;
+                                  const sizeObj = it.sizeSeleccionado || it.size;
+                                  const nombreTamaño = typeof sizeObj === 'object' && sizeObj !== null
+                                    ? (sizeObj.nombre || sizeObj.title || '')
+                                    : sizeObj;
+
+                                  const rawAdicionales = it.additionalSeleccionados || it.adicionales || it.extras;
+                                  let listaAdicionales = null;
+
+                                  if (Array.isArray(rawAdicionales) && rawAdicionales.length > 0) {
+                                    listaAdicionales = rawAdicionales
+                                      .map((a) => (typeof a === 'object' && a !== null ? (a.nombre || a.title || '') : a))
+                                      .filter(Boolean)
+                                      .join(", ");
+                                  }
+
+                                  const cantidad = Number(it.quantity || it.cantidad || 1);
+                                  const precioUnitario = Number(it.price || it.precioUnitario || it.precio || 0);
 
                                   return (
-                                    <li key={it.itemKey || `${it.id || "item"}-${idx}`} className="item-row d-flex justify-content-between align-items-center py-1">
-                                      <div className="item-detalles">
-                                        <span className="item-cant-badge me-2">{it.quantity}x</span>
-                                        <span className="item-titulo fw-semibold">{it.title || it.titulo}</span>
-                                        {nombreTamano && <span className="item-tamano text-muted ms-1">({nombreTamano})</span>}
-                                        {extrasLista && <span className="item-extras text-muted ms-1">+ [{extrasLista}]</span>}
+                                    <li key={it.itemKey || idx} className="orden-item-row">
+                                      <div className="orden-item-inline-details">
+                                        <span className="badge-qty">{cantidad} x</span>
+                                        <span className="orden-item-titulo">{it.title || it.titulo}</span>
+
+                                        {nombreTamaño ? (
+                                          <span className="orden-item-meta"> Tamaño: {nombreTamaño}</span>
+                                        ) : null}
+
+                                        {listaAdicionales ? (
+                                          <span className="orden-item-meta"> Extras: ({listaAdicionales})</span>
+                                        ) : null}
                                       </div>
-                                      <span className="item-subtotal fw-bold">${subtotal.toLocaleString("es-AR")}</span>
+                                      <span className="orden-item-precio">
+                                        ${(precioUnitario * cantidad).toLocaleString("es-AR")}
+                                      </span>
                                     </li>
                                   );
                                 })}
                               </ul>
                             </div>
                           </Accordion.Body>
-
                         </Accordion.Item>
                       </div>
                     );
@@ -374,10 +430,8 @@ const AdminOrders = () => {
                 </Accordion>
               </div>
             )}
-
           </div>
         </div>
-
       </div>
     </div>
   );

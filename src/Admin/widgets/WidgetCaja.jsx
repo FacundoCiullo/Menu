@@ -31,22 +31,56 @@ const WidgetCaja = ({
     ordenesAProcesar = ordenesDelMes;
   }
 
-  // Sumamos totales y clasificamos
+  // Helper para parsear cualquier tipo de número o string con formato
+  const parsearMonto = (valor) => {
+    if (typeof valor === "number") return isNaN(valor) ? 0 : valor;
+    if (typeof valor === "string") {
+      const limpio = valor.replace(/[^0-9.-]/g, "");
+      const num = parseFloat(limpio);
+      return isNaN(num) ? 0 : num;
+    }
+    return 0;
+  };
+
+  // Sumamos totales y clasificamos por método de pago
   let totalCaja = 0;
   let efectivo = 0;
+  let transferencia = 0;
   let digital = 0;
 
   ordenesAProcesar.forEach((orden) => {
-    const monto = Number(orden.total || 0);
+    const monto = parsearMonto(
+      orden.total ?? orden.monto ?? orden.totalAmount ?? orden.precioTotal ?? 0
+    );
+    
     totalCaja += monto;
 
-    const metodo = String(orden.paymentMethod || orden.metodoPago || "").toLowerCase();
+    // Extraemos el método de pago buscando tanto en la raíz como dentro de buyer/comprador
+    const metodo = String(
+      orden.buyer?.paymentMethod ||
+      orden.comprador?.paymentMethod ||
+      orden.paymentMethod ||
+      orden.metodoPago ||
+      orden.medioPago ||
+      orden.formaPago ||
+      ""
+    ).toLowerCase();
 
     if (
+      metodo.includes("transferencia") ||
+      metodo.includes("transf") ||
+      metodo.includes("cbu") ||
+      metodo.includes("alias") ||
+      metodo.includes("banco")
+    ) {
+      transferencia += monto;
+    } else if (
       metodo.includes("mp") ||
+      metodo.includes("mercado") ||
       metodo.includes("digital") ||
       metodo.includes("tarjeta") ||
-      metodo.includes("transferencia")
+      metodo.includes("débito") ||
+      metodo.includes("crédito")
     ) {
       digital += monto;
     } else {
@@ -99,7 +133,7 @@ const WidgetCaja = ({
         </small>
       </div>
 
-      {/* DESGLOSE EFECTIVO Y DIGITAL */}
+      {/* DESGLOSE EFECTIVO, TRANSFERENCIA Y OTROS DIGITALES */}
       <div className="pt-2 border-top d-flex justify-content-between align-items-center gap-2">
         <div className="bg-light p-2 rounded flex-fill text-center">
           <span className="d-block text-muted" style={{ fontSize: "0.7rem" }}>
@@ -112,12 +146,23 @@ const WidgetCaja = ({
 
         <div className="bg-light p-2 rounded flex-fill text-center">
           <span className="d-block text-muted" style={{ fontSize: "0.7rem" }}>
-            💳 Digital / MP
+            🏦 Transferencia
           </span>
           <strong className="text-dark fs-7">
-            ${digital.toLocaleString("es-AR")}
+            ${transferencia.toLocaleString("es-AR")}
           </strong>
         </div>
+
+        {digital > 0 && (
+          <div className="bg-light p-2 rounded flex-fill text-center">
+            <span className="d-block text-muted" style={{ fontSize: "0.7rem" }}>
+              💳 MP / Digital
+            </span>
+            <strong className="text-dark fs-7">
+              ${digital.toLocaleString("es-AR")}
+            </strong>
+          </div>
+        )}
       </div>
     </div>
   );

@@ -2,19 +2,17 @@ import './style/App.css';
 
 import Inicio from './pages/Inicio';
 import Error404 from './pages/Error404';
-import ThankYou from './pages/ThankYou';
 import Productos from './pages/Productos';
 import Favorites from './pages/Favorites';
+import Promos from "./pages/Promos";
 
 import NavBar from './components/layout/NavBar';
 
 import Cart from './components/user/Cart';
-import Checkout from './components/user/Checkout';
 
 import HistorialCompras from './components/user/HistorialCompras';
 
 import ItemListContainer from './components/items/ItemListContainer';
-import ItemDetailContainer from './components/items/ItemDetailContainer';
 
 // Importación de tu nuevo WelcomeSplash que incluye la Bienvenida + Sign In
 import WelcomeSplash from './pages/auth/WelcomeSplash';
@@ -74,11 +72,9 @@ function App() {
                   <Route path="/Productos" element={<Productos />} />
                   <Route path="/historial" element={<HistorialCompras />} />
                   <Route path="/favoritos" element={<Favorites />} />
+                  <Route path="/promos" element={<Promos />} />
                   <Route path="/category/:id" element={<ItemListContainer />} />
-                  <Route path="/item/:id" element={<ItemDetailContainer />} />
                   <Route path="/cart" element={<Cart />} />
-                  <Route path="/checkout" element={<Checkout />} />
-                  <Route path="/thankyou/:orderId" element={<ThankYou />} />
                   <Route path="/*" element={<Error404 />} />
                 </Route>
               </Routes>

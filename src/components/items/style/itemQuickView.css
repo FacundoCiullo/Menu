@@ -444,7 +444,7 @@
     border: none;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-evenly;
     padding: 0 20px;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -570,4 +570,17 @@
     font-size: 14px;
     outline: none;
     box-sizing: border-box;
+}
+
+
+  /* =========================================================================
+    📱 MOBILE RESPONSIVE
+    ========================================================================= */
+
+  @media (max-width: 575.98px) {
+
+  /* Botón Unificado + Agregar con Precio Integrado */
+  .iqv-btn-primary-action {
+    justify-content: center;
+  }
 }

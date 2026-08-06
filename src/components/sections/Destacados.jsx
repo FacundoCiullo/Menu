@@ -60,7 +60,7 @@ const Destacados = ({ limit = 8 }) => {
       transition={{ duration: 0.6 }}
     >
       <div className="d-flex destacados">
-        <h2 className="fw-bold m-0">Destacados</h2>
+        <h2 className="fw-bold m-0">Mas Populares</h2>
 
       <Link className="link-underline-dark " to="/Productos">
             <p className="text-white">Ver más</p>

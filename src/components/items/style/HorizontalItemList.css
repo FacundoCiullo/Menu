@@ -10,17 +10,15 @@
   scroll-behavior: smooth;
   scroll-snap-type: x mandatory;
   padding: 10px 15px 10px;
+  margin: 1rem 0;
   scrollbar-width: none;
-
 }
 
 .horizontal-scroll::-webkit-scrollbar {
   display: none;
 }
 
-
 /* Card */
-
 
 .slider-card-product {
   flex: 0 0 clamp(220px, 26vw, 290px);

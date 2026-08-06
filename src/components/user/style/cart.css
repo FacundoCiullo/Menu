@@ -1,0 +1,466 @@
+/* =========================================================
+   BACKDROP Y MODAL FLOTANTE (360px - SCROLL COMPLETO)
+========================================================= */
+
+/* Fondo oscuro translúcido que permite el scroll de la ventana modal */
+.cart-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  z-index: 9999;
+  padding: 20px 16px;
+  box-sizing: border-box;
+  overflow-y: auto;
+}
+
+/* Modal flotante - 360px de ancho fijo */
+.cart-modal {
+  background: var(--iqv-card-bg, #121214);
+  border-radius: 15px;
+  padding: 20px 16px;
+  width: 360px;
+  max-width: 360px;
+  margin: auto;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8);
+  color: var(--iqv-text-primary, #ffffff);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  box-sizing: border-box;
+  position: relative;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Custom Scrollbar aplicado al overlay */
+.cart-overlay::-webkit-scrollbar {
+  width: 6px;
+}
+
+.cart-overlay::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.cart-overlay::-webkit-scrollbar-thumb {
+  background: var(--iqv-border, #3f3f46);
+  border-radius: 10px;
+}
+
+.cart-overlay::-webkit-scrollbar-thumb:hover {
+  background: var(--iqv-accent, #ff8c00);
+}
+
+/* Botón flotante para cerrar (X arriba a la derecha) */
+.cart-close-icon {
+  background: transparent;
+  border: none;
+  color: #a1a1aa;
+  font-size: 1.3rem;
+  cursor: pointer;
+  padding: 2px;
+  line-height: 1;
+}
+
+.cart-close-icon:hover {
+  color: #ffffff;
+}
+
+.cart-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.cart-header h1 {
+  font-size: 1.45rem;
+  font-weight: 800;
+  margin: 0;
+  letter-spacing: -0.5px;
+  display: inline-block;
+}
+
+.cart-badge-count {
+  font-size: 0.85rem;
+  color: #8e8e93;
+  font-weight: 500;
+  margin-left: 6px;
+}
+
+/* Divisor Estilo Ticket */
+.ticket-divider-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  margin: 18px -20px;
+}
+
+.ticket-divider-line {
+  width: 85%;
+  border-top: 1px dashed #333336;
+  height: 0;
+}
+
+.ticket-notch {
+  width: 12px;
+  height: 24px;
+  background-color: var(--iqv-app-bg, #000000);
+  position: absolute;
+  top: -12px;
+}
+
+.ticket-notch.left {
+  left: 3px;
+  border-radius: 0 12px 12px 0;
+  background-color: #000; /* Mismo color del fondo de la app/overlay */
+  box-shadow: inset -1px 0 0 0 #333; /* Simula borde solo en el arco interior */
+}
+
+.ticket-notch.right {
+  right: 3px;
+  border-radius: 12px 0 0 12px;
+  background-color: #000;
+  box-shadow: inset 1px 0 0 0 #333;
+}
+
+/* Estado Vacío */
+.empty-box {
+  text-align: center;
+  padding: 30px 0;
+}
+
+.empty-icon-wrapper {
+  font-size: 3rem;
+  margin-bottom: 10px;
+}
+
+.empty-box h2 {
+  font-size: 1.2rem;
+  margin: 0 0 6px 0;
+}
+
+.empty-box p {
+  color: #a1a1aa;
+  font-size: 0.9rem;
+  margin-bottom: 20px;
+}
+
+.empty-button {
+  background: var(--iqv-accent, #ff8c00);
+  color: #000;
+  border: none;
+  font-weight: 700;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+/* Lista e Ítems */
+.cart-items {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.cart-card {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.cart-image img {
+  width: 68px;
+  height: 68px;
+  border-radius: 10px;
+  object-fit: cover;
+}
+
+.cart-info {
+  flex: 1;
+}
+
+.cart-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.cart-title h2 {
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin: 0;
+  line-height: 1.25;
+  color: #ffffff;
+}
+
+/* Botón Papelera / Trash */
+.delete-button {
+  background: transparent;
+  border: none;
+  color: #ef4444;
+  cursor: pointer;
+  font-size: 1.1rem;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.2s ease;
+}
+
+.delete-button:hover {
+  opacity: 0.8;
+}
+
+.iqv-custom-badge {
+  display: inline-block;
+  font-size: 0.75rem;
+  background: rgba(255, 140, 0, 0.15);
+  color: var(--iqv-accent, #ff8c00);
+  border: 1px solid rgba(255, 140, 0, 0.3);
+  padding: 2px 8px;
+  border-radius: 4px;
+  margin-top: 4px;
+}
+
+.cart-extras-list {
+  font-size: 0.78rem;
+  color: #a1a1aa;
+  margin-top: 6px;
+}
+
+.cart-extras-list ul {
+  list-style: none;
+  padding-left: 0;
+  margin: 2px 0 0 0;
+}
+
+.cart-extras-list li {
+  color: #9ea0a5;
+  line-height: 1.3;
+}
+
+.cart-controls-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-top: 8px;
+}
+
+.quantity-box {
+  display: flex;
+  align-items: center;
+  border: 1px solid #2a2a2e;
+  border-radius: 50px;
+  overflow: hidden;
+  background: #1a1a1e;
+  padding: 0px 0px 2px;
+}
+
+.qty-button {
+  background: transparent;
+  border: none;
+  color: #ffffff;
+  width: 26px;
+  height: 24px;
+  font-size: 0.80rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.qty-button:hover {
+  color: var(--iqv-accent, #ff8c00);
+}
+
+.quantity-number {
+  padding: 0 6px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.subtotal-box {
+  text-align: right;
+}
+
+.subtotal-box small {
+  display: block;
+  font-size: 0.7rem;
+  color: #8e8e93;
+  margin-bottom: 2px;
+}
+
+.subtotal-box strong {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.cart-summary {
+  margin-top: 8px;
+}
+
+.summary-row.total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 1.15rem;
+  font-weight: 800;
+  margin-bottom: 14px;
+}
+
+.summary-row.total strong {
+  font-size: 1.3rem;
+  font-weight: 800;
+}
+
+.checkout-button {
+  width: 100%;
+  background: #ff8c00;
+  color: var(--text-primary);
+  border: none;
+  border-radius: 50px;
+  padding: 10px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.checkout-button:hover {
+  background: #e07b00;
+}
+
+/* Formulario Checkout */
+.checkout-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.checkout-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.checkout-field label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #8e8e93;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.checkout-input {
+  width: 100%;
+  background: #18181b;
+  border: 1px solid #2a2a2e;
+  border-radius: 10px;
+  padding: 12px 14px;
+  color: #ffffff;
+  font-size: 0.9rem;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.checkout-input::placeholder {
+  color: #4a4a4e;
+}
+
+.checkout-input:focus {
+  border-color: #ff8c00;
+}
+
+.payment-methods {
+  display: flex;
+  gap: 10px;
+}
+
+.payment-option {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: #18181b;
+  border: 1px solid #2a2a2e;
+  padding: 11px 8px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #a1a1aa;
+  text-transform: uppercase;
+  transition: all 0.2s ease;
+}
+
+.payment-option.active {
+  border: 1px solid #ff8c00;
+  background: #241c14;
+  color: #ffffff;
+}
+
+.payment-option input[type="radio"] {
+  display: none;
+}
+
+.checkout-actions-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.btn-back-actions {
+  background: transparent;
+  border: none;
+  color: #a1a1aa;
+  padding: 12px 6px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  font-weight: 600;
+  margin: 0px;
+}
+
+.btn-back:hover {
+  color: #ffffff;
+}
+
+/* Confirmación */
+.success-box {
+  text-align: center;
+  padding: 10px 0;
+}
+
+.success-icon {
+  width: 60px;
+  height: 60px;
+  background: rgba(34, 197, 94, 0.15);
+  color: #22c55e;
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 12px auto;
+  font-size: 1.6rem;
+}
+
+.order-id-badge {
+  display: inline-block;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px dashed #3f3f46;
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-family: monospace;
+  color: #ff8c00;
+  margin: 12px 0 16px 0;
+}

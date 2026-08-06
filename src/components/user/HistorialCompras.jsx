@@ -6,21 +6,51 @@ import { useAuth } from "../../context/AuthContext";
 import Spinner from "react-bootstrap/Spinner";
 
 const HistorialCompras = () => {
-  // 🔹 Obtenemos el usuario logueado y el estado de carga desde AuthContext
   const { user, loading: authLoading } = useAuth();
-
-  // Estado local para almacenar las órdenes del usuario
   const [ordenes, setOrdenes] = useState([]);
-  const [loading, setLoading] = useState(true); // Control de carga de las órdenes
+  const [loading, setLoading] = useState(true);
+
+  // 🔹 Helpers de Fecha y Hora (igual que en el Widget)
+  const obtenerFechaDate = (fechaRaw) => {
+    if (!fechaRaw) return null;
+    return fechaRaw?.toDate ? fechaRaw.toDate() : new Date(fechaRaw);
+  };
+
+  const formatFecha = (dateInput) => {
+    if (!dateInput) return "DD/MM/AAAA";
+    const date = obtenerFechaDate(dateInput);
+    return date.toLocaleDateString("es-AR", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    });
+  };
+
+  const formatHora = (dateInput) => {
+    if (!dateInput) return "00:00";
+    const date = obtenerFechaDate(dateInput);
+    return date.toLocaleTimeString("es-AR", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    });
+  };
+
+  // 🔹 Helper para el color del estado
+  const getEstadoBadge = (estadoRaw) => {
+    const estado = (estadoRaw || "pedido").toLowerCase();
+    if (estado === "pedido" || estado === "pendiente") return <span className="badge bg-warning text-dark">Pedido</span>;
+    if (estado === "preparando") return <span className="badge bg-info text-dark">En Preparación</span>;
+    if (estado === "despachado" || estado === "finalizado") return <span className="badge bg-success">Finalizado</span>;
+    return <span className="badge bg-secondary">{estadoRaw}</span>;
+  };
 
   useEffect(() => {
-    // Si no hay usuario logueado, no intentamos cargar órdenes
     if (!user) {
       setLoading(false);
       return;
     }
 
-    // Función asíncrona para cargar las órdenes desde Firebase
     const cargarOrdenes = async () => {
       try {
         const q = query(
@@ -34,27 +64,36 @@ const HistorialCompras = () => {
           ...doc.data(),
         }));
 
-        setOrdenes(resultados); // Guardamos las órdenes en el estado local
+        // 🔹 Ordenar de más reciente a más antigua
+        resultados.sort((a, b) => {
+          const fechaA = obtenerFechaDate(a.createdAt || a.date);
+          const fechaB = obtenerFechaDate(b.createdAt || b.date);
+
+          const timeA = fechaA && !isNaN(fechaA.getTime()) ? fechaA.getTime() : 0;
+          const timeB = fechaB && !isNaN(fechaB.getTime()) ? fechaB.getTime() : 0;
+
+          return timeB - timeA; // Descendente: más reciente arriba
+        });
+
+        setOrdenes(resultados);
       } catch (error) {
         console.error("Error cargando historial:", error);
       } finally {
-        setLoading(false); // Indicamos que la carga terminó
+        setLoading(false);
       }
     };
 
     cargarOrdenes();
   }, [user]);
 
-  // 🔹 Mostramos spinner mientras AuthContext o las órdenes cargan
   if (authLoading || loading) {
     return (
       <div className="d-flex justify-content-center mt-5">
-        <Spinner animation="border" />
+        <Spinner animation="border" variant="dark" />
       </div>
     );
   }
 
-  // 🔹 Si no hay usuario logueado, mostramos mensaje
   if (!user) {
     return (
       <h3 className="text-center mt-5">
@@ -63,7 +102,6 @@ const HistorialCompras = () => {
     );
   }
 
-  // 🔹 Si no hay órdenes, indicamos que no hay compras
   if (ordenes.length === 0) {
     return (
       <h4 className="text-center mt-5 text-muted">
@@ -72,64 +110,102 @@ const HistorialCompras = () => {
     );
   }
 
-  // 🔹 Renderizamos las órdenes del usuario
   return (
-    <div className="container my-5">
-      <h2 className="mb-4 fw-bold">Historial de compras</h2>
+    <div className="container my-5" style={{ maxWidth: "800px" }}>
+      <h2 className="mb-4 fw-bold">Mi Historial de Compras</h2>
 
-      {ordenes.map((ord) => (
-        <div key={ord.id} className="card shadow-sm mb-4">
-          <div className="card-body">
-            {/* Header de la orden */}
-            <div className="d-flex justify-content-between align-items-center mb-3">
-              <h5 className="card-title m-0">Orden #{ord.id}</h5>
-              <span className="badge bg-secondary">{ord.date}</span>
-            </div>
+      {ordenes.map((ord) => {
+        const fechaRaw = ord.createdAt || ord.date;
+        const tipoEntrega = ord.buyer?.deliveryType === 'takeaway' ? 'Retiro por local' : 'Envío a domicilio';
 
-            <hr />
-
-            {/* Items de la orden */}
-            {ord.items.map((item) => (
-              <div
-                key={item.id}
-                className="d-flex align-items-center mb-3 p-2 border rounded shadow-sm bg-light"
-              >
-                <img
-                  src={item.imagen || item.image || "/img/no-image.png"}
-                  alt={item.title}
-                  className="me-3 rounded"
-                  style={{
-                    width: 70,
-                    height: 70,
-                    objectFit: "cover",
-                    border: "1px solid #ddd",
-                  }}
-                />
-
-                <div className="flex-grow-1">
-                  <h6 className="mb-1 fw-bold">{item.title}</h6>
-                  <p className="mb-1 text-muted small">Cantidad: {item.quantity}</p>
-                  <p className="mb-0 text-muted small">
-                    Precio unitario: ${item.price}
-                  </p>
+        return (
+          <div key={ord.id} className="card shadow-sm mb-4 border-0" style={{ borderLeft: "4px solid #212529" }}>
+            <div className="card-body">
+              
+              {/* Header de la orden */}
+              <div className="d-flex justify-content-between align-items-start mb-3">
+                <div>
+                  <h5 className="card-title fw-bold mb-1">Orden #{ord.id ? ord.id.slice(-6) : "------"}</h5>
+                  <div className="text-muted small">
+                    <i className="bi bi-calendar-event me-1"></i> {formatFecha(fechaRaw)} - {formatHora(fechaRaw)} hs
+                  </div>
                 </div>
-
                 <div className="text-end">
-                  <span className="fw-bold">${item.price * item.quantity}</span>
+                  {getEstadoBadge(ord.status || ord.estado)}
                 </div>
               </div>
-            ))}
 
-            <hr />
+              {/* Info de Entrega */}
+              <div className="bg-light p-3 rounded mb-3 text-secondary small">
+                <div className="row">
+                  <div className="col-sm-6 mb-2 mb-sm-0">
+                    <strong>Modalidad:</strong> {tipoEntrega}
+                  </div>
+                  <div className="col-sm-6">
+                    <strong>Dirección/Contacto:</strong> {ord.buyer?.address || ord.buyer?.phone || "N/A"}
+                  </div>
+                </div>
+              </div>
 
-            {/* Total de la orden */}
-            <div className="d-flex justify-content-between mt-3">
-              <strong>Total pagado:</strong>
-              <strong className="text-success fs-5">${ord.total}</strong>
+              <h6 className="fw-bold mb-3">Productos ({ord.items?.length || 0})</h6>
+
+              {/* Items de la orden */}
+              {ord.items?.map((item, idx) => {
+                // Lógica de extracción de variantes (igual que el panel de administración)
+                const sizeObj = item.sizeSeleccionado || item.size;
+                const nombreTamaño = typeof sizeObj === 'object' && sizeObj !== null
+                  ? (sizeObj.nombre || sizeObj.title || '')
+                  : sizeObj;
+
+                const rawAdicionales = item.additionalSeleccionados || item.adicionales || item.extras;
+                let listaAdicionales = null;
+
+                if (Array.isArray(rawAdicionales) && rawAdicionales.length > 0) {
+                  listaAdicionales = rawAdicionales
+                    .map((a) => (typeof a === 'object' && a !== null ? (a.nombre || a.title || '') : a))
+                    .filter(Boolean)
+                    .join(", ");
+                }
+
+                const cantidad = Number(item.quantity || item.cantidad || 1);
+                const precioUnitario = Number(item.price || item.precioUnitario || item.precio || 0);
+
+                return (
+                  <div
+                    key={item.itemKey || item.id || idx}
+                    className="d-flex align-items-center mb-3 p-2 border-bottom"
+                  >
+                    <div className="flex-grow-1">
+                      <h6 className="mb-1 fw-bold">{item.title || item.titulo}</h6>
+                      <div className="text-muted" style={{ fontSize: "0.85rem" }}>
+                        <span className="me-2"><strong>Cant:</strong> {cantidad}</span>
+                        {nombreTamaño && <span className="me-2">| <strong>Tamaño:</strong> {nombreTamaño}</span>}
+                      </div>
+                      {listaAdicionales && (
+                        <div className="text-muted" style={{ fontSize: "0.8rem" }}>
+                          <strong>Extras:</strong> {listaAdicionales}
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="text-end">
+                      <div className="text-muted small">${precioUnitario.toLocaleString("es-AR")} c/u</div>
+                      <span className="fw-bold fs-6">${(precioUnitario * cantidad).toLocaleString("es-AR")}</span>
+                    </div>
+                  </div>
+                );
+              })}
+
+              {/* Total de la orden */}
+              <div className="d-flex justify-content-between align-items-center mt-4 pt-2">
+                <span className="text-muted">Total pagado</span>
+                <strong className="fs-4">${Number(ord.total || 0).toLocaleString("es-AR")}</strong>
+              </div>
+              
             </div>
           </div>
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 };

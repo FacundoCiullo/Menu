@@ -1,14 +1,15 @@
 // src/components/layout/Sidebar.jsx
-import { Offcanvas, Button } from "react-bootstrap";
+import { Offcanvas } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import {
-  BsHouseFill,
-  BsBoxSeamFill,
-  BsTelephoneFill,
-  BsCartCheckFill,
-  BsBookmarkStarFill,
-} from "react-icons/bs";
-import { FaBook, FaSignOutAlt, FaCog, FaGoogle, FaSync } from "react-icons/fa";
+  FaShoppingCart,
+  FaHeart,
+  FaHistory,
+  FaUserCog,
+  FaGoogle,
+  FaSync,
+} from "react-icons/fa";
+import { FiLogOut } from "react-icons/fi";
 
 import { auth, googleProvider, db } from "../../firebase";
 import { signInWithPopup, signOut } from "firebase/auth";
@@ -23,13 +24,21 @@ const Sidebar = ({ show, onClose }) => {
   const [user] = useAuthState(auth);
 
   const handleLogin = async () => {
-    await signInWithPopup(auth, googleProvider);
-    onClose();
+    try {
+      await signInWithPopup(auth, googleProvider);
+      onClose();
+    } catch (error) {
+      console.error("Error login:", error);
+    }
   };
 
   const handleLogout = async () => {
-    await signOut(auth);
-    onClose();
+    try {
+      await signOut(auth);
+      onClose();
+    } catch (error) {
+      console.error("Error logout:", error);
+    }
   };
 
   const adminEmail = "facundonahuel.ciullo@gmail.com";
@@ -41,11 +50,11 @@ const Sidebar = ({ show, onClose }) => {
       const productosRef = collection(db, "items");
 
       productos.forEach((producto) => {
-        // Asegurar que el ID sea string
+        // Garantizar que la clave sea String para el ID de documento
         const docId = String(producto.id || producto.docId);
         const itemRef = doc(productosRef, docId);
 
-        // Estructuración y limpieza de datos provenientes del JSON
+        // Normalización y estructuración completa de campos
         const productoFormateado = {
           titulo: producto.titulo || "",
           descripcion: producto.descripcion || "",
@@ -55,11 +64,15 @@ const Sidebar = ({ show, onClose }) => {
 
           // Precios y Stock
           precio: Number(producto.precio) || 0,
-          precioAnterior: producto.oferta ? Number(producto.precioAnterior) || 0 : 0,
-          descuentoPorcentaje: producto.oferta ? Number(producto.descuentoPorcentaje) || 0 : 0,
+          precioAnterior: producto.oferta
+            ? Number(producto.precioAnterior) || 0
+            : 0,
+          descuentoPorcentaje: producto.oferta
+            ? Number(producto.descuentoPorcentaje) || 0
+            : 0,
           stock: Number(producto.stock ?? 999),
 
-          // Flags y atributos booleanos
+          // Flags y estados
           oferta: Boolean(producto.oferta),
           nuevo: Boolean(producto.nuevo),
           masVendido: Boolean(producto.masVendido),
@@ -68,137 +81,149 @@ const Sidebar = ({ show, onClose }) => {
           vegano: Boolean(producto.vegano),
           sinTacc: Boolean(producto.sinTacc),
           picante: Boolean(producto.picante),
-          disponible: producto.disponible !== undefined ? Boolean(producto.disponible) : true,
+          disponible:
+            producto.disponible !== undefined
+              ? Boolean(producto.disponible)
+              : true,
 
-          // Tamaños / Variantes si existen en el JSON
-          ...(Array.isArray(producto.size) && producto.size.length > 0 && {
-            size: producto.size.map((s) => ({
-              id: s.id || s.nombre?.toLowerCase().trim().replace(/\s+/g, "_") || "",
-              nombre: s.nombre || "",
-              precio: Number(s.precio) || 0,
-            })),
-          }),
+          // Estructuras complejas: Variantes y Adicionales
+          ...(Array.isArray(producto.size) &&
+            producto.size.length > 0 && {
+              size: producto.size.map((s) => ({
+                id:
+                  s.id ||
+                  s.nombre?.toLowerCase().trim().replace(/\s+/g, "_") ||
+                  "",
+                nombre: s.nombre || "",
+                precio: Number(s.precio) || 0,
+              })),
+            }),
 
-          // Adicionales si existen en el JSON
-          ...(Array.isArray(producto.additional) && producto.additional.length > 0 && {
-            additional: producto.additional.map((a) => ({
-              id: a.id || a.nombre?.toLowerCase().trim().replace(/\s+/g, "_") || "",
-              nombre: a.nombre || "",
-              precio: Number(a.precio) || 0,
-            })),
-            additionalType: producto.additionalType || "multiple",
-            additionalRequired: Boolean(producto.additionalRequired),
-          }),
+          ...(Array.isArray(producto.additional) &&
+            producto.additional.length > 0 && {
+              additional: producto.additional.map((a) => ({
+                id:
+                  a.id ||
+                  a.nombre?.toLowerCase().trim().replace(/\s+/g, "_") ||
+                  "",
+                nombre: a.nombre || "",
+                precio: Number(a.precio) || 0,
+              })),
+              additionalType: producto.additionalType || "multiple",
+              additionalRequired: Boolean(producto.additionalRequired),
+            }),
         };
 
-        // { merge: true } es fundamental para actualizar sin borrar campos existentes en Firestore
+        // Usa merge: true para no borrar campos adicionales existentes en Firestore
         batch.set(itemRef, productoFormateado, { merge: true });
       });
 
-      // Ejecutar la actualización masiva de una sola vez
+      // Ejecuta todas las actualizaciones en una sola transacción batch
       await batch.commit();
 
-      alert("Productos actualizados correctamente en Firestore ✔️");
+      alert("¡Todos los productos y sus atributos se actualizaron correctamente! ✔️");
       onClose();
     } catch (error) {
-      console.error("Error al actualizar productos:", error);
-      alert("Hubo un error al actualizar los productos ❌: " + error.message);
+      console.error("Error al actualizar la colección de productos:", error);
+      alert("Error al actualizar productos ❌: " + error.message);
     }
   };
 
   return (
-    <Offcanvas 
-      show={show} 
-      onHide={onClose} 
-      placement="end" 
+    <Offcanvas
+      show={show}
+      onHide={onClose}
+      placement="end"
       className="sidebar-offcanvas"
     >
       <Offcanvas.Header closeButton closeVariant="white">
-        <Offcanvas.Title>Mi cuenta</Offcanvas.Title>
+        <Offcanvas.Title className="fw-bold">Mi cuenta</Offcanvas.Title>
       </Offcanvas.Header>
 
-      <Offcanvas.Body>
-        {user ? (
-          <>
-            {/* Perfil */}
-            <div className="text-center mb-3">
-              <img 
-                src={user.photoURL} 
-                alt="usuario" 
-                referrerPolicy="no-referrer" 
-                className="sidebar-avatar" 
-              />
-              <h6 className="mt-2 mb-1 font-weight-bold text-white">{user.displayName}</h6>
-              <p className="text-secondary small mb-0">{user.email}</p>
-            </div>
-
-            <hr className="border-subtle my-3" />
-
-            {/* Links */}
-            <Link to="/" className="sidebar-link mb-1" onClick={onClose}>
-              <BsHouseFill className="me-2" /> Inicio
-            </Link>
-
-            <Link to="/Productos" className="sidebar-link mb-1" onClick={onClose}>
-              <BsBoxSeamFill className="me-2" /> Productos
-            </Link>
-
-            <Link to="/Contactos" className="sidebar-link mb-1" onClick={onClose}>
-              <BsTelephoneFill className="me-2" /> Contactos
-            </Link>
-
-            <hr className="border-subtle my-3" />
-
-            <Link to="/cart" className="sidebar-link mb-1" onClick={onClose}>
-              <BsCartCheckFill className="me-2" /> Carrito
-            </Link>
-
-            <Link to="/favoritos" className="sidebar-link mb-1" onClick={onClose}>
-              <BsBookmarkStarFill className="me-2" /> Favoritos
-            </Link>
-
-            <Link to="/historial" className="sidebar-link mb-1" onClick={onClose}>
-              <FaBook className="me-2" /> Historial
-            </Link>
-
-            {/* SOLO ADMIN */}
-            {esAdmin && (
+      <Offcanvas.Body className="d-flex flex-column justify-content-between p-4">
+        <div>
+          {/* HEADER DEL SIDEBAR */}
+          <div className="sidebar-header text-center mb-3">
+            {user ? (
               <>
-                <hr className="border-subtle my-3" />
+                <img
+                  src={user.photoURL}
+                  alt="Avatar de usuario"
+                  className="sidebar-avatar"
+                  referrerPolicy="no-referrer"
+                />
+                <h3 className="fs-5 fw-bold text-white mb-0">{user.displayName}</h3>
+                <p className="text-secondary small mb-0">{user.email}</p>
+              </>
+            ) : (
+              <>
+                <div className="sidebar-avatar empty-avatar mx-auto" />
+                <h3 className="fs-5 fw-bold text-white mb-1">Bienvenido</h3>
+                <p className="text-secondary small mb-3">
+                  Iniciá sesión para ver tu cuenta
+                </p>
 
-                <Link to="/admin" className="sidebar-link mb-2" onClick={onClose}>
-                  <FaCog className="me-2" /> Panel admin
-                </Link>
-
-                <Button
-                  className="w-100 sidebar-btn-admin mb-2"
-                  onClick={handleActualizarProductos}
+                <button
+                  className="google-login-btn"
+                  onClick={handleLogin}
+                  type="button"
                 >
-                  <FaSync className="me-2" /> Actualizar productos
-                </Button>
+                  <FaGoogle /> Iniciar sesión con Google
+                </button>
               </>
             )}
-
-            <hr className="border-subtle my-3" />
-
-            <Button 
-              className="w-100 sidebar-btn-logout" 
-              onClick={handleLogout}
-            >
-              <FaSignOutAlt className="me-2" /> Cerrar sesión
-            </Button>
-          </>
-        ) : (
-          <div className="text-center py-4">
-            <p className="text-secondary mb-3">Iniciá sesión para ver tus datos.</p>
-            <Button
-              className="sidebar-btn-admin d-flex align-items-center justify-content-center mx-auto w-100"
-              onClick={handleLogin}
-            >
-              <FaGoogle className="me-2" /> Iniciar sesión con Google
-            </Button>
           </div>
-        )}
+
+          <hr className="sidebar-separator" />
+
+          {/* ITEMS DE NAVEGACIÓN */}
+          <div className="sidebar-items">
+            {user && (
+              <>
+                <Link to="/cart" className="sidebar-item" onClick={onClose}>
+                  <FaShoppingCart /> Carrito
+                </Link>
+
+                <Link to="/favoritos" className="sidebar-item" onClick={onClose}>
+                  <FaHeart /> Favoritos
+                </Link>
+
+                <Link to="/historial" className="sidebar-item" onClick={onClose}>
+                  <FaHistory /> Historial
+                </Link>
+
+                <button
+                  className="sidebar-item logout-btn"
+                  onClick={handleLogout}
+                  type="button"
+                >
+                  <FiLogOut /> Cerrar sesión
+                </button>
+
+                {esAdmin && (
+                  <>
+                    <hr className="sidebar-separator" />
+                    <Link
+                      to="/admin"
+                      className="sidebar-item admin-item"
+                      onClick={onClose}
+                    >
+                      <FaUserCog /> Panel de administración
+                    </Link>
+
+                    <button
+                      className="sidebar-item update-btn"
+                      onClick={handleActualizarProductos}
+                      type="button"
+                    >
+                      <FaSync /> Actualizar productos
+                    </button>
+                  </>
+                )}
+              </>
+            )}
+          </div>
+        </div>
       </Offcanvas.Body>
     </Offcanvas>
   );

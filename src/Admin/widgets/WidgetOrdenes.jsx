@@ -1,10 +1,17 @@
 import React, { useState } from "react";
+import { FaLocationDot, FaCreditCard } from "react-icons/fa6";
 import { Spinner, Badge, Button, Accordion, Nav } from "react-bootstrap";
 import "../styles/WidgetOrdenes.css";
 
 const WidgetOrdenes = ({ ordenes = [], loading, onUpdateStatus }) => {
   const [estadosLocales, setEstadosLocales] = useState({});
   const [filtroActivo, setFiltroActivo] = useState("todos");
+
+  // Helper para convertir cualquier formato de fecha de Firestore / JS a objeto Date
+  const obtenerFechaDate = (fechaRaw) => {
+    if (!fechaRaw) return null;
+    return fechaRaw?.toDate ? fechaRaw.toDate() : new Date(fechaRaw);
+  };
 
   const formatFecha = (dateInput) => {
     if (!dateInput) return "DD/MM/AAAA";
@@ -39,11 +46,26 @@ const WidgetOrdenes = ({ ordenes = [], loading, onUpdateStatus }) => {
     }
   };
 
+  // Resuelve el estado actual priorizando estado local, status o estado de BD.
   const getEstadoActual = (orden) => {
-    return estadosLocales[orden.id] || orden.status || "pedido";
+    const estadoBD = orden.status || orden.estado;
+    const estadoResuelto = estadosLocales[orden.id] || estadoBD || "pedido";
+
+    return estadoResuelto === "pendiente" ? "pedido" : estadoResuelto;
   };
 
-  const ordenesFiltradas = ordenes.filter((orden) => {
+  // Ordenar de más reciente a más antigua
+  const ordenesOrdenadas = [...ordenes].sort((a, b) => {
+    const fechaA = obtenerFechaDate(a.createdAt || a.date);
+    const fechaB = obtenerFechaDate(b.createdAt || b.date);
+
+    const timeA = fechaA && !isNaN(fechaA.getTime()) ? fechaA.getTime() : 0;
+    const timeB = fechaB && !isNaN(fechaB.getTime()) ? fechaB.getTime() : 0;
+
+    return timeB - timeA;
+  });
+
+  const ordenesFiltradas = ordenesOrdenadas.filter((orden) => {
     if (filtroActivo === "todos") return true;
     return getEstadoActual(orden) === filtroActivo;
   });
@@ -118,6 +140,15 @@ const WidgetOrdenes = ({ ordenes = [], loading, onUpdateStatus }) => {
             {ordenesFiltradas.map((orden) => {
               const estadoActual = getEstadoActual(orden);
 
+              // Obtención del método de pago
+              const metodoPago =
+                orden.buyer?.paymentMethod ||
+                orden.comprador?.paymentMethod ||
+                orden.paymentMethod ||
+                orden.metodoPago ||
+                orden.medioPago ||
+                "Efectivo";
+
               return (
                 <div key={orden.id} className="orden-card mb-3">
                   <Accordion.Item eventKey={orden.id} className="orden-accordion-item border-0 bg-transparent">
@@ -125,7 +156,7 @@ const WidgetOrdenes = ({ ordenes = [], loading, onUpdateStatus }) => {
                     {/* Estructura Grid Principal de la Tarjeta */}
                     <div className="orden-grid-layout">
                       
-                      {/* Columna Izquierda: Fecha, ID, Cliente, Teléfono, Email y Label Productos */}
+                      {/* Columna Izquierda */}
                       <div className="grid-col-left">
                         <div className="orden-fecha-hora">
                           <span className="fecha">{formatFecha(orden.createdAt || orden.date)}</span>
@@ -137,17 +168,32 @@ const WidgetOrdenes = ({ ordenes = [], loading, onUpdateStatus }) => {
 
                         <div className="cliente-info">
                           <span className="cliente-nombre">{orden.buyer?.name || "Cliente"}</span>
-                          {orden.buyer?.phone && (
-                            <span className="cliente-telefono">({orden.buyer.phone})</span>
-                          )}
-                        </div>
+                          
+                          <div className="cliente-email">
+                            {orden.buyer?.email || "Sin email"}
+                          </div>
 
-                        <div className="cliente-email">
-                          {orden.buyer?.email || "Sin email"}
+                          {/* Teléfono y Dirección alineados al lado */}
+                          <div className="d-flex align-items-center gap-2 flex-wrap text-muted small mt-1">
+                            {orden.buyer?.phone && (
+                              <span className="cliente-telefono fw-semibold">({orden.buyer.phone})</span>
+                            )}
+
+                            <span className="cliente-direccion">
+                              <FaLocationDot className="me-1" />
+                              {orden.buyer?.address || (orden.buyer?.deliveryType === 'takeaway' ? 'Retiro por local' : 'Sin dirección')}
+                            </span>
+                          </div>
+
+                          {/* Método de pago debajo */}
+                          <div className="cliente-metodo-pago text-muted small mt-1">
+                            <FaCreditCard className="me-1 text-secondary" />
+                            <strong>Pago:</strong> <span className="text-capitalize">{metodoPago}</span>
+                          </div>
                         </div>
 
                         {/* Título/Label de Productos */}
-                        <div className="orden-items-title">
+                        <div className="orden-items-title mt-2">
                           PRODUCTOS ({orden.items?.length || 0})
                         </div>
                       </div>
@@ -171,7 +217,7 @@ const WidgetOrdenes = ({ ordenes = [], loading, onUpdateStatus }) => {
                           })}
                         </div>
 
-                        {/* Flecha desplegable (Header Bootstrap Accordion) */}
+                        {/* Trigger Desplegable */}
                         <div className="orden-accordion-trigger">
                           <Accordion.Header />
                         </div>
@@ -190,31 +236,40 @@ const WidgetOrdenes = ({ ordenes = [], loading, onUpdateStatus }) => {
                       <div className="orden-items-container">
                         <ul className="orden-items-list">
                           {orden.items?.map((it, idx) => {
-                            const nombreTamaño = it.sizeSeleccionado?.nombre || it.size;
-                            const listaAdicionales = it.additionalSeleccionados
-                              ? it.additionalSeleccionados.map((a) => a.nombre).join(", ")
-                              : Array.isArray(it.extras)
-                              ? it.extras.join(", ")
-                              : null;
+                            const sizeObj = it.sizeSeleccionado || it.size;
+                            const nombreTamaño = typeof sizeObj === 'object' && sizeObj !== null
+                              ? (sizeObj.nombre || sizeObj.title || '')
+                              : sizeObj;
 
-                            const precioUnitario = Number(it.price || it.precioUnitario || 0);
+                            const rawAdicionales = it.additionalSeleccionados || it.adicionales || it.extras;
+                            let listaAdicionales = null;
+
+                            if (Array.isArray(rawAdicionales) && rawAdicionales.length > 0) {
+                              listaAdicionales = rawAdicionales
+                                .map((a) => (typeof a === 'object' && a !== null ? (a.nombre || a.title || '') : a))
+                                .filter(Boolean)
+                                .join(", ");
+                            }
+
+                            const cantidad = Number(it.quantity || it.cantidad || 1);
+                            const precioUnitario = Number(it.price || it.precioUnitario || it.precio || 0);
 
                             return (
                               <li key={it.itemKey || idx} className="orden-item-row">
                                 <div className="orden-item-inline-details">
-                                  <span className="badge-qty">{it.quantity} x</span>
+                                  <span className="badge-qty">{cantidad} x</span>
                                   <span className="orden-item-titulo">{it.title || it.titulo}</span>
 
-                                  {nombreTamaño && (
+                                  {nombreTamaño ? (
                                     <span className="orden-item-meta"> Tamaño: {nombreTamaño}</span>
-                                  )}
+                                  ) : null}
 
-                                  {listaAdicionales && (
+                                  {listaAdicionales ? (
                                     <span className="orden-item-meta"> Extras: ({listaAdicionales})</span>
-                                  )}
+                                  ) : null}
                                 </div>
                                 <span className="orden-item-precio">
-                                  ${(precioUnitario * it.quantity).toLocaleString("es-AR")}
+                                  ${(precioUnitario * cantidad).toLocaleString("es-AR")}
                                 </span>
                               </li>
                             );

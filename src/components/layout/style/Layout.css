@@ -1,80 +1,88 @@
 /* =========================================================================
-    ⚜️ GLOBAL LAYOUT STYLES (Navbar Desktop, Offcanvas Sidebar, Social & Footer)
+   ⚜️ DESKTOP NAVBAR & NAVIGATION BUTTONS
    ========================================================================= */
 
-/* ---------------------------
-    NAVBAR SUPERIOR (DESKTOP)
---------------------------- */
 .navbar-custom {
-  background: var(--bg-surface) !important;
+  background: var(--bg-surface, #181920) !important;
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--border-subtle);
-  letter-spacing: 0.02em;
-  font-family: var(--font-main);
-  transition: background-color var(--transition-base), border-color var(--transition-base);
+  border-bottom: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.1));
+  z-index: 1000;
+  height: 68px;
 }
 
-.navbar-custom2 {
+/* Botones con estilo circular/píldora coordinado con el Mobile */
+.nav-desktop-btn {
   display: flex;
-  justify-content: flex-end;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 20px;
+  background-color: #272832;
+  color: #ffffff !important;
+  text-decoration: none;
+  border: none;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.15s ease, background-color 0.2s ease, color 0.2s ease;
+}
+
+.nav-desktop-btn:hover {
+  background-color: #323442;
+  transform: translateY(-1px);
+}
+
+.nav-desktop-btn.active {
+  background-color: #3e4152;
+  color: #ffffff !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Badge Contador de Carrito */
+.cart-badge-desktop {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  background: #ff4d4d;
+  color: #ffffff;
+  font-size: 0.7rem;
+  font-weight: 700;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
+}
+
+/* Avatar de usuario */
+.desktop-avatar-container {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  display: flex;
   align-items: center;
 }
 
-.nav-brand-icon {
-  color: var(--accent-primary);
-  filter: drop-shadow(0 0 6px var(--pr-gold-glow));
-  transition: transform var(--transition-fast);
-}
-
-.navbar-brand:hover .nav-brand-icon {
-  transform: scale(1.08);
-}
-
-.nav-underline {
-  position: relative;
-  padding-bottom: 4px;
-  color: var(--text-secondary) !important;
-  font-weight: 500;
-  font-size: 0.95rem;
-  transition: color var(--transition-fast);
-}
-
-.nav-underline:hover {
-  color: var(--text-primary) !important;
-}
-
-.nav-underline::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  width: 0%;
-  height: 2px;
-  background: var(--accent-gradient);
-  border-radius: var(--radius-pill);
-  transition: width var(--transition-fast) ease;
-}
-
-.nav-underline:hover::after {
-  width: 100%;
-}
-
-.nav-avatar {
-  width: 38px;
-  height: 38px;
+.desktop-avatar {
+  width: 42px;
+  height: 42px;
   border-radius: 50%;
   object-fit: cover;
-  border: 2px solid var(--accent-primary);
-  box-shadow: 0 0 8px var(--pr-gold-glow);
-  transition: transform var(--transition-fast);
+  border: 2px solid #ffffff;
+  box-sizing: border-box;
+  transition: transform 0.2s ease;
 }
 
-.nav-avatar:hover {
-  transform: scale(1.05);
+.desktop-avatar-container:hover .desktop-avatar {
+  transform: scale(1.06);
 }
 
-/* Ocultar Navbar Desktop en pantallas pequeñas */
+/* Ocultar la barra desktop en pantallas mobile */
 @media (max-width: 575.98px) {
   .navbar-custom {
     display: none !important;
@@ -82,25 +90,21 @@
 }
 
 
-/* ---------------------------
-  SIDEBAR (OFFCANVAS DESKTOP)
---------------------------- */
+/* =========================================================================
+   ⚜️ DESKTOP SIDEBAR (OFFCANVAS) STYLES
+   ========================================================================= */
+
 .sidebar-offcanvas {
-  background-color: var(--bg-surface) !important;
-  color: var(--text-primary) !important;
-  border-left: 1px solid var(--border-subtle) !important;
+  background-color: var(--bg-surface, #181920) !important;
+  color: var(--text-primary, #ffffff) !important;
+  border-left: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.1)) !important;
   font-family: var(--font-main);
+  width: 320px !important;
 }
 
 .sidebar-offcanvas .offcanvas-header {
-  border-bottom: 1px solid var(--border-subtle);
-  padding: 20px;
-}
-
-.sidebar-offcanvas .offcanvas-title {
-  font-weight: 700;
-  letter-spacing: -0.01em;
-  color: var(--text-primary);
+  border-bottom: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.1));
+  padding: 18px 24px;
 }
 
 .sidebar-avatar {
@@ -108,138 +112,112 @@
   height: 80px;
   border-radius: 50%;
   object-fit: cover;
-  border: 2px solid var(--accent-primary);
-  box-shadow: 0 0 12px var(--pr-gold-glow);
+  margin-bottom: 12px;
+  border: 2px solid var(--pr-white, #ffffff);
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.2);
 }
 
-.sidebar-link {
+.empty-avatar {
+  background: var(--bg-card, #272832);
+  border: 2px dashed var(--border-input, rgba(255, 255, 255, 0.2));
+  display: block;
+}
+
+/* Botón de Google */
+.google-login-btn {
+  margin-top: 12px;
+  padding: 10px 16px;
+  width: 100%;
+  background: var(--bg-card, #272832);
+  color: var(--text-primary, #ffffff);
+  border-radius: var(--radius-md, 12px);
+  border: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.1));
+  font-weight: 600;
+  font-size: 0.88rem;
+  cursor: pointer;
   display: flex;
   align-items: center;
-  padding: 10px 14px;
-  font-size: 0.95rem;
-  font-weight: 500;
-  color: var(--text-secondary);
-  text-decoration: none;
-  border-radius: var(--radius-md);
-  transition: background-color var(--transition-fast), color var(--transition-fast);
-}
-
-.sidebar-link svg {
-  color: var(--accent-primary);
-  font-size: 1.1rem;
-}
-
-.sidebar-link:hover {
-  background: var(--bg-card);
-  color: var(--accent-hover);
-}
-
-.sidebar-btn-admin {
-  border-color: var(--accent-primary) !important;
-  color: var(--accent-primary) !important;
-  font-weight: 600;
-}
-
-.sidebar-btn-admin:hover {
-  background: var(--accent-gradient) !important;
-  color: var(--text-inverse) !important;
-  border-color: transparent !important;
-  box-shadow: var(--shadow-gold);
-}
-
-.sidebar-btn-logout {
-  border-color: var(--border-input) !important;
-  color: var(--color-danger) !important;
-}
-
-.sidebar-btn-logout:hover {
-  background-color: rgba(224, 86, 86, 0.1) !important;
-  border-color: var(--color-danger) !important;
-}
-
-
-/* ---------------------------
-   SOCIAL BAR
---------------------------- */
-.social-inline .social-icon {
-  color: var(--text-secondary);
-  transition: color var(--transition-fast), transform var(--transition-fast);
-}
-
-.social-inline .social-icon:hover {
-  color: var(--accent-primary);
-  transform: translateY(-2px);
-}
-
-.social-circle-wrapper {
-  display: flex;
   justify-content: center;
-  gap: 12px;
+  gap: 10px;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.google-login-btn:hover {
+  background: #323442;
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+/* Separador elegante */
+.sidebar-separator {
+  border: none;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
   margin: 16px 0;
 }
 
-.social-btn-circle {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background-color: var(--bg-card);
-  border: 1px solid var(--border-subtle);
+/* Items del menú */
+.sidebar-items {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.sidebar-item {
+  width: 100%;
+  padding: 12px 16px;
+  display: flex;
   align-items: center;
-  color: var(--text-primary);
-  transition: background-color var(--transition-fast), border-color var(--transition-fast), transform var(--transition-fast);
-}
-
-.social-btn-circle:hover {
-  background: var(--accent-gradient);
-  border-color: var(--accent-primary);
-  color: var(--text-inverse);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-gold);
-}
-
-
-/* ---------------------------
-   FOOTER
---------------------------- */
-.footer-container {
-  background: var(--bg-surface);
-  border-top: 1px solid var(--border-subtle);
-  color: var(--text-secondary);
-  padding: 32px 16px;
-  font-size: 0.88rem;
-  font-family: var(--font-main);
-}
-
-.footer-container p {
-  margin: 6px 0;
-}
-
-.texto-footer {
-  margin-top: 8px;
-  font-size: 0.88rem;
+  gap: 14px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--text-primary, #ffffff);
+  border-radius: var(--radius-md, 12px);
+  cursor: pointer;
+  border: none;
+  background: transparent;
   text-decoration: none;
-  color: var(--text-secondary);
-  transition: color var(--transition-fast);
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-.texto-footer:hover {
-  color: var(--accent-primary);
+.sidebar-item svg {
+  font-size: 1.15rem;
+  color: var(--text-primary, #ffffff);
 }
 
-.icon-footer {
-  font-size: 1.4rem;
-  color: var(--text-primary);
-  transition: color var(--transition-fast);
+.sidebar-item:hover {
+  background: var(--bg-card, #272832);
+  color: #ffffff;
 }
 
-.icon-footer:hover {
-  color: var(--accent-primary);
+.logout-btn {
+  color: #ff4d4d;
 }
 
-@media (max-width: 575.98px) {
-  .footer-container {
-    display: none !important;
-  }
+.logout-btn svg {
+  color: #ff4d4d;
+}
+
+.logout-btn:hover {
+  background: rgba(255, 77, 77, 0.1);
+  color: #ff4d4d;
+}
+
+/* Botón Admin de actualización */
+.update-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 8px;
+  background: var(--accent-gradient, linear-gradient(135deg, #f39c12, #d35400));
+  color: #ffffff !important;
+  font-weight: 700;
+  border-radius: 20px;
+}
+
+.update-btn svg {
+  color: #ffffff !important;
+}
+
+.update-btn:hover {
+  opacity: 0.92;
 }

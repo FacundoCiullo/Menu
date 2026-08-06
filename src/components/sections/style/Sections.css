@@ -2,14 +2,8 @@
     SLIDER HORIZONTAL DE CATEGORÍAS (TIPO STORIES)
 ========================================== */
 
-.inicio-banner{
-  width: 100%;
-  height: 15rem;
-  object-fit: cover;
-  border-radius: 15px;
-}
-
 .inicio-landing {
+    margin-top: 2rem;
   padding-top: 3rem;
   background: var(--background);
   margin-bottom: 4rem;
@@ -19,8 +13,12 @@
   color: var(--text);
   display: flex;
   justify-content: space-between;
-  align-items: baseline;
+  align-items: flex-end;
   padding-right: 10px;
+}
+
+.destacados p{
+margin-bottom: 0rem !important;
 }
 
 /* ==========================================

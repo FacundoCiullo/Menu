@@ -1,0 +1,126 @@
+
+/* Selecciona los botones indicadores dentro del carrusel */
+.carousel-indicators button {
+  width: 10px !important;
+  height: 10px !important;
+  border-radius: 50% !important;
+
+  /* Opcional: si quieres quitar las barras gruesas transparentes que pone Bootstrap */
+  border-top: 0 !important;
+  border-bottom: 0 !important;
+  margin: 0 4px !important;
+}
+
+
+.hero-carousel-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto 1rem auto;
+  padding: 0 10px;
+}
+
+
+#heroPromosCarousel {
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+}
+
+.carousel-img-wrapper {
+  position: relative;
+  height: 380px;
+  width: 100%;
+}
+
+.carousel-promo-img {
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Oscurece la imagen para resaltar los textos */
+.carousel-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.85) 100%);
+}
+
+.carousel-caption {
+  bottom: 2rem;
+  left: 5% !important;
+  right: 5% !important;
+  text-align: left;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.promo-badge {
+  background-color: #ff4d4d;
+  color: #ffffff;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 12px;
+  display: inline-block;
+  margin-bottom: 0.5rem;
+}
+
+.carousel-caption h5 {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: #ffffff;
+  margin-bottom: 0.3rem;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+}
+
+.carousel-caption p {
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 1rem;
+  max-width: 500px;
+}
+
+.btn-promo-action {
+  display: inline-block;
+  background-color: #1ed760;
+  color: #000000;
+  font-weight: 700;
+  font-size: 0.85rem;
+  padding: 8px 20px;
+  border-radius: 20px;
+  text-decoration: none;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.btn-promo-action:hover {
+  background-color: #1fdf64;
+  color: #000000;
+  transform: scale(1.03);
+}
+
+/* Adaptación Mobile */
+@media (max-width: 768px) {
+  
+  .carousel-img-wrapper {
+    height: 220px;
+  }
+
+  .carousel-caption h5 {
+    font-size: 1.3rem;
+  }
+
+  .carousel-caption p {
+    font-size: 0.8rem;
+    margin-bottom: 0.6rem;
+  }
+
+  .btn-promo-action {
+    padding: 6px 14px;
+    font-size: 0.75rem;
+  }
+}
